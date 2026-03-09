@@ -4,6 +4,31 @@
 
 This document identifies open-source synthetic-data sources for the PoC artifact inventory in [docs/references/insurance-processes.md](../docs/references/insurance-processes.md). The goal is to assemble believable demo fixtures for a narrow insurance workflow, not to build a production-grade data generation pipeline.
 
+## Current Workflow Focus
+
+- Selected workflow: Death claim intake + next-step orchestration
+- Selected scope: Intake + completeness triage
+- Primary artifacts for the initial steel thread: `CUSTOMER_REQUEST`, `POLICY_SUMMARY`, `CLAIM_INTAKE_FORM`
+- Escalation artifacts for the ambiguous case: `DEATH_CERTIFICATE`, `BENEFICIARY_RECORD`
+- Working strategy: use open synthetic insurance datasets for the structured intake artifacts, then hand-author a very small set of believable beneficiary and death-certificate fixtures for the HITL path
+
+## Initial Fixture Bundle
+
+### Case A: Complete intake
+
+- Inputs: `CUSTOMER_REQUEST`, `POLICY_SUMMARY`, `CLAIM_INTAKE_FORM`
+- Expected outcome: completeness assessment plus a straightforward routing decision
+
+### Case B: Missing information
+
+- Inputs: `CUSTOMER_REQUEST`, `POLICY_SUMMARY`, `CLAIM_INTAKE_FORM`
+- Expected outcome: missing-items checklist plus claimant or beneficiary follow-up draft
+
+### Case C: Ambiguous / HITL case
+
+- Inputs: `CUSTOMER_REQUEST`, `POLICY_SUMMARY`, `CLAIM_INTAKE_FORM`, `DEATH_CERTIFICATE`, `BENEFICIARY_RECORD`
+- Expected outcome: HITL review task with rationale, plus any follow-up guidance needed
+
 ## Recommended Sources
 
 | Source                                                                                                                                                     | Type                                       | Artifacts Supported                                       | Why We'd Use It                                                                               | Notes / Gaps                                                                |

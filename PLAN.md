@@ -4,13 +4,21 @@
 
 Bestow wants a short rapid-prototyping exercise that shows how I think as a Staff Software Engineer, not just what I can build.
 
+## Selected direction
+
+- Process: Death claim intake + next-step orchestration
+- Scope: Intake + completeness triage
+- Primary user: Internal claims operations specialist
+- Interaction model: Internal workbench with generated claimant or beneficiary follow-up outputs
+- Detailed planning artifact: [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
+
 ## Progress checklist
 
-- [ ] Choose the insurance process or system to focus on
-- [ ] Research the current-state process, users, pain points, and constraints
-- [ ] Identify a meaningful improvement opportunity
-- [ ] Define target user, requirements, assumptions, and success criteria
-- [ ] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
+- [x] Choose the insurance process or system to focus on
+- [x] Research the current-state process, users, pain points, and constraints
+- [x] Identify a meaningful improvement opportunity
+- [x] Define target user, requirements, assumptions, and success criteria in [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
+- [x] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
 - [ ] Establish the minimal Lean-Clean steel-thread structure for the PoC, using `uv`, FastAPI, Ruff, Pyright, Docker, Tilt, and VS Code configuration where they support the chosen slice
 - [ ] Build a thin-slice prototype that demonstrates the improvement
 - [ ] Prepare demo notes covering research, ideation, prototype, and LLM/cloud usage
@@ -38,10 +46,10 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 
 ## Practical approach
 
-- [ ] Pick one narrow life-insurance workflow such as claim intake, underwriting intake, beneficiary changes, or policy servicing
-- [ ] Research the current-state process, pain points, and operational constraints
-- [ ] Define a target user, problem statement, and success criteria
-- [ ] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
+- [x] Focus on death claim intake + next-step orchestration as the chosen life-insurance workflow
+- [x] Research the current-state process, pain points, and operational constraints
+- [x] Define a target user, problem statement, and success criteria in [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
+- [x] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
 - [ ] Shape the prototype as a minimal Lean-Clean steel thread with only the layers, drivers, and adapters needed for the end-to-end slice
 - [ ] Add supporting tooling and local infrastructure only where it improves development flow, demoability, or technical credibility
 - [ ] Build a thin-slice prototype that clearly shows the improved experience or system behavior
@@ -53,6 +61,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - The implementation will start from a minimal Lean-Clean steel-thread structure rather than a generic application scaffold.
 - `uv`, FastAPI, Ruff, Pyright, Docker, Tilt, and VS Code are baseline tooling choices, but the exact project shape should remain driven by the chosen PoC slice.
 - A broader platform-level structure is optional and should only be introduced if it clearly strengthens this PoC.
+- The current working shape is an internal claims-ops workbench with three representative case tabs and generated external follow-up artifacts.
 - Clear reasoning, architecture, and technical execution likely matter more than polish.
 - The demo should stay tightly scoped so it fits within 5 minutes.
 - The response window is 3-5 business days.

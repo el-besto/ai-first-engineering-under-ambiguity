@@ -1,4 +1,4 @@
-# Insurance Process Selection: Decisions Needed
+# Insurance Process Selection: Decision Record
 
 > **Template Version:** 1.0 (2025-10-13)
 >
@@ -6,20 +6,20 @@
 
 ---
 
-**Status:** 🚧 0 of 2 Resolved | 2 Awaiting Discussion
+**Status:** ✅ 2 of 2 Resolved | 0 Awaiting Discussion
 
 This document captures the key decisions for selecting the insurance process to use in the Bestow AI PoC.
 
 **Related Documents:**
 
-- `/docs/references/insurance-processes.md`
-- `/PLAN.md`
+- [Insurance process candidates](../docs/references/insurance-processes.md)
+- [PLAN.md](../PLAN.md)
 
-**Update:** Initial candidate research completed and narrowed to three serious finalists. A pre-existing underwriting workbench demo now introduces novelty risk for underwriting-centered options, so differentiation is an explicit selection criterion.
+**Update:** Initial candidate research completed and narrowed to three serious finalists. A pre-existing underwriting workbench demo introduced novelty risk for underwriting-centered options, so differentiation became an explicit selection criterion. Decision 1 and Decision 2 are now resolved.
 
 ---
 
-## Decision 1: Which insurance process should this PoC focus on? ⚠️
+## Decision 1: Which insurance process should this PoC focus on?
 
 **What I did:**
 
@@ -63,14 +63,14 @@ Which process should anchor the PoC?
 **Reasoning:**
 Candidate 1 now provides the strongest combination of differentiation and PoC fit. It best balances life-insurance specificity, stakeholder richness, workflow-first agent design, manageable UX scope, and lower overlap risk with known underwriting demos. It allows the project to showcase agentic orchestration and human-in-the-loop boundaries without entering the same conceptual space as an underwriting workbench demo.
 
-**Your decision:** A
+**Your decision:** ✅ Option A: Death claim intake + next-step orchestration
 
 **Rationale:**
-Initially, I was leaning toward the internal-workbench tooling app ("underwriter copilot"), but after discovering the pre-existing AWS content I did not want to go that route.
+Initially, I was leaning toward the internal-workbench tooling app ("underwriter copilot"), but after discovering the pre-existing AWS underwriting-workbench demo I did not want to go that route. I want the final PoC to feel clearly differentiated while still showing strong agentic orchestration and life-insurance-specific workflow value.
 
 **Impact:** HIGH - This determines the user journey, architecture shape, demo narrative, and research depth for the rest of the PoC.
 
-**Status:** 🚧 AWAITING
+**Status:** ✅ RESOLVED
 
 **Scoping note:**
 
@@ -117,23 +117,23 @@ What should the initial PoC boundary be?
 **Reasoning:**
 This is the cleanest steel thread. It demonstrates that the AI can do more than collect intake data by producing a completeness assessment, missing-items checklist, claimant or beneficiary follow-up draft, and HITL escalation when ambiguity or mismatch exists, while still stopping short of a broad workflow engine.
 
-**Your decision:** B; but ideally introduce the human review checkpoints as a stretch goal
+**Your decision:** ✅ Option B: Intake + completeness triage
 
 **Rationale:**
-Time is limited, and I want to demonstrate how the Lean-Clean methodology can be applied here to keep things modular and boundaries clear so that the hand-off from a PoC to an Engineering department could be done as smoothly as possible.
+Time is limited, and I want to demonstrate how the Lean-Clean methodology can be applied here to keep things modular and boundaries clear so that the hand-off from a PoC to an Engineering department could be done as smoothly as possible. Human review checkpoints beyond the core triage path should be treated as a bounded escalation capability, not a broader workflow expansion.
 
 **Impact:** HIGH - This sets the feature boundary, architecture depth, and demo complexity.
 
-**Status:** 🚧 AWAITING
+**Status:** ✅ RESOLVED
 
 ---
 
 ## Summary of Decisions
 
-| # | Decision                                              | Priority | Status      |
-|---|-------------------------------------------------------|----------|-------------|
-| 1 | Which insurance process should this PoC focus on?     | HIGH     | 🚧 AWAITING |
-| 2 | How narrowly should the PoC scope the chosen process? | HIGH     | 🚧 AWAITING |
+| # | Decision                                              | Priority | Status     |
+|---|-------------------------------------------------------|----------|------------|
+| 1 | Which insurance process should this PoC focus on?     | HIGH     | ✅ RESOLVED |
+| 2 | How narrowly should the PoC scope the chosen process? | HIGH     | ✅ RESOLVED |
 
 ---
 
@@ -144,20 +144,24 @@ Time is limited, and I want to demonstrate how the Lean-Clean methodology can be
 - ✅ Candidate process research
 - ✅ Comparison across decision criteria
 - ✅ Shortlist creation
+- ✅ Resolved Decision 1: process selection
+- ✅ Resolved Decision 2: scope boundary
+- ✅ Updated [PLAN.md](../PLAN.md) to reflect the selected process and scope
+- ✅ Defined the target user, success criteria, steel-thread acceptance criteria, and architecture outline in [death-claim-steel-thread.md](death-claim-steel-thread.md)
+- ✅ Tightened [synthetic-data-plan.md](synthetic-data-plan.md) around the selected workflow
 
-**Awaiting Your Input (2 decisions):**
+**Awaiting Your Input (0 decisions):**
 
-1. **Decision 1: Which insurance process should this PoC focus on?** ⚠️
-2. **Decision 2: How narrowly should the PoC scope the chosen process?**
+1. None
 
 **After Decisions Resolved:**
 
-1. Update `PLAN.md` checklist if needed
-2. Define the target user, success criteria, and steel-thread acceptance criteria
-3. Shape the prototype architecture around the selected process and scope
-4. Prepare a concise rationale that can be reused in the demo narrative
+1. ✅ Update `PLAN.md` checklist if needed
+2. ✅ Define the target user, success criteria, and steel-thread acceptance criteria
+3. ✅ Shape the prototype architecture around the selected process and scope
+4. ✅ Prepare a concise rationale that can be reused in the demo narrative
 
-**Status:** 0 of 2 decisions resolved | 2 awaiting collaborative review
+**Status:** 2 of 2 decisions resolved | 0 awaiting collaborative review
 
 ---
 
@@ -171,5 +175,5 @@ Time is limited, and I want to demonstrate how the Lean-Clean methodology can be
 
 **Related Documents:**
 
-- `/docs/references/insurance-processes.md`
-- `/PLAN.md`
+- [Insurance process candidates](../docs/references/insurance-processes.md)
+- [PLAN.md](../PLAN.md)
