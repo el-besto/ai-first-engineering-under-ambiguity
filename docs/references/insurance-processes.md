@@ -647,6 +647,7 @@ This inventory defines reusable artifact types that may appear as inputs, interm
 - The lightest fixture burden candidates are policy servicing intake, application rescue, and billing exception handling because they rely mostly on structured records and generated artifacts rather than uploaded evidence.
 - The heaviest synthetic evidence burden sits with medical record summarization and, to a lesser extent, underwriting triage or post-issue audit when richer evidence is introduced.
 - The strongest candidates for a “simple automated case + escalated HITL case” demo are death claim intake, policy servicing intake, and underwriting triage because they support a clear shift from straightforward routing to human review without requiring a broad workflow engine.
+- Underwriting triage remains technically strong, but it now carries higher novelty risk because the underwriting-workbench category already has familiar public demos.
 
 ## Shortlist
 
@@ -656,4 +657,4 @@ This inventory defines reusable artifact types that may appear as inputs, interm
 
 ## Recommendation Snapshot
 
-The strongest candidates at this stage are death claim intake, underwriting case triage, and policy servicing intake. Death claim intake has the clearest life-insurance identity and a strong agentic workflow shape while still supporting a plausible simple case and escalated case. Underwriting case triage remains strong on Bestow relevance, but its artifact burden rises quickly once medical evidence is introduced. Policy servicing intake is still the easiest to prototype and demo cleanly, with the lightest fixture burden of the top three.
+The strongest candidates at this stage are death claim intake, underwriting case triage, and policy servicing intake. Death claim intake has the clearest life-insurance identity and a strong agentic workflow shape while still supporting a plausible simple case and escalated case. Underwriting case triage remains strong technically, but it now has higher novelty risk because of the existing underwriting-workbench demo category, and its artifact burden rises quickly once medical evidence is introduced. Policy servicing intake is still the easiest to prototype and demo cleanly, with the lightest fixture burden of the top three.
