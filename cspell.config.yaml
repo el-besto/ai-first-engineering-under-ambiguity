@@ -1,0 +1,15 @@
+version: "0.2"
+ignorePaths: []
+dictionaryDefinitions: []
+dictionaries: []
+words:
+  - agentic
+  - demoability
+  - HITL
+  - htmlcov
+  - mypy
+  - pycache
+  - pytest
+  - venv
+ignoreWords: []
+import: []
