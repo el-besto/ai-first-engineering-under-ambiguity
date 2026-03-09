@@ -1,0 +1,61 @@
+exclude: |
+  ^(
+    \.scratch/|
+    \.venv/|
+    \.ruff_cache/|
+    \.pytest_cache/|
+    \.mypy_cache/|
+    \.pyright/|
+    node_modules/|
+    out/|
+    build/|
+    dist/
+  )
+
+repos:
+  - repo: local
+    hooks:
+      - id: capture-staged-files
+        name: Capture Staged Files
+        entry: tools/precommit_manage_staged_files.sh capture
+        language: system
+        pass_filenames: false
+        always_run: true
+        require_serial: true
+        stages: [pre-commit]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: detect-private-key
+      - id: check-merge-conflict
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.11.3
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+  - repo: local
+    hooks:
+      - id: format-markdown
+        name: Format Markdown
+        entry: node tools/format-markdown.cjs
+        language: system
+        files: \.md$
+        pass_filenames: true
+        stages: [pre-commit]
+
+      - id: restage-staged-files
+        name: Restage Originally Staged Files
+        entry: tools/precommit_manage_staged_files.sh restage
+        language: system
+        pass_filenames: false
+        always_run: true
+        require_serial: true
+        stages: [pre-commit]

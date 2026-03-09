@@ -73,6 +73,7 @@ Candidate 1 now provides the strongest combination of differentiation and PoC fi
 **Status:** 🚧 AWAITING
 
 **Scoping note:**
+
 - Target an internal claims ops workbench, not a claimant-facing app
 - Show 3 representative case tabs
 - Generated outputs should include a missing-items checklist, claimant or beneficiary follow-up draft, and HITL review task with rationale
@@ -129,10 +130,10 @@ This is the cleanest steel thread. It demonstrates that the AI can do more than 
 
 ## Summary of Decisions
 
-| #   | Decision                                              | Priority | Status       |
-| --- | ----------------------------------------------------- | -------- | ------------ |
-| 1   | Which insurance process should this PoC focus on?     | HIGH     | 🚧 AWAITING |
-| 2   | How narrowly should the PoC scope the chosen process? | HIGH     | 🚧 AWAITING |
+| # | Decision                                              | Priority | Status      |
+|---|-------------------------------------------------------|----------|-------------|
+| 1 | Which insurance process should this PoC focus on?     | HIGH     | 🚧 AWAITING |
+| 2 | How narrowly should the PoC scope the chosen process? | HIGH     | 🚧 AWAITING |
 
 ---
 

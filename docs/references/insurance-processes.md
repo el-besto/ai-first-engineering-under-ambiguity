@@ -21,7 +21,7 @@ This document catalogs candidate insurance workflows for PoC selection. It is in
 This inventory defines reusable artifact types that may appear as inputs, intermediates, or outputs across candidate processes. The goal is to estimate fixture burden early and avoid repeating the same document descriptions under every process.
 
 | Artifact ID             | Artifact name                  | Type                       | Typical source                  | Fake complexity | Notes                                              |
-| ----------------------- | ------------------------------ | -------------------------- | ------------------------------- | --------------- | -------------------------------------------------- |
+|-------------------------|--------------------------------|----------------------------|---------------------------------|-----------------|----------------------------------------------------|
 | CUSTOMER_REQUEST        | Customer or claimant request   | structured record          | portal submission / call center | Low             | Basic intent and identifying details               |
 | POLICY_SUMMARY          | Policy snapshot                | structured record          | policy admin system             | Low             | Policy number, status, insured, and basic coverage |
 | CLAIM_INTAKE_FORM       | Claim intake form              | document / structured form | claimant or support rep         | Low             | Can be modeled as JSON or a simple form            |
@@ -40,7 +40,7 @@ This inventory defines reusable artifact types that may appear as inputs, interm
 ## Candidate Summary Table
 
 | Process                                                    | Primary user                       | Life-insurance specificity | Agentic AI fit | Prototype complexity | Fixture burden | Simple-case automation | HITL escalation fit | Demo strength | Bestow relevance | Recommendation rank |
-| ---------------------------------------------------------- | ---------------------------------- | -------------------------- | -------------- | -------------------- | -------------- | ---------------------- | ------------------- | ------------- | ---------------- | ------------------- |
+|------------------------------------------------------------|------------------------------------|----------------------------|----------------|----------------------|----------------|------------------------|---------------------|---------------|------------------|---------------------|
 | Death claim intake + next-step orchestration               | Claims ops / claimant support      | High                       | High           | Medium               | Medium         | Strong                 | Strong              | High          | High             | 1                   |
 | Underwriting case triage / underwriter copilot             | Underwriter                        | High                       | High           | Medium               | Medium         | Moderate               | Strong              | High          | High             | 2                   |
 | Policy servicing request intake and routing                | Service ops / policyholder support | Medium                     | High           | Low                  | Low            | Strong                 | Strong              | High          | High             | 3                   |
