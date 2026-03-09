@@ -1,0 +1,3 @@
+# GEMINI
+
+See [AGENT_RULES.md](AGENT_RULES.md).

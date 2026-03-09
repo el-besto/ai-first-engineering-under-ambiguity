@@ -13,9 +13,9 @@ NC := \033[0m
 help: ## Display available targets
 	@awk 'BEGIN {FS = ":.*##"; printf "\n$(BLUE)Usage:$(NC)\n  make $(GREEN)<target>$(NC)\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  $(GREEN)%-18s$(NC) %s\n", $$1, $$2 } /^##@/ { printf "\n$(BLUE)%s$(NC)\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ Hooks
+##@ Checks
 
-.PHONY: hooks-install pre-commit pre-commit-all
+.PHONY: hooks-install pre-commit pre-commit-all check
 hooks-install: ## Install pre-commit and commit-msg hooks locally
 	@$(PRE_COMMIT) install --install-hooks --hook-type pre-commit --hook-type commit-msg
 
@@ -24,6 +24,8 @@ pre-commit: ## Run pre-commit hooks on staged files
 
 pre-commit-all: ## Run pre-commit hooks on all tracked files
 	@$(PRE_COMMIT) run --all-files
+
+check: pre-commit-all ## Run the current repo-wide checks
 
 ##@ Markdown
 
