@@ -8,6 +8,7 @@ This document identifies open-source synthetic-data sources for the PoC artifact
 
 - Selected workflow: Death claim intake + next-step orchestration
 - Selected scope: Intake + completeness triage
+- Workflow context: [death-claim-process-understanding.md](death-claim-process-understanding.md)
 - Primary artifacts for the initial steel thread: `CUSTOMER_REQUEST`, `POLICY_SUMMARY`, `CLAIM_INTAKE_FORM`
 - Escalation artifacts for the ambiguous case: `DEATH_CERTIFICATE`, `BENEFICIARY_RECORD`
 - Working strategy: use open synthetic insurance datasets for the structured intake artifacts, then hand-author a very small set of believable beneficiary and death-certificate fixtures for the HITL path

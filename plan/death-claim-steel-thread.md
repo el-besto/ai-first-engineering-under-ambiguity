@@ -7,6 +7,7 @@
 - Primary user: Claims operations specialist
 - Secondary stakeholders: Claimant or beneficiary, downstream human reviewer
 - Interaction model: Internal workbench with generated external follow-up outputs
+- Upstream workflow context: [death-claim-process-understanding.md](death-claim-process-understanding.md)
 
 ## Problem Statement
 

@@ -10,12 +10,13 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - Scope: Intake + completeness triage
 - Primary user: Internal claims operations specialist
 - Interaction model: Internal workbench with generated claimant or beneficiary follow-up outputs
+- Process understanding artifact: [plan/death-claim-process-understanding.md](plan/death-claim-process-understanding.md)
 - Detailed planning artifact: [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
 
 ## Progress checklist
 
 - [x] Choose the insurance process or system to focus on
-- [x] Research the current-state process, users, pain points, and constraints
+- [x] Research the [current-state process, users, pain points, and constraints](plan/death-claim-process-understanding.md)
 - [x] Identify a meaningful improvement opportunity
 - [x] Define target user, requirements, assumptions, and success criteria in [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
 - [x] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
@@ -47,7 +48,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 ## Practical approach
 
 - [x] Focus on death claim intake + next-step orchestration as the chosen life-insurance workflow
-- [x] Research the current-state process, pain points, and operational constraints
+- [x] Research the [current-state process, pain points, and operational constraints](plan/death-claim-process-understanding.md)
 - [x] Define a target user, problem statement, and success criteria in [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
 - [x] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
 - [ ] Shape the prototype as a minimal Lean-Clean steel thread with only the layers, drivers, and adapters needed for the end-to-end slice
