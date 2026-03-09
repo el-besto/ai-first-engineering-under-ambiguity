@@ -10,6 +10,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - [ ] Research the current-state process, users, pain points, and constraints
 - [ ] Identify a meaningful improvement opportunity
 - [ ] Define target user, requirements, assumptions, and success criteria
+- [ ] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
 - [ ] Establish the minimal Lean-Clean steel-thread structure for the PoC, using `uv`, FastAPI, Ruff, Pyright, Docker, Tilt, and VS Code configuration where they support the chosen slice
 - [ ] Build a thin-slice prototype that demonstrates the improvement
 - [ ] Prepare demo notes covering research, ideation, prototype, and LLM/cloud usage
@@ -40,6 +41,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - [ ] Pick one narrow life-insurance workflow such as claim intake, underwriting intake, beneficiary changes, or policy servicing
 - [ ] Research the current-state process, pain points, and operational constraints
 - [ ] Define a target user, problem statement, and success criteria
+- [ ] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
 - [ ] Shape the prototype as a minimal Lean-Clean steel thread with only the layers, drivers, and adapters needed for the end-to-end slice
 - [ ] Add supporting tooling and local infrastructure only where it improves development flow, demoability, or technical credibility
 - [ ] Build a thin-slice prototype that clearly shows the improved experience or system behavior
