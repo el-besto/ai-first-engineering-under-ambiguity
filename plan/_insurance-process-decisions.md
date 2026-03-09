@@ -33,7 +33,7 @@ The PoC needs to be simple, clearly useful, and suitable for agentic AI. The rol
 **Question for you:**
 Which process should anchor the PoC?
 
-- [ ] **Option A: Death claim intake + next-step orchestration** (internal claims intake/triage console)
+- [x] **Option A: Death claim intake + next-step orchestration** (internal claims intake/triage console)
   - Avoids underwriting-demo overlap while staying strongly life-insurance-specific
   - Clean LangGraph workflow for intake assessment, missing-item detection, routing, and escalation
   - Clear multi-stakeholder story without requiring a two-sided app
@@ -63,10 +63,10 @@ Which process should anchor the PoC?
 **Reasoning:**
 Candidate 1 now provides the strongest combination of differentiation and PoC fit. It best balances life-insurance specificity, stakeholder richness, workflow-first agent design, manageable UX scope, and lower overlap risk with known underwriting demos. It allows the project to showcase agentic orchestration and human-in-the-loop boundaries without entering the same conceptual space as an underwriting workbench demo.
 
-**Your decision:** [AWAITING INPUT]
+**Your decision:** A
 
 **Rationale:**
-[To fill in once chosen]
+Initially, I was leaning toward the internal-workbench tooling app ("underwriter copilot"), but after discovering the pre-existing AWS content I did not want to go that route.
 
 **Impact:** HIGH - This determines the user journey, architecture shape, demo narrative, and research depth for the rest of the PoC.
 
@@ -99,7 +99,7 @@ What should the initial PoC boundary be?
   - May feel too thin for a staff-level AI deliverable
   - Leaves less room to show orchestration or downstream system design
 
-- [ ] **Option B: Intake + completeness triage** (recommended steel thread)
+- [x] **Option B: Intake + completeness triage** (recommended steel thread)
   - Best balance of simplicity and substantive AI behavior
   - Shows intake capture, completeness assessment, routing, and next-step logic
   - Supports a stronger end-to-end story without too much implementation weight
@@ -117,10 +117,10 @@ What should the initial PoC boundary be?
 **Reasoning:**
 This is the cleanest steel thread. It demonstrates that the AI can do more than collect intake data by producing a completeness assessment, missing-items checklist, claimant or beneficiary follow-up draft, and HITL escalation when ambiguity or mismatch exists, while still stopping short of a broad workflow engine.
 
-**Your decision:** [AWAITING INPUT]
+**Your decision:** B; but ideally introduce the human review checkpoints as a stretch goal
 
 **Rationale:**
-[To fill in once chosen]
+Time is limited, and I want to demonstrate how the Lean-Clean methodology can be applied here to keep things modular and boundaries clear so that the hand-off from a PoC to an Engineering department could be done as smoothly as possible.
 
 **Impact:** HIGH - This sets the feature boundary, architecture depth, and demo complexity.
 
