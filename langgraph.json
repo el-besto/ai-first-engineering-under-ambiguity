@@ -4,5 +4,10 @@
     "death_claim_triage": "./app/interface_adapters/orchestrators/death_claim_triage_graph.py:graph"
   },
   "env": ".env",
+  "watch": [
+    "app",
+    "drivers",
+    "tests"
+  ],
   "python_version": "3.13"
 }

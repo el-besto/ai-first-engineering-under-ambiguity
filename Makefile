@@ -50,7 +50,7 @@ dev: ## Start the LangGraph development loop locally
 	uv run langgraph dev
 
 debug: ## Start LangGraph development loop with a debugger port open
-	uv run langgraph dev --debug-port 5678
+	PYDEVD_DISABLE_FILE_VALIDATION=1 uv run python -Xfrozen_modules=off -m langgraph_cli dev --debug-port 5678
 
 api: ## Boot the thin FastAPI ingress shell
 	uv run uvicorn drivers.api.main:app --reload --port 8000
