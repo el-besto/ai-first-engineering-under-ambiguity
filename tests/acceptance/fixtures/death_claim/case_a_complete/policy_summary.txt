@@ -1,0 +1,4 @@
+Policy Number: POL-12345
+Insured: John Doe
+Status: Active
+Face Amount: $100,000

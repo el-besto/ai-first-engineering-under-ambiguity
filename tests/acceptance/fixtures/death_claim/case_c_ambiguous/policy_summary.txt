@@ -1,0 +1,4 @@
+Policy Number: POL-99999
+Insured: Charlie Davis
+Status: Pending Lapsed
+Face Amount: $500,000

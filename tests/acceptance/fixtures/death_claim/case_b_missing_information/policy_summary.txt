@@ -1,0 +1,4 @@
+Policy Number: POL-56789
+Insured: Bob Smith
+Status: Active
+Face Amount: $250,000

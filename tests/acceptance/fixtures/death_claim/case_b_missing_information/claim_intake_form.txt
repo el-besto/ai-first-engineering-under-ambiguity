@@ -1,0 +1,6 @@
+Claimant Name: Alice Smith
+Claimant Relation: Sibling
+Deceased Name: Bob Smith
+Date of Death: 2025-11-02
+Death Certificate Attached: No
+Signature: [MISSING]
