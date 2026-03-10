@@ -29,6 +29,24 @@ Chosen defaults:
 - `<fixture_root>/case_c_<case_c_slug>/`
 - `tests/acceptance/conftest.py`
 
+## Fixture Bundle Expectations
+
+Each representative case bundle should define:
+
+- input artifacts present in the bundle
+- expected disposition
+- expected artifact outputs
+- expected `<confidence_band>` or equivalent bounded confidence signal
+- expected reviewability or escalation outputs
+- expected summary of why the case took that path
+- expected privacy assertions or tokenization outcomes
+
+Fixture authoring rules:
+
+- keep fixtures tiny, hand-authored, readable, and deterministic
+- use the fixtures as the canonical acceptance fixtures immediately
+- do not introduce a synthetic-data pipeline before the thin slice is stable
+
 ## Top-Level Test Boundary
 
 The runnable acceptance test should target:
@@ -40,6 +58,15 @@ The acceptance boundary should hide whether the implementation is:
 - a direct orchestrator call
 - a LangGraph-backed workflow
 - a thin service object over Tree A use cases
+
+## Out Of Scope
+
+This document does not own:
+
+- repo bootstrap or local scaffold setup beyond what is needed for the acceptance path
+- broader runtime and tooling validation outside the acceptance-driving slice
+- non-representative fixture libraries or synthetic-data expansion
+- broader platform structure not required to satisfy the contract
 
 ## Minimal Supporting Production Surface
 
@@ -76,7 +103,7 @@ Only the minimum supporting surface required to satisfy the acceptance contract 
 - `<weakened_assertion_2>`
   - reason: `<reason>`
 
-## Test Plan
+## Ordered Implementation Steps
 
 Implement in this order:
 
@@ -92,6 +119,27 @@ Acceptance scenarios that must pass:
 - Case A -> `<disposition_a>`
 - Case B -> `<disposition_b>`
 - Case C -> `<disposition_c>`
+
+## Verification
+
+Verify the acceptance pass with evidence that:
+
+- all representative cases pass through `<workflow_entrypoint>`
+- the expected dispositions and bounded outputs are asserted for each case
+- fake collaborators remain deterministic and stable across repeated runs
+- privacy assertions are explicit for the model-facing path
+- only the minimum production surface required by the contract was introduced
+
+## Completion Report
+
+Report the following at the end of an acceptance-contract pass:
+
+- changed files
+- fixtures created or changed
+- tests run and their results
+- fake collaborators introduced or updated
+- any deferred hardening assumptions relied on
+- anything still blocking the next implementation pass
 
 ## Assumptions
 
