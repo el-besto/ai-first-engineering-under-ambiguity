@@ -1,0 +1,50 @@
+[project]
+name = "bestow-poc"
+version = "0.1.0"
+description = "Death claim triage PoC"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langgraph>=0.2.56",
+    "langchain-core>=0.3.21",
+    "langchain-openai>=0.2.11",
+    "fastapi>=0.115.6",
+    "uvicorn>=0.32.1",
+    "streamlit>=1.41.1",
+    "pydantic>=2.10.4",
+    "python-dotenv>=1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.0",
+    "ruff>=0.8.4",
+    "pyright>=1.1.391",
+    "pre-commit>=4.0.1",
+    "langgraph-cli[inmem]>=0.1.66",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "B", "I", "UP", "RUF"
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pyright]
+include = ["app", "drivers", "tests"]
+exclude = ["**/__pycache__", ".venv"]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "standard"
+strictParameterNoneValue = true

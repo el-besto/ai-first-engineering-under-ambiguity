@@ -20,6 +20,8 @@ ENV/
 .hypothesis/
 .tox/
 .nox/
+.uv_cache/
+.langgraph_api/
 
 # Coverage and test output
 .coverage

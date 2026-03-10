@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "death_claim_triage": "./app/interface_adapters/orchestrators/death_claim_triage_graph.py:graph"
+  },
+  "env": ".env",
+  "python_version": "3.13"
+}

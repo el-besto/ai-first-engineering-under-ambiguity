@@ -51,6 +51,28 @@ repos:
         pass_filenames: true
         stages: [pre-commit]
 
+      - id: ruff
+        name: Ruff Linter
+        entry: uv run ruff check --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: ruff-format
+        name: Ruff Formatter
+        entry: uv run ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: pyright
+        name: Pyright Type Checker
+        entry: uv run pyright
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true
+
       - id: restage-staged-files
         name: Restage Originally Staged Files
         entry: tools/precommit_manage_staged_files.sh restage

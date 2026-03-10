@@ -39,3 +39,33 @@ format-md-all: ## Format all markdown files in the repo
 	@echo "$(BLUE)Formatting all markdown files...$(NC)"
 	@node $(TOOLS_DIR)/format-markdown.cjs --all
 	@echo "$(GREEN)Markdown formatting complete.$(NC)"
+
+##@ Local Runtime / Scaffolds
+
+.PHONY: install dev debug api ui test tilt up
+install: ## Bootstrap and install the virtual environment dependencies
+	uv sync
+
+dev: ## Start the LangGraph development loop locally
+	uv run langgraph dev
+
+debug: ## Start LangGraph development loop with a debugger port open
+	uv run langgraph dev --debug-port 5678
+
+api: ## Boot the thin FastAPI ingress shell
+	uv run uvicorn drivers.api.main:app --reload --port 8000
+
+ui: ## Boot the thin Streamlit workbench shell
+	uv run streamlit run drivers/ui/streamlit/app.py
+
+test: ## Execute the current test suite via pytest
+	uv run pytest tests/ -v
+
+tilt: ## Start Tilt for local infrastructure deployment
+	tilt up
+
+prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binaries
+	bash tools/prepare-rancher-desktop.sh
+
+up: ## Start the minimal docker-compose services manually
+	docker compose -f deploy/local/compose.yaml up -d
