@@ -64,6 +64,7 @@ class TestDeathClaimIntakeWorkshopSpec:
         assert "benefit determination" not in str(ambiguous_result.escalation_rationale).lower()
 
         # Evaluation / observability assertion
-        assert fake_evaluation_recorder.record_case("complete")
-        assert fake_evaluation_recorder.record_case("missing_information")
-        assert fake_evaluation_recorder.record_case("ambiguous")
+        # Evaluation / observability assertion
+        assert fake_evaluation_recorder.has_recorded_case("complete")
+        assert fake_evaluation_recorder.has_recorded_case("missing_information")
+        assert fake_evaluation_recorder.has_recorded_case("ambiguous")
