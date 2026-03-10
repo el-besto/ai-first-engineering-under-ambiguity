@@ -4,12 +4,55 @@ dictionaryDefinitions: []
 dictionaries: []
 words:
   - agentic
+  - ainvoke
+  - anonymization
+  - asyncio
+  - charliermarsh
+  - checkpointing
+  - commitizen
+  - conftest
+  - contextvars
+  - dataclass
+  - dataclasses
+  - debugpy
   - demoability
+  - dotenv
+  - dspy
+  - evals
+  - fastapi
+  - genai
+  - Genalog
   - HITL
   - htmlcov
+  - inmem
+  - inspectable
+  - Langchain
+  - langgraph
+  - Langsmith
+  - memgraph
   - mypy
+  - NAIC
+  - negotiables
+  - Ollama
+  - pseudonymized
   - pycache
+  - Pydantic
+  - PYDEVD
+  - pyproject
   - pytest
+  - PYTHONDONTWRITEBYTECODE
+  - Pythonic
+  - PYTHONUNBUFFERED
+  - Recompiles
+  - rollups
+  - Streamlit
+  - Synthea
+  - tamasfe
+  - Tiltfile
+  - Touchpoint
+  - uvicorn
   - venv
+  - Xfrozen
+  - yzhang
 ignoreWords: []
 import: []

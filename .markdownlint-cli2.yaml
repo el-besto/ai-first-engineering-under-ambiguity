@@ -6,3 +6,8 @@ config:
   MD033: false # Allow inline html
   MD036: false
   MD060: false
+
+ignores:
+  - ".dockerignore"
+  - ".venv"
+  - ".scratch"
