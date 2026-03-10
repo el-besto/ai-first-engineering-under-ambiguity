@@ -66,7 +66,171 @@ These assumptions are sufficient for a first downstream translation, but they ar
 
 ---
 
-## Full Tree A File Tree
+## Minimal Tree A Steel-Thread File Tree
+
+This is the PoC build target for the current demo slice. It includes the minimal app slice plus the thin local runtime and deploy scaffold needed to demo, test, and evolve the flow without collapsing into the fuller Tree A expansion path. It stays aligned to the internal workbench, three representative cases, and the current implementation posture of fake-backed core collaborators with one live provider-backed model path for demo runs in [`steel-thread.md`](./steel-thread.md) and [`../../PLAN.md`](../../PLAN.md).
+
+LangGraph owns the core triage flow in this steel thread. Streamlit remains the primary demo UI, while FastAPI is a thin ingress over the same graph-owned path for realistic integration posture and faster test cycles. The provider-agnostic `PIIGuardrailAdapter` remains the fixed pre-model privacy seam before any external model call.
+
+```text
+bestow-poc/
+├─ README.md
+├─ Makefile
+├─ .env.example
+├─ pyproject.toml
+├─ langgraph.json
+├─ Dockerfile
+├─ Tiltfile
+├─ .vscode/
+│  ├─ extensions.json
+│  ├─ settings.json
+│  └─ launch.json
+│
+├─ app/
+│  ├─ entities/
+│  │  ├─ claim_intake_bundle.py
+│  │  ├─ policy_context.py
+│  │  ├─ document_facts.py
+│  │  ├─ pii_token_map.py
+│  │  ├─ completeness_assessment.py
+│  │  ├─ ambiguity_assessment.py
+│  │  ├─ reviewability_assessment.py
+│  │  ├─ triage_disposition.py
+│  │  ├─ confidence_band.py
+│  │  ├─ case_summary.py
+│  │  ├─ requirements_checklist.py
+│  │  ├─ follow_up_request.py
+│  │  ├─ routing_decision.py
+│  │  └─ hitl_review_task.py
+│  │
+│  ├─ use_cases/
+│  │  ├─ normalize_claim_bundle_uc.py
+│  │  ├─ verify_policy_context_uc.py
+│  │  ├─ extract_document_facts_uc.py
+│  │  ├─ tokenize_pii_for_model_uc.py
+│  │  ├─ assemble_model_context_uc.py
+│  │  ├─ assess_completeness_uc.py
+│  │  ├─ detect_ambiguity_uc.py
+│  │  ├─ assess_reviewability_uc.py
+│  │  ├─ decide_triage_disposition_uc.py
+│  │  ├─ generate_case_summary_uc.py
+│  │  ├─ generate_requirements_checklist_uc.py
+│  │  ├─ generate_follow_up_message_uc.py
+│  │  ├─ generate_routing_decision_uc.py
+│  │  └─ create_hitl_review_task_uc.py
+│  │
+│  ├─ interface_adapters/
+│  │  ├─ orchestrators/
+│  │  │  ├─ death_claim_triage_graph.py
+│  │  │  ├─ triage_graph_state.py
+│  │  │  └─ death_claim_triage_orchestrator.py
+│  │  ├─ presenters/
+│  │  │  └─ triage_result_presenter.py
+│  │  └─ mappers/
+│  │     ├─ workbench_request_mapper.py
+│  │     ├─ api_request_mapper.py
+│  │     └─ response_mapper.py
+│  │
+│  └─ adapters/
+│     ├─ policy_lookup/
+│     │  ├─ protocol.py
+│     │  └─ fake.py
+│     ├─ document_intake/
+│     │  ├─ protocol.py
+│     │  ├─ fake.py
+│     │  ├─ death_certificate_parser.py
+│     │  └─ beneficiary_record_parser.py
+│     ├─ model/
+│     │  ├─ protocol.py
+│     │  ├─ fake.py
+│     │  ├─ prompts/
+│     │  │  ├─ case_summary_prompt_template.py
+│     │  │  ├─ requirements_checklist_prompt_template.py
+│     │  │  ├─ follow_up_message_prompt_template.py
+│     │  │  └─ routing_rationale_prompt_template.py
+│     │  ├─ parsers/
+│     │  │  ├─ case_summary_parser.py
+│     │  │  ├─ checklist_parser.py
+│     │  │  ├─ follow_up_message_parser.py
+│     │  │  └─ routing_rationale_parser.py
+│     │  └─ providers/
+│     │     └─ openai_adapter.py
+│     ├─ safety/
+│     │  ├─ protocol.py
+│     │  ├─ fake.py
+│     │  ├─ pii_guardrail_adapter.py
+│     │  ├─ token_mapper.py
+│     │  ├─ claimant_message_policy.py
+│     │  ├─ routing_rationale_policy.py
+│     │  ├─ reviewability_policy.py
+│     │  └─ no_adjudication_validator.py
+│     └─ review_queue/
+│        ├─ protocol.py
+│        └─ fake.py
+│
+├─ drivers/
+│  ├─ api/
+│  │  ├─ main.py
+│  │  ├─ routes/
+│  │  │  ├─ health.py
+│  │  │  └─ triage.py
+│  │  ├─ schemas/
+│  │  │  ├─ death_claim_request.py
+│  │  │  └─ death_claim_response.py
+│  │  └─ dependencies.py
+│  └─ ui/
+│     └─ streamlit/
+│        ├─ app.py
+│        ├─ pages/
+│        │  └─ 1_triage_workbench.py
+│        ├─ widgets/
+│        │  ├─ bundle_viewer.py
+│        │  ├─ disposition_panel.py
+│        │  └─ token_audit_panel.py
+│        └─ dependencies.py
+│
+├─ deploy/
+│  └─ local/
+│     ├─ compose.yaml
+│     └─ .env.local.example
+│
+├─ tests/
+│  ├─ acceptance/
+│  │  ├─ conftest.py
+│  │  ├─ features/
+│  │  │  └─ test_death_claim_intake_triage.py
+│  │  └─ fixtures/
+│  │     └─ death_claim/
+│  │        ├─ case_a_complete/
+│  │        ├─ case_b_missing_information/
+│  │        └─ case_c_ambiguous/
+│  ├─ unit/
+│  │  └─ test_pii_guardrail_boundary.py
+│  └─ smoke/
+│     ├─ test_graph_smoke.py
+│     ├─ test_api.py
+│     └─ test_ui.py
+│
+└─ docs/
+   └─ death-claim-workflow.md
+```
+
+This minimal steel thread intentionally defers:
+
+- additional delivery surfaces such as worker, CLI, and MCP entrypoints
+- persistent storage, queueing, checkpoints, and other operational infrastructure beyond lightweight in-memory demo state
+- eval suites, dashboards, contract/event packages, and broader deploy or runbook assets beyond `deploy/local/`
+- broader hardening for retention, security, telemetry, and multi-provider production wiring
+- Kubernetes and wider environment expansion beyond the local compose-based stack
+
+`deploy/local/` is intentionally in scope now so the PoC can absorb a local SLM service later for the stretch goal without reshaping the repo again.
+
+Once the steel thread is proven, the fuller Tree A expansion path can grow into the following shape.
+
+## Full Tree A File Tree (Production Path)
+
+<details>
+<summary>Full Tree A File Tree (Production Path)</summary>
 
 ```text
 bestow-poc/
@@ -318,7 +482,7 @@ bestow-poc/
 │
 ├─ deploy/
 │  ├─ local/
-│  │  ├─ docker-compose.yaml
+│  │  ├─ compose.yaml
 │  │  └─ .env.local.example
 │  ├─ kubernetes/
 │  │  ├─ api.yaml
@@ -341,6 +505,8 @@ bestow-poc/
    ├─ pii-boundary.md
    └─ review-queue-handoff.md
 ```
+
+</details>
 
 ---
 

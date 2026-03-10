@@ -18,6 +18,8 @@ It is not the place where the stakeholder contract is created. It is the place w
 - Any missing-vs-ambiguous thresholds, claimant-tone specifics, or governance/data-science scorecard items that are not pinned down here should be read as intentional provisional assumptions from the defer register.
 - The exact confidence/reviewability rubric is also an intentional provisional assumption from the defer register.
 
+**Current build target note:** The current implementation target is the minimal steel thread in [`tree-a-code-map.md`](./tree-a-code-map.md): Streamlit as the primary demo UI, a thin FastAPI ingress, a LangGraph-owned triage flow, `deploy/local/compose.yaml`, and fixture-driven tests. Some later sections in this walkthrough still illustrate broader Tree A expansion paths beyond the current slice.
+
 ## Business Scenario
 
 A claims operations specialist loads a death-claim intake bundle into an internal workbench.
@@ -76,28 +78,31 @@ Expected outputs:
 
 ## End-To-End Flow
 
-| Step | What happens                                                               | Primary CA owner                        | Main files                                                                                          |
-|------|----------------------------------------------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------|
-| 1    | Intake workbench receives the claim bundle                                 | Drivers + mappers                       | `drivers/ui/streamlit/pages/1_triage_workbench.py`, `workbench_request_mapper.py`                   |
-| 2    | Policy/admin/document context is assembled                                 | Orchestrator + use cases + adapters     | `death_claim_triage_orchestrator.py`, `verify_policy_context_uc.py`, `extract_document_facts_uc.py` |
-| 3    | PII is tokenized before external model-facing analysis                     | Use cases + safety adapters             | `tokenize_pii_for_model_uc.py`, `pii_guardrail_adapter.py`                                          |
-| 4    | Completeness and ambiguity are assessed                                    | Use cases                               | `assess_completeness_uc.py`, `detect_ambiguity_uc.py`                                               |
-| 5    | Reviewability is assessed and summarized as a confidence band plus reasons | Use cases + safety policy               | `assess_reviewability_uc.py`, `reviewability_policy.py`                                             |
-| 6    | One bounded disposition is chosen using reasons + band                     | Use cases                               | `decide_triage_disposition_uc.py`                                                                   |
-| 7    | Disposition-specific artifacts are generated                               | Use cases + model/safety adapters       | `generate_case_summary_uc.py`, `generate_follow_up_message_uc.py`, `create_hitl_review_task_uc.py`  |
-| 8    | Results are validated, presented, and routed onward                        | Use cases + presenters + infrastructure | `validate_follow_up_output_uc.py`, `triage_result_presenter.py`, `review_queue_adapter.py`          |
+| Step | What happens                                                                                            | Primary CA owner                        | Main files                                                                                                        |
+|------|---------------------------------------------------------------------------------------------------------|-----------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| 1    | Intake workbench or thin API receives the claim bundle and forwards it into the graph-owned triage path | Drivers + mappers + orchestrators       | `drivers/ui/streamlit/pages/1_triage_workbench.py`, `drivers/api/routes/triage.py`, `death_claim_triage_graph.py` |
+| 2    | Policy/admin/document context is assembled                                                              | Orchestrator + use cases + adapters     | `death_claim_triage_orchestrator.py`, `verify_policy_context_uc.py`, `extract_document_facts_uc.py`               |
+| 3    | PII is tokenized before external model-facing analysis                                                  | Use cases + safety adapters             | `tokenize_pii_for_model_uc.py`, `pii_guardrail_adapter.py`                                                        |
+| 4    | Completeness and ambiguity are assessed                                                                 | Use cases                               | `assess_completeness_uc.py`, `detect_ambiguity_uc.py`                                                             |
+| 5    | Reviewability is assessed and summarized as a confidence band plus reasons                              | Use cases + safety policy               | `assess_reviewability_uc.py`, `reviewability_policy.py`                                                           |
+| 6    | One bounded disposition is chosen using reasons + band                                                  | Use cases                               | `decide_triage_disposition_uc.py`                                                                                 |
+| 7    | Disposition-specific artifacts are generated                                                            | Use cases + model/safety adapters       | `generate_case_summary_uc.py`, `generate_follow_up_message_uc.py`, `create_hitl_review_task_uc.py`                |
+| 8    | Results are validated, presented, and routed onward                                                     | Use cases + presenters + infrastructure | `validate_follow_up_output_uc.py`, `triage_result_presenter.py`, `review_queue_adapter.py`                        |
+
+For the current minimal steel thread, the primary build target is the workbench-plus-API ingress over the graph-owned triage path. Any later validation, review, or background-processing references in this walkthrough should be read as broader Tree A expansion examples unless they are explicitly called out as part of the current slice.
 
 ---
 
-## Step 1: Intake Workbench Receives The Claim Bundle
+## Step 1: Intake Workbench Or Thin API Receives The Claim Bundle
 
 ### What happens
 
-The internal workbench is the primary surface for this scenario. A claims operations specialist selects or uploads a representative intake bundle and asks the system to triage it.
+The internal workbench is the primary surface for this scenario. A claims operations specialist selects or uploads a representative intake bundle and asks the system to triage it. The same graph-owned path can also be reached through a thin internal API for programmatic invocation and faster test cycles.
 
 ### CA owner
 
 - `drivers/ui/`
+- `drivers/api/`
 - `app/interface_adapters/mappers/`
 - `app/interface_adapters/orchestrators/`
 
@@ -105,7 +110,12 @@ The internal workbench is the primary surface for this scenario. A claims operat
 
 - `drivers/ui/streamlit/pages/1_triage_workbench.py`
 - `drivers/ui/streamlit/widgets/bundle_viewer.py`
+- `drivers/api/routes/triage.py`
 - `app/interface_adapters/mappers/workbench_request_mapper.py`
+- `app/interface_adapters/mappers/api_request_mapper.py`
+- `app/interface_adapters/mappers/response_mapper.py`
+- `app/interface_adapters/orchestrators/triage_graph_state.py`
+- `app/interface_adapters/orchestrators/death_claim_triage_graph.py`
 - `app/interface_adapters/orchestrators/death_claim_triage_orchestrator.py`
 
 ```python
@@ -120,7 +130,8 @@ from app.interface_adapters.presenters.triage_result_presenter import (
 
 async def run_triage_workbench(selected_bundle, deps):
     request = WorkbenchRequestMapper().to_triage_request(selected_bundle)
-    result = await deps.death_claim_triage_orchestrator.handle(request)
+    graph_state = TriageGraphState.from_request(request)
+    result = await deps.death_claim_triage_graph.ainvoke(graph_state)
     return TriageResultPresenter().to_workbench_view(result)
 ```
 
@@ -133,6 +144,15 @@ class WorkbenchRequestMapper:
             operator_id=selected_bundle.operator_id,
             source="triage_workbench",
         )
+```
+
+```python
+# drivers/api/routes/triage.py
+async def post_triage(request_body, deps):
+    request = ApiRequestMapper().to_triage_request(request_body)
+    graph_state = TriageGraphState.from_request(request)
+    result = await deps.death_claim_triage_graph.ainvoke(graph_state)
+    return ResponseMapper().to_api_response(result)
 ```
 
 ---
@@ -533,14 +553,13 @@ Presenters should not:
 
 ### Internal workbench UI
 
-This is the primary demo surface:
+This is the primary demo surface in the current minimal steel thread:
 
 - `drivers/ui/streamlit/pages/1_triage_workbench.py`
-- `drivers/ui/streamlit/pages/3_review_queue.py`
 
 ### API / internal service boundary
 
-This exposes the same workflow to internal services or automation:
+This is also in the current minimal steel thread and exposes the same workflow to internal services or automation:
 
 - `drivers/api/routes/triage.py`
 - `drivers/api/schemas/death_claim_request.py`
@@ -548,13 +567,13 @@ This exposes the same workflow to internal services or automation:
 
 ### Worker / background processing
 
-This supports async review-queue and evaluation paths:
+This is a broader Tree A expansion path, not part of the current minimal steel thread. It can be added later for async review-queue and evaluation flows:
 
 - `drivers/worker/tasks/process_triage_run.py`
 - `drivers/worker/tasks/enqueue_review_task.py`
 - `drivers/worker/tasks/run_eval_suite.py`
 
-The business flow should remain the same across all three surfaces.
+The business flow should remain the same across all of these surfaces when they exist.
 
 ---
 
