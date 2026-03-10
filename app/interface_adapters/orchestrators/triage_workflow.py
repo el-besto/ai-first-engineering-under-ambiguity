@@ -9,7 +9,10 @@ from app.entities.routing_decision import RoutingDecision
 from app.entities.triage_result import TriageResult
 from app.use_cases.assess_completeness_uc import AssessCompletenessUseCase
 from app.use_cases.decide_triage_disposition_uc import DecideTriageDispositionUseCase
+from app.use_cases.detect_ambiguity_uc import DetectAmbiguityUseCase
 from app.use_cases.extract_document_facts_uc import ExtractDocumentFactsUseCase
+from app.use_cases.generate_follow_up_message_uc import GenerateFollowUpMessageUseCase
+from app.use_cases.generate_requirements_checklist_uc import GenerateRequirementsChecklistUseCase
 from app.use_cases.normalize_claim_bundle_uc import NormalizeClaimBundleUseCase
 from app.use_cases.tokenize_pii_for_model_uc import TokenizePIIForModelUseCase
 
@@ -30,7 +33,7 @@ class TriageOrchestrator:
         self.evaluation_recorder = evaluation_recorder
 
     async def assess(self, bundle: ClaimIntakeBundle) -> TriageResult:
-        if bundle.case_id in ("CASE_B_MISSING", "CASE_C_AMBIGUOUS"):
+        if bundle.case_id in ("CASE_C_AMBIGUOUS",):
             raise NotImplementedError("Triage orchestrator logic is not yet implemented.")
 
         normalized = NormalizeClaimBundleUseCase().execute(bundle)
@@ -39,7 +42,20 @@ class TriageOrchestrator:
         TokenizePIIForModelUseCase(self.pii_guardrail).execute("dummy_model_context")
 
         is_complete = AssessCompletenessUseCase().execute(facts)
-        disposition, confidence = DecideTriageDispositionUseCase().execute(is_complete)
+        is_ambiguous = DetectAmbiguityUseCase().execute(facts)
+        disposition, confidence = DecideTriageDispositionUseCase().execute(
+            is_complete, is_ambiguous
+        )
+
+        checklist = None
+        follow_up = None
+        quality_markers = []
+        reviewability_flags = []
+
+        if disposition == "request_more_information":
+            checklist = GenerateRequirementsChecklistUseCase().execute(facts)
+            follow_up, quality_markers = GenerateFollowUpMessageUseCase().execute(checklist)
+            reviewability_flags = ["Missing required documents"]
 
         case_type = "complete" if is_complete else "missing_information"
         self.evaluation_recorder.record_case(case_type)
@@ -47,11 +63,17 @@ class TriageOrchestrator:
         return TriageResult(
             disposition=disposition,
             confidence_band=confidence,
-            case_summary=CaseSummary(summary_text="Claim is complete."),
+            case_summary=CaseSummary(summary_text="Claim is complete.") if is_complete else None,
             routing_decision=RoutingDecision(
                 target_queue="claims_processing",
                 rationale="Ready to proceed. No adjudication made.",
-            ),
+            )
+            if is_complete
+            else None,
+            requirements_checklist=checklist,
+            follow_up_message=follow_up,
+            follow_up_message_quality_markers=quality_markers,
+            reviewability_flags=reviewability_flags,
             escalation_reasons=[],
             hitl_review_task=None,
         )
