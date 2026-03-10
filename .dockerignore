@@ -1,0 +1,18 @@
+# Ignore everything by default
+**
+
+# Opt-in explicitly required application files and directories
+!pyproject.toml
+!uv.lock
+!README.md
+!app/
+!drivers/
+
+# Re-exclude compiled artifacts and caches that live inside the opt-in directories
+**/.pytest_cache/
+**/.ruff_cache/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.DS_Store
