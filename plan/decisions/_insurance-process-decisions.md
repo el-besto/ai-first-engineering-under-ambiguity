@@ -13,7 +13,7 @@ This document captures the key decisions for selecting the insurance process to 
 **Related Documents:**
 
 - [Insurance process candidates](../../docs/references/insurance-processes.md)
-- [PLAN.md](../../PLAN.md)
+- [PROJECT_PLAN.md](../../PROJECT_PLAN.md)
 
 **Update:** Initial candidate research completed and narrowed to three serious finalists. A pre-existing underwriting workbench demo introduced novelty risk for underwriting-centered options, so differentiation became an explicit selection criterion. Decision 1 and Decision 2 are now resolved.
 
@@ -146,7 +146,7 @@ Time is limited, and I want to demonstrate how the Lean-Clean methodology can be
 - ✅ Shortlist creation
 - ✅ Resolved Decision 1: process selection
 - ✅ Resolved Decision 2: scope boundary
-- ✅ Updated [PLAN.md](../../PLAN.md) to reflect the selected process and scope
+- ✅ Updated [PROJECT_PLAN.md](../../PROJECT_PLAN.md) to reflect the selected process and scope
 - ✅ Defined the target user, success criteria, steel-thread acceptance criteria, and architecture outline in [../death-claim/steel-thread.md](../death-claim/steel-thread.md)
 - ✅ Tightened [../death-claim/synthetic-data-plan.md](../death-claim/synthetic-data-plan.md) around the selected workflow
 
@@ -156,7 +156,7 @@ Time is limited, and I want to demonstrate how the Lean-Clean methodology can be
 
 **After Decisions Resolved:**
 
-1. ✅ Update `PLAN.md` checklist if needed
+1. ✅ Update `PROJECT_PLAN.md` checklist if needed
 2. ✅ Define the target user, success criteria, and steel-thread acceptance criteria
 3. ✅ Shape the prototype architecture around the selected process and scope
 4. ✅ Prepare a concise rationale that can be reused in the demo narrative
@@ -176,4 +176,4 @@ Time is limited, and I want to demonstrate how the Lean-Clean methodology can be
 **Related Documents:**
 
 - [Insurance process candidates](../../docs/references/insurance-processes.md)
-- [PLAN.md](../../PLAN.md)
+- [PROJECT_PLAN.md](../../PROJECT_PLAN.md)

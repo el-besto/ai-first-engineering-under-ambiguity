@@ -68,7 +68,7 @@ These assumptions are sufficient for a first downstream translation, but they ar
 
 ## Minimal Tree A Steel-Thread File Tree
 
-This is the PoC build target for the current demo slice. It includes the minimal app slice plus the thin local runtime and deploy scaffold needed to demo, test, and evolve the flow without collapsing into the fuller Tree A expansion path. It stays aligned to the internal workbench, three representative cases, and the current implementation posture of fake-backed core collaborators with one live provider-backed model path for demo runs in [`steel-thread.md`](./steel-thread.md) and [`../../PLAN.md`](../../PLAN.md).
+This is the PoC build target for the current demo slice. It includes the minimal app slice plus the thin local runtime and deploy scaffold needed to demo, test, and evolve the flow without collapsing into the fuller Tree A expansion path. It stays aligned to the internal workbench, three representative cases, and the current implementation posture of fake-backed core collaborators with one live provider-backed model path for demo runs in [`steel-thread.md`](./steel-thread.md) and [`../../PROJECT_PLAN.md`](../../PROJECT_PLAN.md).
 
 LangGraph owns the core triage flow in this steel thread. Streamlit remains the primary demo UI, while FastAPI is a thin ingress over the same graph-owned path for realistic integration posture and faster test cycles. The provider-agnostic `PIIGuardrailAdapter` remains the fixed pre-model privacy seam before any external model call.
 

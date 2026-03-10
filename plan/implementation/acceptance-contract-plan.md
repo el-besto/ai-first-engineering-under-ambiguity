@@ -31,6 +31,40 @@ Chosen defaults:
 
 The acceptance test should be derived from the workshop-spec sketch, not invented from the code map.
 
+## Fixture Bundle Expectations
+
+Each representative case bundle should define:
+
+- input artifacts present in the bundle
+- expected disposition
+- expected artifact outputs
+- expected `confidence_band`
+- expected `reviewability_flags` or `escalation_reasons`
+- expected summary of why the case took that path
+- expected privacy assertions or tokenization outcomes
+
+Fixture authoring rules:
+
+- keep fixtures tiny, hand-authored, readable, and deterministic
+- use the fixtures as the canonical acceptance fixtures immediately
+- do not build a synthetic-data generation pipeline before the thin slice is stable
+
+Representative artifact set:
+
+- common first-pass artifacts:
+  - `CUSTOMER_REQUEST`
+  - `POLICY_SUMMARY`
+  - `CLAIM_INTAKE_FORM`
+- ambiguous or HITL additions:
+  - `DEATH_CERTIFICATE`
+  - `BENEFICIARY_RECORD`
+
+Fixture reuse rules:
+
+- the same canonical fixtures should seed privacy assertions for tokenization behavior
+- the same canonical fixtures may back a minimal graph smoke path
+- if the stretch local-SLM path is attempted, reuse this fixture set before introducing broader eval inputs
+
 ## Top-Level Test Boundary
 
 The runnable acceptance test should target:

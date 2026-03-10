@@ -1,4 +1,4 @@
-# PLAN
+# Project Plan
 
 ## My understanding of the assignment
 
@@ -52,7 +52,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - [x] Define a target user, problem statement, and success criteria in [plan/death-claim/steel-thread.md](plan/death-claim/steel-thread.md)
 - [x] Define the [synthetic data strategy and fixture sources](plan/death-claim/synthetic-data-plan.md) for the chosen workflow
 - [ ] Shape the prototype as a minimal Lean-Clean steel thread with only the layers, drivers, and adapters needed for the end-to-end slice
-  - Current implementation-control docs: [plan/implementation/acceptance-contract-plan.md](plan/implementation/acceptance-contract-plan.md), [plan/implementation/README.md](plan/implementation/README.md)
+  - Current implementation-control docs: [plan/implementation/repo-bootstrap-plan.md](plan/implementation/repo-bootstrap-plan.md), [plan/implementation/tooling-validation-plan.md](plan/implementation/tooling-validation-plan.md), [plan/implementation/acceptance-contract-plan.md](plan/implementation/acceptance-contract-plan.md), [plan/implementation/README.md](plan/implementation/README.md)
 - [ ] Add supporting tooling and local infrastructure only where it improves development flow, demoability, or technical credibility
 - [ ] Build a thin-slice prototype that clearly shows the improved experience or system behavior
 - [ ] Prepare a concise demo narrative that ties together research, requirements, prototype, and technical approach
