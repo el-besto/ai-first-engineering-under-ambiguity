@@ -6,7 +6,7 @@
 - Scope: Intake + completeness triage
 - Primary user: Claims operations specialist
 - Secondary stakeholders: Claimant or beneficiary, downstream human reviewer
-- Interaction model: Internal workbench with generated external follow-up outputs
+- Interaction model: Internal workbench as the primary demo surface, with generated external follow-up outputs and a thin internal API over the same graph-owned flow
 - Upstream workflow context: [process-understanding.md](process-understanding.md)
 
 ## Problem Statement
@@ -49,9 +49,17 @@ Claims operations teams need a fast, clear way to triage new death-claim submiss
 
 ### Streamlit surface
 
+This remains the primary demo surface for the PoC.
+
 - Single internal workbench page
 - Three tabs, one per representative case
 - Panels for intake summary, completeness assessment, generated artifacts, and disposition
+
+### Thin API surface
+
+- FastAPI `GET /health`
+- FastAPI `POST /triage`
+- The API and the Streamlit workbench call the same LangGraph-owned triage flow
 
 ### LangGraph flow
 

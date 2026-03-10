@@ -9,7 +9,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - Process: Death claim intake + next-step orchestration
 - Scope: Intake + completeness triage
 - Primary user: Internal claims operations specialist
-- Interaction model: Internal workbench with generated claimant or beneficiary follow-up outputs
+- Interaction model: Internal workbench as the primary demo surface, with generated claimant or beneficiary follow-up outputs and a thin internal API over the same graph-owned flow
 - Process understanding artifact: [plan/death-claim/process-understanding.md](plan/death-claim/process-understanding.md)
 - Detailed planning artifact: [plan/death-claim/steel-thread.md](plan/death-claim/steel-thread.md)
 
@@ -62,7 +62,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - The implementation will start from a minimal Lean-Clean steel-thread structure rather than a generic application scaffold.
 - `uv`, FastAPI, Ruff, Pyright, Docker, Tilt, and VS Code are baseline tooling choices, but the exact project shape should remain driven by the chosen PoC slice.
 - A broader platform-level structure is optional and should only be introduced if it clearly strengthens this PoC.
-- The current working shape is an internal claims-ops workbench with three representative case tabs and generated external follow-up artifacts.
+- The current working shape is a graph-owned triage flow surfaced primarily through an internal claims-ops workbench with three representative case tabs, plus a thin internal API shell and generated external follow-up artifacts.
 - Clear reasoning, architecture, and technical execution likely matter more than polish.
 - The demo should stay tightly scoped so it fits within 5 minutes.
 - The response window is 3-5 business days.
