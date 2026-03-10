@@ -49,3 +49,8 @@ venvPath = "."
 venv = ".venv"
 typeCheckingMode = "standard"
 strictParameterNoneValue = true
+
+[tool.pytest.ini_options]
+markers = [
+    "feature: mark a test as an acceptance feature",
+]
