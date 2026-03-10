@@ -10,16 +10,16 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - Scope: Intake + completeness triage
 - Primary user: Internal claims operations specialist
 - Interaction model: Internal workbench with generated claimant or beneficiary follow-up outputs
-- Process understanding artifact: [plan/death-claim-process-understanding.md](plan/death-claim-process-understanding.md)
-- Detailed planning artifact: [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
+- Process understanding artifact: [plan/death-claim/process-understanding.md](plan/death-claim/process-understanding.md)
+- Detailed planning artifact: [plan/death-claim/steel-thread.md](plan/death-claim/steel-thread.md)
 
 ## Progress checklist
 
 - [x] Choose the insurance process or system to focus on
-- [x] Research the [current-state process, users, pain points, and constraints](plan/death-claim-process-understanding.md)
+- [x] Research the [current-state process, users, pain points, and constraints](plan/death-claim/process-understanding.md)
 - [x] Identify a meaningful improvement opportunity
-- [x] Define target user, requirements, assumptions, and success criteria in [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
-- [x] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
+- [x] Define target user, requirements, assumptions, and success criteria in [plan/death-claim/steel-thread.md](plan/death-claim/steel-thread.md)
+- [x] Define the [synthetic data strategy and fixture sources](plan/death-claim/synthetic-data-plan.md) for the chosen workflow
 - [ ] Establish the minimal Lean-Clean steel-thread structure for the PoC, using `uv`, FastAPI, Ruff, Pyright, Docker, Tilt, and VS Code configuration where they support the chosen slice
 - [ ] Build a thin-slice prototype that demonstrates the improvement
 - [ ] Prepare demo notes covering research, ideation, prototype, and LLM/cloud usage
@@ -48,9 +48,9 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 ## Practical approach
 
 - [x] Focus on death claim intake + next-step orchestration as the chosen life-insurance workflow
-- [x] Research the [current-state process, pain points, and operational constraints](plan/death-claim-process-understanding.md)
-- [x] Define a target user, problem statement, and success criteria in [plan/death-claim-steel-thread.md](plan/death-claim-steel-thread.md)
-- [x] Define the [synthetic data strategy and fixture sources](plan/synthetic-data-plan.md) for the chosen workflow
+- [x] Research the [current-state process, pain points, and operational constraints](plan/death-claim/process-understanding.md)
+- [x] Define a target user, problem statement, and success criteria in [plan/death-claim/steel-thread.md](plan/death-claim/steel-thread.md)
+- [x] Define the [synthetic data strategy and fixture sources](plan/death-claim/synthetic-data-plan.md) for the chosen workflow
 - [ ] Shape the prototype as a minimal Lean-Clean steel thread with only the layers, drivers, and adapters needed for the end-to-end slice
 - [ ] Add supporting tooling and local infrastructure only where it improves development flow, demoability, or technical credibility
 - [ ] Build a thin-slice prototype that clearly shows the improved experience or system behavior

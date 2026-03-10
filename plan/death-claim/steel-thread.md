@@ -7,7 +7,7 @@
 - Primary user: Claims operations specialist
 - Secondary stakeholders: Claimant or beneficiary, downstream human reviewer
 - Interaction model: Internal workbench with generated external follow-up outputs
-- Upstream workflow context: [death-claim-process-understanding.md](death-claim-process-understanding.md)
+- Upstream workflow context: [process-understanding.md](process-understanding.md)
 
 ## Problem Statement
 
@@ -76,10 +76,10 @@ Claims operations teams need a fast, clear way to triage new death-claim submiss
 
 This PoC is using the Lean-Clean Tree A / CA-preserving steel-thread shape as its implementation-planning baseline.
 
-- Upstream scenario contract: [death-claim-workshop-spec.md](death-claim-workshop-spec.md)
-- Deferred hardening register: [death-claim-deferred-hardening.md](death-claim-deferred-hardening.md)
-- Tree A code map: [death-claim-tree-a-code-map.md](death-claim-tree-a-code-map.md)
-- Tree A worked example: [death-claim-tree-a-worked-example.md](death-claim-tree-a-worked-example.md)
+- Upstream scenario contract: [workshop-spec.md](workshop-spec.md)
+- Deferred hardening register: [deferred-hardening.md](deferred-hardening.md)
+- Tree A code map: [tree-a-code-map.md](tree-a-code-map.md)
+- Tree A worked example: [tree-a-worked-example.md](tree-a-worked-example.md)
 
 ## Demo Rationale
 

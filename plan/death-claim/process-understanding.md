@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document captures the current-state process understanding and the PoC-improved flow for the selected death-claim intake slice. Its goal is to make the research claim in [PLAN.md](../PLAN.md) explicit and reusable in both implementation planning and the final demo narrative.
+This document captures the current-state process understanding and the PoC-improved flow for the selected death-claim intake slice. Its goal is to make the research claim in [PLAN.md](../../PLAN.md) explicit and reusable in both implementation planning and the final demo narrative.
 
 ## Research Basis and Assumptions
 

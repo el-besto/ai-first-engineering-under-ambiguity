@@ -27,18 +27,18 @@ Only after one scenario here is stable should it be translated into:
 
 This draft is grounded in:
 
-1. [death-claim-process-understanding.md](death-claim-process-understanding.md)
-2. [death-claim-steel-thread.md](death-claim-steel-thread.md)
-3. [pii-anonymization-w-dspy-hashing.md](pii-anonymization-w-dspy-hashing.md)
+1. [process-understanding.md](process-understanding.md)
+2. [steel-thread.md](steel-thread.md)
+3. [../pii-anonymization-w-dspy-hashing.md](../pii-anonymization-w-dspy-hashing.md)
 
 This document is intentionally **higher-level** than:
 
-- [`death-claim-tree-a-code-map.md`](./death-claim-tree-a-code-map.md)
-- [`death-claim-tree-a-worked-example.md`](./death-claim-tree-a-worked-example.md)
+- [`tree-a-code-map.md`](./tree-a-code-map.md)
+- [`tree-a-worked-example.md`](./tree-a-worked-example.md)
 
 Those are downstream design artifacts. This file comes first.
 
-**Deferred hardening register:** [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)
+**Deferred hardening register:** [`deferred-hardening.md`](./deferred-hardening.md)
 
 - Use the defer register to track known unknowns that are intentionally deferred while this scenario is translated downstream.
 
@@ -323,7 +323,7 @@ class TestDeathClaimIntakeWorkshopSpec:
 
 ## Open Questions For The Next Workshop Loop
 
-The highest-priority intentional deferments are tracked in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md).
+The highest-priority intentional deferments are tracked in [`deferred-hardening.md`](./deferred-hardening.md).
 
 - What exact fields count as prohibited raw PII for external model-facing context in this scenario?
 - What exact conditions separate `missing information` from `ambiguous / HITL`?
@@ -360,8 +360,8 @@ When this scenario is mature enough, the next design step is **not** to add more
 
 The next step is to translate the scenario into downstream artifacts such as:
 
-- [`death-claim-steel-thread.md`](./death-claim-steel-thread.md)
-- [`death-claim-tree-a-code-map.md`](./death-claim-tree-a-code-map.md)
-- [`death-claim-tree-a-worked-example.md`](./death-claim-tree-a-worked-example.md)
+- [`steel-thread.md`](./steel-thread.md)
+- [`tree-a-code-map.md`](./tree-a-code-map.md)
+- [`tree-a-worked-example.md`](./tree-a-worked-example.md)
 
-That is where file placement, vertical slices, and implementation tradeoffs should be made visible, while respecting the intentional deferments tracked in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md).
+That is where file placement, vertical slices, and implementation tradeoffs should be made visible, while respecting the intentional deferments tracked in [`deferred-hardening.md`](./deferred-hardening.md).

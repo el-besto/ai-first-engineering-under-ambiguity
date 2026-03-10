@@ -6,9 +6,9 @@
 
 **Status:** Active PoC planning companion
 
-This document is a **PoC planning companion** for the selected Tree A shape. It shows how the death-claim triage scenario from [`death-claim-workshop-spec.md`](./death-claim-workshop-spec.md) could map into a CA-preserving structure without turning the workshop contract itself into implementation detail.
+This document is a **PoC planning companion** for the selected Tree A shape. It shows how the death-claim triage scenario from [`workshop-spec.md`](./workshop-spec.md) could map into a CA-preserving structure without turning the workshop contract itself into implementation detail.
 
-**Deferred hardening register:** [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)
+**Deferred hardening register:** [`deferred-hardening.md`](./deferred-hardening.md)
 
 - The exact missing-vs-ambiguous boundary is a provisional assumption.
 - The exact tone rubric for claimant-facing follow-up is a provisional assumption.
@@ -45,12 +45,12 @@ For this scenario, those engineering layers mean:
 
 These assumptions are sufficient for a first downstream translation, but they are not yet hardened PoC design guidance.
 
-| Area                       | Provisional assumption                                                                                                                                                                                                                                                                              |
-|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Missing vs ambiguous       | Treat `missing information` as a straightforward gap in required intake artifacts or fields. Treat `ambiguous / HITL` as conflicting, uncertain, or materially review-sensitive context. Exact threshold is deferred in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md). |
-| Follow-up tone             | Follow-up language should be empathetic, operationally appropriate, and explicitly non-adjudicative. Exact tone rubric is deferred in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md).                                                                                   |
-| Review metrics             | The system should preserve inspectability, auditability, and disposition traceability. Exact governance/data-science scorecard is deferred in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md).                                                                           |
-| Confidence / reviewability | Use `High / Medium / Low` confidence bands plus explicit `reviewability_flags` and `escalation_reasons`. Exact rubric is deferred in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md).                                                                                    |
+| Area                       | Provisional assumption                                                                                                                                                                                                                                                      |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Missing vs ambiguous       | Treat `missing information` as a straightforward gap in required intake artifacts or fields. Treat `ambiguous / HITL` as conflicting, uncertain, or materially review-sensitive context. Exact threshold is deferred in [`deferred-hardening.md`](./deferred-hardening.md). |
+| Follow-up tone             | Follow-up language should be empathetic, operationally appropriate, and explicitly non-adjudicative. Exact tone rubric is deferred in [`deferred-hardening.md`](./deferred-hardening.md).                                                                                   |
+| Review metrics             | The system should preserve inspectability, auditability, and disposition traceability. Exact governance/data-science scorecard is deferred in [`deferred-hardening.md`](./deferred-hardening.md).                                                                           |
+| Confidence / reviewability | Use `High / Medium / Low` confidence bands plus explicit `reviewability_flags` and `escalation_reasons`. Exact rubric is deferred in [`deferred-hardening.md`](./deferred-hardening.md).                                                                                    |
 
 ---
 
@@ -466,7 +466,7 @@ Post-model validation is where the artifact itself is checked:
 - rationale must remain non-adjudicative
 - routing explanation must stay bounded to triage and next-step orchestration
 
-The exact tone rubric is a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact tone rubric is a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
 ### Missing-vs-ambiguous branching
 
@@ -477,7 +477,7 @@ High-level provisional rule:
 - `missing information` means the bundle is incomplete in a way that can be requested directly
 - `ambiguous / HITL` means the bundle has unresolved uncertainty, conflicting context, or material review sensitivity
 
-The exact threshold is a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact threshold is a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
 ### Confidence / reviewability
 
@@ -502,7 +502,7 @@ High-level provisional rule:
 - `Medium` means bounded but still requires a follow-up loop
 - `Low` means the case should escalate to human review
 
-The exact rubric is a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact rubric is a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
 ---
 
@@ -578,9 +578,9 @@ Primary files:
 - `app/adapters/evals/`
 - `app/infrastructure/repositories/reviews/`
 
-The exact review/demo scorecard remains a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact review/demo scorecard remains a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
-The exact reviewability rubric also remains a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact reviewability rubric also remains a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
 ---
 

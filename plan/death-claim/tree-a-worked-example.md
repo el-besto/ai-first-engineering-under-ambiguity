@@ -8,12 +8,12 @@
 
 This document is a **post-workshop, downstream walkthrough**. It derives from:
 
-- [`death-claim-workshop-spec.md`](./death-claim-workshop-spec.md)
-- [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)
+- [`workshop-spec.md`](./workshop-spec.md)
+- [`deferred-hardening.md`](./deferred-hardening.md)
 
 It is not the place where the stakeholder contract is created. It is the place where the current workshop scenario is translated into a Tree A vertical-slice example.
 
-**Deferred hardening register:** [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)
+**Deferred hardening register:** [`deferred-hardening.md`](./deferred-hardening.md)
 
 - Any missing-vs-ambiguous thresholds, claimant-tone specifics, or governance/data-science scorecard items that are not pinned down here should be read as intentional provisional assumptions from the defer register.
 - The exact confidence/reviewability rubric is also an intentional provisional assumption from the defer register.
@@ -248,7 +248,7 @@ The system evaluates the normalized bundle and safe context to decide whether th
 
 ### Important note
 
-The exact threshold that separates `missing information` from `ambiguous / HITL` is a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact threshold that separates `missing information` from `ambiguous / HITL` is a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
 For this walkthrough, the assumption is:
 
@@ -308,7 +308,7 @@ class DecideTriageDispositionUC:
 
 ### Important note
 
-The exact reviewability rubric is a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**.
+The exact reviewability rubric is a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**.
 
 For this walkthrough:
 
@@ -403,7 +403,7 @@ These artifacts support the proceed path and explain why the bundle is ready for
 
 These artifacts support the missing-information path.
 
-The exact tone rubric for `FOLLOW_UP_MESSAGE` is a **provisional assumption from [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md)**. For now, the expectation is:
+The exact tone rubric for `FOLLOW_UP_MESSAGE` is a **provisional assumption from [`deferred-hardening.md`](./deferred-hardening.md)**. For now, the expectation is:
 
 - empathetic
 - operationally appropriate
@@ -568,6 +568,6 @@ In Tree A, the death-claim triage scenario fits if:
 - reviewability is visible as a `confidence_band` plus explicit reasons
 - claimant-facing follow-up remains bounded and non-adjudicative
 - review-queue handoff remains explicit
-- the unresolved details in [`death-claim-deferred-hardening.md`](./death-claim-deferred-hardening.md) are treated as intentional hardening work, not as if they were already settled
+- the unresolved details in [`deferred-hardening.md`](./deferred-hardening.md) are treated as intentional hardening work, not as if they were already settled
 
 That is the core claim this downstream example is intended to test.
