@@ -50,6 +50,16 @@ Optional stretch validation:
 - run at least one representative case through the DSPy plus local-SLM guardrail path
 - confirm the same downstream graph still works with tokenized entities from that path
 
+## Ordered Validation Steps
+
+1. Start with the deterministic acceptance path and confirm all three representative cases still satisfy the bounded triage contract.
+2. Validate the shared graph-owned path before checking individual surfaces so UI and API issues do not hide workflow regressions.
+3. Run API smoke coverage for the thin FastAPI shell and UI smoke coverage for the Streamlit workbench.
+4. Verify the privacy boundary explicitly by showing that raw PII never crosses the external model boundary and that stable safe tokens are used before external analysis.
+5. Run the minimum live-model validation pass and confirm tokenization still leaves enough referential meaning for useful downstream outputs.
+6. Run the local runtime checks for debugger attach, Studio inspection, `docker compose`, Tilt, and one late `langgraph up` pass.
+7. Attempt the DSPy plus local-SLM stretch validation only if the core validation path is already stable.
+
 ## Validation Done Criteria
 
 Validation is complete when:
@@ -66,6 +76,28 @@ This document does not own:
 - demo rehearsal and timing notes
 - broader production hardening beyond thin local validation
 - fixture creation beyond the validation expectations already owned by the acceptance contract
+
+## Verification
+
+Verify the validation pass with evidence that:
+
+- all three representative cases pass through the acceptance boundary
+- both Streamlit and FastAPI exercise the same graph-owned path
+- `GET /health` and the thin `POST /triage` path behave as expected
+- the privacy boundary is inspectable and raw PII is excluded from external model-facing input
+- live-model validation succeeded for each representative case, or for each disposition if time compressed
+- local runtime checks completed at least once for debugger attach, Studio, `docker compose`, Tilt, and `langgraph up`
+
+## Completion Report
+
+Report the following at the end of a validation pass:
+
+- checks run and their results
+- which representative cases and dispositions were validated live
+- evidence used to confirm the privacy boundary
+- any failures, flaky behaviors, or demo-credibility risks that remain
+- any skipped checks and why they were skipped
+- whether the slice is ready to move on or needs another stabilization pass
 
 ## Assumptions
 

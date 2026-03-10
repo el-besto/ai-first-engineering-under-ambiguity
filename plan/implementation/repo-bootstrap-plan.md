@@ -39,6 +39,16 @@ Add VS Code workspace bootstrap:
 - `.vscode/settings.json`
 - `.vscode/launch.json`
 
+## Out Of Scope
+
+This document does not own:
+
+- fixture creation or acceptance-case truth
+- workflow behavior, routing logic, or graph-step implementation
+- live external LLM integration beyond the explicit privacy seam contract
+- broader platform structure, persistence, workers, or non-local deployment work
+- demo rehearsal, presentation assets, or broader validation posture
+
 ## Local Runtime Defaults
 
 LangGraph local development defaults:
@@ -74,6 +84,17 @@ Planned implementations behind the same contract:
 
 The local SLM path is not part of the critical path for the first working demo.
 
+## Ordered Implementation Steps
+
+1. Inspect the current repo first and extend existing files or structure instead of recreating them.
+2. Establish the Python project baseline with `pyproject.toml`, `uv`, Ruff, Pyright, `.env.example`, and `langgraph.json`.
+3. Add only the minimum app, driver, and test folder scaffold needed for the current death-claim slice.
+4. Add the `Makefile` targets that support install, local graph development, debugging, API/UI shells, test execution, and local runtime helpers.
+5. Add thin Streamlit and FastAPI shells, keeping Streamlit as the primary demo UI and FastAPI as a thin ingress over the same future graph-owned path.
+6. Add the thinnest viable local runtime and deploy scaffold with a single app `Dockerfile`, `deploy/local/compose.yaml`, and `Tiltfile`.
+7. Add the VS Code workspace bootstrap and ensure the debugger path lines up with `langgraph dev --debug-port 5678`.
+8. Define the explicit `PIIGuardrailAdapter` seam or equivalent contract as bootstrap structure only, without implementing the broader workflow or live-model path in this pass.
+
 ## Tooling Defaults
 
 Recommended VS Code extensions:
@@ -105,6 +126,29 @@ Bootstrap is complete when:
 - the LangGraph Studio development loop can start locally
 - the VS Code debugger attach path is ready for use
 - the privacy seam is explicit before any live external LLM integration
+
+## Verification
+
+Verify the bootstrap pass with the smallest practical checks:
+
+- confirm the new baseline files and folders exist and are internally consistent
+- run the repo formatting or lint checks that apply to the files you changed
+- run `make install` or the equivalent bootstrap install path that lands in the repo
+- start the local LangGraph development loop and confirm the baseline config is wired
+- start the FastAPI shell and Streamlit shell and confirm both boot as thin stubs
+- confirm the debugger configuration targets `langgraph dev --debug-port 5678`
+- confirm the privacy seam is explicit in code structure before any live external model wiring exists
+
+## Completion Report
+
+Report the following at the end of a bootstrap pass:
+
+- changed files
+- which bootstrap scope items were completed
+- checks run and their results
+- any bootstrap gaps intentionally deferred
+- any existing repo structure you reused instead of recreating
+- anything that still blocks the acceptance-contract implementation pass
 
 ## Assumptions
 
