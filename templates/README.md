@@ -5,13 +5,18 @@ This directory holds **reusable templates**, not live working documents.
 Use it when you want to:
 
 - start a new implementation-control document from a known shape
+- start a new decision record from a known shape
 - produce reviewer-friendly reports after an autonomous or semi-autonomous implementation pass
 - keep repeated scaffolding out of `plan/`
 
 Directory split:
 
+- `templates/decision/`
+  - reusable decision-document templates
 - `templates/implementation/`
   - reusable implementation templates
+- `plan/decisions/`
+  - live filled-in decision records for this repo
 - `plan/death-claim/`
   - source-of-truth scenario and design inputs
 - `plan/implementation/`
