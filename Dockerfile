@@ -10,5 +10,6 @@ COPY pyproject.toml .
 # No uv.lock or full install yet since we are in bootstrap phase
 # This is a minimal, single-app container placeholder
 COPY . .
-
-CMD ["uv", "run", "uvicorn", "drivers.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD is explicitly overridden in docker-compose.yaml to run
+# `uvicorn ...` for the API and `streamlit ...` for the UI
+# using this single app footprint.

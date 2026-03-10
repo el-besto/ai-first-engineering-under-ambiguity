@@ -64,6 +64,9 @@ test: ## Execute the current test suite via pytest
 tilt: ## Start Tilt for local infrastructure deployment
 	tilt up
 
+tilt-down: ## Tear down Tilt infrastructure deployment
+	tilt down
+
 prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binaries
 	bash tools/prepare-rancher-desktop.sh
 

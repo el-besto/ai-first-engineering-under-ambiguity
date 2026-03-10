@@ -1,10 +1,23 @@
 # Minimal local runtime scaffold
 services:
-  app:
+  api:
+    image: bestow-poc-app
     build:
       context: ../../
       dockerfile: Dockerfile
+    command: ["uv", "run", "uvicorn", "drivers.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     ports:
       - "8000:8000"
+    environment:
+      - LANGSMITH_TRACING=false
+
+  ui:
+    image: bestow-poc-app
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    command: ["uv", "run", "streamlit", "run", "drivers/ui/streamlit/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    ports:
+      - "8501:8501"
     environment:
       - LANGSMITH_TRACING=false

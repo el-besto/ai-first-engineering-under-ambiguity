@@ -6,8 +6,7 @@ local_resource(
 
 docker_build('bestow-poc-app', '.', dockerfile='Dockerfile')
 
-k8s_yaml(
-  local('docker compose -f deploy/local/compose.yaml config')
-)
+k8s_yaml('deploy/local/k8s.yaml')
 
-k8s_resource('app', port_forwards=['8000:8000'])
+k8s_resource('api', port_forwards=['8000:8000'])
+k8s_resource('ui', port_forwards=['8501:8501'])
