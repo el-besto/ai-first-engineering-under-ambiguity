@@ -11,7 +11,7 @@ This template is for the decision-discovery phase that happens before implementa
 Typical flow:
 
 ```text
-You: describe a task or a repo-wide change
+User: describes a task or a repo-wide change
   ↓
 Agent: analyzes the task and current repo docs
   ↓
@@ -19,7 +19,7 @@ Agent: creates a decision record using this template
   ↓
 Agent: presents options and trade-offs
   ↓
-You: choose options and provide rationale
+User: chooses options and provides rationale
   ↓
 Agent: updates the decision record with resolved outcomes
   ↓
@@ -49,7 +49,7 @@ For each decision, include:
 - a clear statement of what needs to be decided
 - why it matters
 - relevant repo or research context
-- 2-3 viable options with trade-offs
+- 2+ viable options with trade-offs (A, B, C, D, etc.) - Only restrict to 2 when there are two viable paths alone.
 - the agent's recommendation
 - the user's decision
 - the rationale for the decision
@@ -105,12 +105,12 @@ The template provides:
 Each decision includes:
 
 - title with optional priority marker
-- "What I did"
+- "Agent Analysis"
 - "Context"
-- "Question for you"
+- "Decision Required"
 - options with pros and cons
-- recommendation and reasoning
-- decision and rationale
+- "Agent Recommendation" and "Reasoning"
+- "User Decision" and "Rationale"
 - impact
 - status
 

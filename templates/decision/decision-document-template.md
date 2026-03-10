@@ -18,7 +18,7 @@ This document captures the key decisions for [brief description of task].
 
 ## Decision 1: [Decision Name] ⚠️ [Add CRITICAL flag if applicable]
 
-**What I did:**
+**Agent Analysis:**
 
 - [Describe the analysis already completed]
 - [If nothing has started yet, note that the decision was identified during analysis]
@@ -26,7 +26,7 @@ This document captures the key decisions for [brief description of task].
 **Context:**
 [Relevant background from repo docs, analysis, or prior decisions]
 
-**Question for you:**
+**Decision Required:**
 [Clear framing of what needs to be decided]
 
 - [ ] **Option A: [Name]** ([brief descriptor])
@@ -48,12 +48,12 @@ This document captures the key decisions for [brief description of task].
   - ✅ Pro: [Benefit]
   - ❌ Con: [Drawback]
 
-**My recommendation:** Option [A/B/C]
+**Agent Recommendation:** Option [A/B/C/X...]
 
 **Reasoning:**
 [Why this option best fits the requirements and repo context]
 
-**Your decision:** [AWAITING INPUT] or ✅ **Option X: [Name]**
+**User Decision:** [AWAITING INPUT] or ✅ **Option X: [Name]**
 
 **Rationale:**
 [Space to capture the decision rationale]
