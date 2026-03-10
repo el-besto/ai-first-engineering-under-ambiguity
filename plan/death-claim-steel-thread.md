@@ -72,6 +72,15 @@ Claims operations teams need a fast, clear way to triage new death-claim submiss
 - `FOLLOW_UP_MESSAGE`
 - `HITL_REVIEW_TASK`
 
+### Lean-Clean Tree A planning companions
+
+This PoC is using the Lean-Clean Tree A / CA-preserving steel-thread shape as its implementation-planning baseline.
+
+- Upstream scenario contract: [death-claim-workshop-spec.md](death-claim-workshop-spec.md)
+- Deferred hardening register: [death-claim-deferred-hardening.md](death-claim-deferred-hardening.md)
+- Tree A code map: [death-claim-tree-a-code-map.md](death-claim-tree-a-code-map.md)
+- Tree A worked example: [death-claim-tree-a-worked-example.md](death-claim-tree-a-worked-example.md)
+
 ## Demo Rationale
 
 This direction keeps the PoC differentiated from underwriting-workbench demos while still showing strong agentic orchestration, explicit human-in-the-loop boundaries, and a life-insurance-specific workflow with meaningful stakeholder interplay.
