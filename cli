@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Developer CLI Wrapper
+# Ensures Typer/Rich CLI flags are handled natively without `make` intercepting them.
+
+PYTHONPATH=. uv run python -m drivers.cli "$@"

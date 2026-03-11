@@ -67,3 +67,4 @@ compose.override.yml
 
 # Local
 .scratch/
+out/
