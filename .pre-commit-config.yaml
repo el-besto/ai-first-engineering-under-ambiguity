@@ -79,6 +79,14 @@ repos:
         pass_filenames: false
         require_serial: true
 
+      - id: make-test
+        name: Run Unit Tests
+        entry: make test
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true
+
       - id: restage-staged-files
         name: Restage Originally Staged Files
         entry: tools/precommit_manage_staged_files.sh restage

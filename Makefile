@@ -13,53 +13,9 @@ NC := \033[0m
 help: ## Display available targets
 	@awk 'BEGIN {FS = ":.*##"; printf "\n$(BLUE)Usage:$(NC)\n  make $(GREEN)<target>$(NC)\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  $(GREEN)%-18s$(NC) %s\n", $$1, $$2 } /^##@/ { printf "\n$(BLUE)%s$(NC)\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ Checks
-
-.PHONY: hooks-install pre-commit pre-commit-all check
-hooks-install: ## Install pre-commit and commit-msg hooks locally
-	@$(PRE_COMMIT) install --install-hooks --hook-type pre-commit --hook-type commit-msg
-
-pre-commit: ## Run pre-commit hooks on staged files
-	@$(PRE_COMMIT) run
-
-pre-commit-all: ## Run pre-commit hooks on all tracked files
-	@$(PRE_COMMIT) run --all-files
-
-check: pre-commit-all ## Run the current repo-wide checks
-
-##@ Markdown
-
-.PHONY: format-md format-md-all
-format-md: ## Format modified markdown files
-	@echo "$(BLUE)Formatting modified markdown files...$(NC)"
-	@node $(TOOLS_DIR)/format-markdown.cjs
-	@echo "$(GREEN)Markdown formatting complete.$(NC)"
-
-format-md-all: ## Format all markdown files in the repo
-	@echo "$(BLUE)Formatting all markdown files...$(NC)"
-	@node $(TOOLS_DIR)/format-markdown.cjs --all
-	@echo "$(GREEN)Markdown formatting complete.$(NC)"
-
-##@ Python Formatting
-
-.PHONY: format-py format-py-all format
-format-py: ## Run Ruff linter and formatter on modified python files
-	@echo "$(BLUE)Formatting modified python files...$(NC)"
-	@uv run ruff check --fix
-	@uv run ruff format
-	@echo "$(GREEN)Python formatting complete.$(NC)"
-
-format-py-all: ## Run Ruff linter and formatter on all python files
-	@echo "$(BLUE)Formatting all python files...$(NC)"
-	@uv run ruff check --fix .
-	@uv run ruff format .
-	@echo "$(GREEN)Python formatting complete.$(NC)"
-
-format: format-md format-py ## Format all modified markdown and python files
-
 ##@ Local Runtime / Scaffolds
 
-.PHONY: install dev debug api ui test tilt up
+.PHONY: install dev debug api ui compile-dspy generate-guardrail-key tilt tilt-down prepare-rancher-desktop up
 install: ## Bootstrap and install the virtual environment dependencies
 	uv sync
 
@@ -74,12 +30,6 @@ api: ## Boot the thin FastAPI ingress shell
 
 ui: ## Boot the thin Streamlit workbench shell
 	PYTHONPATH=. uv run streamlit run drivers/ui/streamlit/streamlit_app.py
-
-test: ## Execute the current test suite via pytest
-	uv run pytest -m "not live" tests/ -v
-
-test-live: ## Execute the live E2E test suite via pytest against OpenAI API
-	uv run pytest -m live tests/ -v
 
 compile-dspy: ## Compile the DSPy PII Guardrail locally against Ollama
 	uv run python scripts/compile_dspy_guardrail.py
@@ -98,3 +48,63 @@ prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binar
 
 up: ## Start the minimal docker-compose services manually
 	docker compose -f deploy/local/compose.yaml up -d
+
+##@ Formatting
+
+.PHONY: format-md format-md-all format-py format-py-all format
+format-md: ## Format modified markdown files
+	@echo "$(BLUE)Formatting modified markdown files...$(NC)"
+	@node $(TOOLS_DIR)/format-markdown.cjs
+	@echo "$(GREEN)Markdown formatting complete.$(NC)"
+
+format-md-all: ## Format all markdown files in the repo
+	@echo "$(BLUE)Formatting all markdown files...$(NC)"
+	@node $(TOOLS_DIR)/format-markdown.cjs --all
+	@echo "$(GREEN)Markdown formatting complete.$(NC)"
+
+format-py: ## Run Ruff linter and formatter on modified python files
+	@echo "$(BLUE)Formatting modified python files...$(NC)"
+	@uv run ruff check --fix
+	@uv run ruff format
+	@echo "$(GREEN)Python formatting complete.$(NC)"
+
+format-py-all: ## Run Ruff linter and formatter on all python files
+	@echo "$(BLUE)Formatting all python files...$(NC)"
+	@uv run ruff check --fix .
+	@uv run ruff format .
+	@echo "$(GREEN)Python formatting complete.$(NC)"
+
+format: format-md format-py ## Format all modified markdown and python files
+
+##@ Testing
+
+.PHONY: test test-live test-live-dspy
+test: ## Execute the current test suite via pytest
+	uv run pytest -m "not live" tests/ -v
+
+test-live: ## Execute the live E2E test suite via pytest against OpenAI API
+	uv run pytest -m live tests/ -v
+
+test-live-dspy: ## Execute the live E2E DSPy test suite against Ollama and OpenAI API
+	@echo "$(BLUE)Ensure Ollama is running locally with llama3.1:8b (e.g., in a separate terminal or via Tilt)$(NC)"
+	uv run pytest -m "live and dspy" tests/ -v
+
+##@ Checks & Validation
+
+.PHONY: hooks-install pre-commit pre-commit-all check typecheck validate
+hooks-install: ## Install pre-commit and commit-msg hooks locally
+	@$(PRE_COMMIT) install --install-hooks --hook-type pre-commit --hook-type commit-msg
+
+pre-commit: ## Run pre-commit hooks on staged files
+	@$(PRE_COMMIT) run
+
+pre-commit-all: ## Run pre-commit hooks on all tracked files
+	@$(PRE_COMMIT) run --all-files
+
+check: pre-commit-all ## Run the current repo-wide checks
+
+typecheck: ## Run static type checker
+	@echo "$(BLUE)Running typecheck...$(NC)"
+	@uv run pyright
+
+validate: format-md-all format-py-all typecheck test ## Run all formatters, linters, typecheckers, and tests
