@@ -7,6 +7,7 @@ from app.entities.case_summary import CaseSummary
 from app.entities.claim_intake_bundle import ClaimIntakeBundle
 from app.entities.routing_decision import RoutingDecision
 from app.entities.triage_result import TriageResult
+from app.infrastructure.telemetry.logger import get_logger, log_exception
 from app.use_cases.assess_completeness_uc import AssessCompletenessUseCase
 from app.use_cases.decide_triage_disposition_uc import DecideTriageDispositionUseCase
 from app.use_cases.detect_ambiguity_uc import DetectAmbiguityUseCase
@@ -33,57 +34,71 @@ class TriageOrchestrator:
         self.review_queue = review_queue
         self.pii_guardrail = pii_guardrail
         self.evaluation_recorder = evaluation_recorder
+        self.logger = get_logger(__name__).bind(orchestrator=self.__class__.__name__)
 
     async def assess(self, bundle: ClaimIntakeBundle) -> TriageResult:
-        # Triage boundary fully removed for the acceptance slices
+        log = self.logger.bind(operation="assess", case_id=bundle.case_id)
+        log.info("started", document_count=len(bundle.documents))
 
-        normalized = NormalizeClaimBundleUseCase().execute(bundle)
-        facts = ExtractDocumentFactsUseCase().execute(normalized)
+        try:
+            # Triage boundary fully removed for the acceptance slices.
+            normalized = NormalizeClaimBundleUseCase().execute(bundle)
+            facts = ExtractDocumentFactsUseCase().execute(normalized)
 
-        TokenizePIIForModelUseCase(self.pii_guardrail).execute("dummy_model_context")
+            TokenizePIIForModelUseCase(self.pii_guardrail).execute("dummy_model_context")
 
-        is_complete = AssessCompletenessUseCase().execute(facts)
-        is_ambiguous = DetectAmbiguityUseCase().execute(facts)
-        disposition, confidence = DecideTriageDispositionUseCase().execute(is_complete, is_ambiguous)
+            is_complete = AssessCompletenessUseCase().execute(facts)
+            is_ambiguous = DetectAmbiguityUseCase().execute(facts)
+            disposition, confidence = DecideTriageDispositionUseCase().execute(is_complete, is_ambiguous)
 
-        checklist = None
-        follow_up = None
-        quality_markers = []
-        reviewability_flags = []
+            checklist = None
+            follow_up = None
+            quality_markers = []
+            reviewability_flags = []
 
-        escalation_reasons = []
-        escalation_rationale = None
-        hitl_review_task = None
+            escalation_reasons = []
+            escalation_rationale = None
+            hitl_review_task = None
 
-        if disposition == "request_more_information":
-            checklist = GenerateRequirementsChecklistUseCase().execute(facts)
-            follow_up, quality_markers = GenerateFollowUpMessageUseCase().execute(checklist)
-            reviewability_flags = ["Missing required documents"]
-        elif disposition == "escalate_to_human_review":
-            escalation_reasons, escalation_rationale = GenerateEscalationRationaleUseCase().execute(facts)
-            hitl_review_task = GenerateHITLReviewTaskUseCase().execute(facts)
+            if disposition == "request_more_information":
+                checklist = GenerateRequirementsChecklistUseCase().execute(facts)
+                follow_up, quality_markers = GenerateFollowUpMessageUseCase().execute(checklist)
+                reviewability_flags = ["Missing required documents"]
+            elif disposition == "escalate_to_human_review":
+                escalation_reasons, escalation_rationale = GenerateEscalationRationaleUseCase().execute(facts)
+                hitl_review_task = GenerateHITLReviewTaskUseCase().execute(facts)
 
-        if is_ambiguous:
-            case_type = "ambiguous"
-        else:
-            case_type = "complete" if is_complete else "missing_information"
-        self.evaluation_recorder.record_case(case_type)
+            if is_ambiguous:
+                case_type = "ambiguous"
+            else:
+                case_type = "complete" if is_complete else "missing_information"
+            self.evaluation_recorder.record_case(case_type)
 
-        return TriageResult(
-            disposition=disposition,
-            confidence_band=confidence,
-            case_summary=CaseSummary(summary_text="Claim is complete.") if is_complete else None,
-            routing_decision=RoutingDecision(
-                target_queue="claims_processing",
-                rationale="Ready to proceed. All required documents present.",
+            result = TriageResult(
+                disposition=disposition,
+                confidence_band=confidence,
+                case_summary=CaseSummary(summary_text="Claim is complete.") if is_complete else None,
+                routing_decision=RoutingDecision(
+                    target_queue="claims_processing",
+                    rationale="Ready to proceed. All required documents present.",
+                )
+                if is_complete
+                else None,
+                requirements_checklist=checklist,
+                follow_up_message=follow_up,
+                follow_up_message_quality_markers=quality_markers,
+                reviewability_flags=reviewability_flags,
+                escalation_reasons=escalation_reasons,
+                escalation_rationale=escalation_rationale,
+                hitl_review_task=hitl_review_task,
             )
-            if is_complete
-            else None,
-            requirements_checklist=checklist,
-            follow_up_message=follow_up,
-            follow_up_message_quality_markers=quality_markers,
-            reviewability_flags=reviewability_flags,
-            escalation_reasons=escalation_reasons,
-            escalation_rationale=escalation_rationale,
-            hitl_review_task=hitl_review_task,
-        )
+            log.info(
+                "completed",
+                selected_disposition=result.disposition,
+                confidence_band=result.confidence_band,
+                reviewability_state="needs_review" if result.reviewability_flags else "clear",
+            )
+            return result
+        except Exception as e:
+            log_exception(log, "failed", e)
+            raise

@@ -84,3 +84,30 @@ def test_triage_graph_escalates_for_ambiguous_claim():
     assert "hitl_review_task" in final_state
     assert "escalation_reasons" in final_state
     assert final_state["escalation_reasons"]
+
+
+def test_triage_graph_emits_observability_logs(log_capture):
+    graph = build_triage_graph(_get_adapters())
+
+    bundle = ClaimIntakeBundle.fake_complete()
+    graph.invoke({"claim_bundle": bundle})
+
+    assert any(
+        entry.get("node") == "extract_facts"
+        and entry.get("operation") == "extract_facts"
+        and entry.get("event") == "completed"
+        for entry in log_capture
+    )
+    assert any(
+        entry.get("node") == "assess_triage"
+        and entry.get("selected_disposition") == "proceed"
+        and entry.get("event") == "completed"
+        for entry in log_capture
+    )
+    assert any(
+        entry.get("adapter") == "FakeModelAdapter"
+        and entry.get("operation") == "generate"
+        and entry.get("prompt_chars") is not None
+        and "prompt" not in entry
+        for entry in log_capture
+    )

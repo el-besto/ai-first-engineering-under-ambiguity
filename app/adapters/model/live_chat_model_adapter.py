@@ -2,6 +2,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.rate_limiters import InMemoryRateLimiter
 
 from app.adapters.model.protocol import ModelAdapter
+from app.infrastructure.telemetry.logger import get_logger, log_exception
 
 
 class LiveChatModelAdapter(ModelAdapter):
@@ -21,6 +22,7 @@ class LiveChatModelAdapter(ModelAdapter):
         Initializes the model dynamically. `init_chat_model` relies on the fact
         that specific provider packages (e.g., langchain-openai) are installed.
         """
+        self.logger = get_logger(__name__).bind(adapter=self.__class__.__name__, model_name=model_name)
         kwargs = {}
         if api_key:
             kwargs["api_key"] = api_key
@@ -41,5 +43,13 @@ class LiveChatModelAdapter(ModelAdapter):
         """
         Generates content from the configured model based on a prompt.
         """
-        response = self.client.invoke(prompt)
-        return str(response.content)
+        log = self.logger.bind(operation="generate")
+        log.info("started", prompt_chars=len(prompt))
+        try:
+            response = self.client.invoke(prompt)
+            content = str(response.content)
+            log.info("completed", response_chars=len(content))
+            return content
+        except Exception as e:
+            log_exception(log, "failed", e, prompt_chars=len(prompt))
+            raise

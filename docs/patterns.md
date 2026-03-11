@@ -266,9 +266,154 @@ Primary planned delivery entrypoints:
 ### 5.2 Logging
 
 - Log using the app-configured logger from drivers, presenters, and adapters that touch I/O
-- Event naming rule: use short operation-oriented events tied to the triage step or delivery surface
-- Required context: case or bundle identifier, surface, selected disposition, confidence band, and reviewability state
-- Forbidden patterns: `print` in planned app code, raw prompt logging, raw PII logging, and silent guardrail failures
+- Technology baseline: `structlog` with request-scoped contextvars and `log_exception(...)` for consistent error fields
+- Event naming rule: prefer short standard events like `started`, `completed`, and `failed`; add operation context through bound fields instead of verbose event names
+- Required binding pattern:
+  - bind component context once in `__init__` or module setup (`adapter=...`, `driver=...`, `orchestrator=...`, `node=...`)
+  - bind `operation=...` at the start of each method or request handler and reuse the local bound logger
+- Required context: case or bundle identifier, surface, selected disposition, confidence band, and reviewability state when that information is available
+- Error logging rule: use `log_exception(log, "failed", exc, **context)` instead of ad hoc `logger.error(...)` or `logger.exception(...)`
+- Privacy rule: do not log raw PII, policy numbers, full claim documents, raw prompts, raw model completions, token maps, secrets, or credentials
+- Safe derived fields: prompt length, response length, document count, generated field names, adapter mode, and token counts
+- Forbidden patterns: `print` in planned app code, raw prompt logging, raw PII logging, f-string log messages that hide fields, and silent guardrail failures
+
+Example patterns:
+
+**1. Request or session context binding**
+
+```python
+import uuid
+
+from fastapi import Request
+
+from app.infrastructure.telemetry.logger import (
+    bind_context,
+    clear_context,
+    get_logger,
+    log_exception,
+)
+
+logger = get_logger(__name__).bind(driver="FastAPI", surface="api")
+
+
+async def correlation_id_middleware(request: Request, call_next):
+    request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+    clear_context()
+    bind_context(
+        request_id=request_id,
+        path=request.url.path,
+        method=request.method,
+        surface="api",
+    )
+    log = logger.bind(operation="http_request")
+    log.info("started")
+    try:
+        response = await call_next(request)
+        log.info("completed", status_code=response.status_code)
+        return response
+    except Exception as exc:
+        log_exception(log, "failed", exc)
+        raise
+    finally:
+        clear_context()
+```
+
+**2. Component + operation binding**
+
+```python
+from app.infrastructure.telemetry.logger import get_logger, log_exception
+
+
+class TriageOrchestrator:
+    def __init__(self, ...):
+        self.logger = get_logger(__name__).bind(
+            orchestrator=self.__class__.__name__
+        )
+
+    async def assess(self, bundle: ClaimIntakeBundle) -> TriageResult:
+        log = self.logger.bind(operation="assess", case_id=bundle.case_id)
+        log.info("started", document_count=len(bundle.documents))
+        try:
+            ...
+            log.info(
+                "completed",
+                selected_disposition=result.disposition,
+                confidence_band=result.confidence_band,
+                reviewability_state=(
+                    "needs_review" if result.reviewability_flags else "clear"
+                ),
+            )
+            return result
+        except Exception as exc:
+            log_exception(log, "failed", exc)
+            raise
+```
+
+**3. Consistent error logging**
+
+```python
+from app.infrastructure.telemetry.logger import get_logger, log_exception
+
+logger = get_logger(__name__).bind(route="/triage", surface="api")
+
+
+def run_triage(graph: CompiledStateGraph, bundle: ClaimIntakeBundle):
+    log = logger.bind(operation="run_triage", case_id=bundle.case_id)
+    log.info("started")
+    try:
+        result = graph.invoke({"claim_bundle": bundle})
+        triage_result = map_state_to_triage_result(result)
+        log.info(
+            "completed",
+            selected_disposition=triage_result.disposition,
+            confidence_band=triage_result.confidence_band,
+            reviewability_state=(
+                "needs_review" if triage_result.reviewability_flags else "clear"
+            ),
+        )
+        return triage_result
+    except Exception as exc:
+        log_exception(log, "failed", exc)
+        raise
+```
+
+**4. Safe model or guardrail logging**
+
+```python
+from app.infrastructure.telemetry.logger import get_logger, log_exception
+
+
+class LiveChatModelAdapter:
+    def __init__(self, model_name: str):
+        self.logger = get_logger(__name__).bind(
+            adapter=self.__class__.__name__,
+            model_name=model_name,
+        )
+
+    def generate(self, prompt: str) -> str:
+        log = self.logger.bind(operation="generate")
+        log.info("started", prompt_chars=len(prompt))
+        try:
+            response = self.client.invoke(prompt)
+            content = str(response.content)
+            log.info("completed", response_chars=len(content))
+            return content
+        except Exception as exc:
+            log_exception(log, "failed", exc, prompt_chars=len(prompt))
+            raise
+
+
+class VaultlessPIIGuardrail:
+    def tokenize(self, raw_input: str) -> tuple[str, dict[str, Any]]:
+        log = self.logger.bind(operation="tokenize")
+        log.info("started", input_chars=len(raw_input))
+        ...
+        log.info("completed", token_count=len(token_map))
+        return safe_input, token_map
+
+# Log derived fields like prompt_chars, response_chars, input_chars, and token_count.
+# Do not log raw prompts, policy numbers, raw PII, token maps, or full claim documents.
+```
 
 ### 5.3 Error Handling
 
@@ -284,6 +429,8 @@ Business ambiguity is not an exception path. It must be represented by typed tri
 - Tracing approach: local-first graph inspection and replay, with initial posture `LANGSMITH_TRACING=false`
 - Metrics approach: lightweight run visibility is sufficient for v1; a full metrics stack is deferred
 - Instrumentation boundary: presenters, drivers, and thin graph wrappers add traces or run metadata; entities and use-cases remain free of tracing imports
+- Request-scoped context rule: bind and clear request or session context at the driver entrypoints so all downstream logs carry the same correlation fields
+- Trace correlation rule: when OpenTelemetry spans are present, include `trace_id` and `span_id` automatically; absence of OpenTelemetry must not break logging
 - Do-not-log or do-not-trace rule: raw PII, full raw claim documents, reversible token maps, raw prompts, secrets, and provider credentials
 
 ---

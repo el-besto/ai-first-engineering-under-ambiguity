@@ -8,7 +8,27 @@ import traceback
 from typing import Any
 
 import structlog
-from pythonjsonlogger.jsonlogger import JsonFormatter  # type: ignore[attr-defined]
+from pythonjsonlogger.json import JsonFormatter
+
+
+def _add_open_telemetry_context(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """Attach OpenTelemetry trace identifiers when a span is active."""
+    try:
+        from opentelemetry import trace as trace_api
+    except Exception:
+        return event_dict
+
+    span = trace_api.get_current_span()
+    if span is None:
+        return event_dict
+
+    span_context = span.get_span_context()
+    if not span_context or not span_context.is_valid:
+        return event_dict
+
+    event_dict.setdefault("trace_id", f"{span_context.trace_id:032x}")
+    event_dict.setdefault("span_id", f"{span_context.span_id:016x}")
+    return event_dict
 
 
 def _add_emoji_prefix(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
@@ -75,10 +95,11 @@ def configure_logging(
     elif log_format == "json":
         format_json = True
 
-    _configure_stdlib_logging(log_level=log_level, format_json=False)
+    _configure_stdlib_logging(log_level=log_level, format_json=format_json)
 
     shared_processors = [
         structlog.contextvars.merge_contextvars,
+        _add_open_telemetry_context,
         structlog.stdlib.add_log_level,
         structlog.stdlib.add_logger_name,
         structlog.processors.TimeStamper(fmt="iso"),

@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 from app.adapters.safety.dspy_signatures import ExtractPII
 from app.adapters.safety.protocol import PIIGuardrailAdapter
+from app.infrastructure.telemetry.logger import get_logger, log_exception
 
 
 class VaultlessPIIGuardrail(PIIGuardrailAdapter):
@@ -19,6 +20,7 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
     """
 
     def __init__(self, secret_key_hex: str, compiled_model_path: str):
+        self.logger = get_logger(__name__).bind(adapter=self.__class__.__name__)
         if not secret_key_hex:
             raise ValueError("LLM_GUARDRAIL_SECRET_KEY is required for VaultlessPIIGuardrail")
 
@@ -72,39 +74,50 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
             return token
 
     def tokenize(self, raw_input: str) -> tuple[str, dict[str, Any]]:
+        log = self.logger.bind(operation="tokenize")
         if not raw_input.strip():
+            log.debug("completed", input_chars=0, token_count=0)
             return raw_input, {}
 
-        # 1. Ask DSPy to extract PII
-        prediction = self._extractor(document=raw_input)
-        pii_entities_str = prediction.pii_entities
+        log.info("started", input_chars=len(raw_input))
+        try:
+            # 1. Ask DSPy to extract PII.
+            prediction = self._extractor(document=raw_input)
+            pii_entities_str = prediction.pii_entities
 
-        if not pii_entities_str:
-            return raw_input, {}
+            if not pii_entities_str:
+                log.info("completed", token_count=0)
+                return raw_input, {}
 
-        # 2. Parse the comma-separated strings
-        entities = [e.strip() for e in pii_entities_str.split(",") if e.strip()]
+            # 2. Parse the comma-separated strings.
+            entities = [e.strip() for e in pii_entities_str.split(",") if e.strip()]
 
-        if not entities:
-            return raw_input, {}
+            if not entities:
+                log.info("completed", token_count=0)
+                return raw_input, {}
 
-        entities.sort(key=len, reverse=True)
+            entities.sort(key=len, reverse=True)
 
-        # 3. Encrypt and replace
-        safe_input = raw_input
-        token_map = {}
+            # 3. Encrypt and replace.
+            safe_input = raw_input
+            token_map = {}
 
-        for entity in entities:
-            if len(entity) < 2:
-                continue
+            for entity in entities:
+                if len(entity) < 2:
+                    continue
 
-            token = self._deterministic_encrypt(entity)
-            safe_input = safe_input.replace(entity, token)
-            token_map[token] = entity
+                token = self._deterministic_encrypt(entity)
+                safe_input = safe_input.replace(entity, token)
+                token_map[token] = entity
 
-        return safe_input, token_map
+            log.info("completed", token_count=len(token_map))
+            return safe_input, token_map
+        except Exception as e:
+            log_exception(log, "failed", e, input_chars=len(raw_input))
+            raise
 
     def detokenize(self, safe_input: str, token_map: dict[str, Any]) -> str:
+        log = self.logger.bind(operation="detokenize")
         tokens = self._token_pattern.findall(safe_input)
 
         cleartext = safe_input
@@ -113,4 +126,5 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
             if decrypted != token:
                 cleartext = cleartext.replace(token, decrypted)
 
+        log.debug("completed", token_count=len(tokens))
         return cleartext

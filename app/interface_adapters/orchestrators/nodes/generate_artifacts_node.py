@@ -17,6 +17,7 @@ from app.adapters.model.prompts.requirements_checklist_prompt_template import (
 from app.adapters.model.prompts.routing_rationale_prompt_template import routing_rationale_prompt
 from app.adapters.model.protocol import ModelAdapter
 from app.entities.case_summary import CaseSummary
+from app.infrastructure.telemetry.logger import get_logger, log_exception
 from app.interface_adapters.orchestrators.triage_graph_state import TriageGraphState
 from app.use_cases.generate_escalation_rationale_uc import GenerateEscalationRationaleUseCase
 from app.use_cases.generate_hitl_review_task_uc import GenerateHITLReviewTaskUseCase
@@ -33,75 +34,91 @@ def build_generate_artifacts_node(model: ModelAdapter):
         disposition = state.get("disposition", "unknown")
         document_facts = state.get("document_facts", {})
         updates: dict[str, Any] = {}
-
-        # Always generate a summary
-        summary_prompt_str = case_summary_prompt.format(
-            document_facts=str(document_facts),
-            format_instructions=case_summary_parser.get_format_instructions(),
+        logger = get_logger(__name__).bind(node="generate_artifacts")
+        op_log = logger.bind(operation="generate_artifacts")
+        bundle = state.get("claim_bundle")
+        if bundle is None:
+            op_log.warning("validation_failed", reason="missing_claim_bundle")
+            raise ValueError("claim_bundle is required in state to generate artifacts")
+        log = op_log.bind(
+            case_id=bundle.case_id,
+            disposition=disposition,
         )
-        summary_response = model.generate(summary_prompt_str)
-        summary_parsed = case_summary_parser.parse(summary_response)
+        log.info("started", fact_count=len(document_facts))
 
-        # Map Pydantic to string representation
-        mapped_case_summary = map_to_case_summary(summary_parsed)
-        if mapped_case_summary:
-            updates["case_summary"] = CaseSummary(summary_text=mapped_case_summary.summary_text)
-
-        if disposition == "request_more_information":
-            # 1. Checklist
-            checklist_facts = GenerateRequirementsChecklistUseCase().execute(document_facts)
-            checklist_prompt_str = requirements_checklist_prompt.format(
-                checklist_facts=str(checklist_facts),
-                format_instructions=checklist_parser.get_format_instructions(),
+        try:
+            # Always generate a summary.
+            summary_prompt_str = case_summary_prompt.format(
+                document_facts=str(document_facts),
+                format_instructions=case_summary_parser.get_format_instructions(),
             )
-            checklist_response = model.generate(checklist_prompt_str)
-            checklist_parsed = checklist_parser.parse(checklist_response)
+            summary_response = model.generate(summary_prompt_str)
+            summary_parsed = case_summary_parser.parse(summary_response)
 
-            mapped_checklist_str = map_to_requirements_checklist_string(checklist_parsed)
-            if mapped_checklist_str:
-                updates["requirements_checklist"] = mapped_checklist_str
+            # Map the parser output into the domain summary type.
+            mapped_case_summary = map_to_case_summary(summary_parsed)
+            if mapped_case_summary:
+                updates["case_summary"] = CaseSummary(summary_text=mapped_case_summary.summary_text)
 
-            # 2. Tone / FollowUp Message
-            msg_prompt_str = follow_up_message_prompt.format(
-                requirements_checklist=updates.get("requirements_checklist", ""),
-                format_instructions=follow_up_message_parser.get_format_instructions(),
-            )
-            msg_response = model.generate(msg_prompt_str)
-            msg_parsed = follow_up_message_parser.parse(msg_response)
+            if disposition == "request_more_information":
+                # 1. Checklist.
+                checklist_facts = GenerateRequirementsChecklistUseCase().execute(document_facts)
+                checklist_prompt_str = requirements_checklist_prompt.format(
+                    checklist_facts=str(checklist_facts),
+                    format_instructions=checklist_parser.get_format_instructions(),
+                )
+                checklist_response = model.generate(checklist_prompt_str)
+                checklist_parsed = checklist_parser.parse(checklist_response)
 
-            if msg_parsed.message:
-                updates["follow_up_message"] = msg_parsed.message
-            updates["follow_up_message_quality_markers"] = msg_parsed.quality_markers
+                mapped_checklist_str = map_to_requirements_checklist_string(checklist_parsed)
+                if mapped_checklist_str:
+                    updates["requirements_checklist"] = mapped_checklist_str
 
-        elif disposition == "escalate_to_human_review":
-            # 1. HITL Task
-            task_facts = GenerateHITLReviewTaskUseCase().execute(document_facts)
-            task_prompt_str = hitl_review_task_prompt.format(
-                task_facts=str(task_facts),
-                format_instructions=hitl_review_task_parser.get_format_instructions(),
-            )
-            task_response = model.generate(task_prompt_str)
-            task_parsed = hitl_review_task_parser.parse(task_response)
+                # 2. Tone / FollowUp Message.
+                msg_prompt_str = follow_up_message_prompt.format(
+                    requirements_checklist=updates.get("requirements_checklist", ""),
+                    format_instructions=follow_up_message_parser.get_format_instructions(),
+                )
+                msg_response = model.generate(msg_prompt_str)
+                msg_parsed = follow_up_message_parser.parse(msg_response)
 
-            if task_parsed.task_description:
-                updates["hitl_review_task"] = task_parsed.task_description
+                if msg_parsed.message:
+                    updates["follow_up_message"] = msg_parsed.message
+                updates["follow_up_message_quality_markers"] = msg_parsed.quality_markers
 
-            # 2. Rationale
-            rationale_uc = GenerateEscalationRationaleUseCase()
-            reasons_facts, rationale_facts = rationale_uc.execute(document_facts)
-            rationale_prompt_str = routing_rationale_prompt.format(
-                rationale_facts=str(rationale_facts),
-                format_instructions=routing_rationale_parser.get_format_instructions(),
-            )
-            rationale_response = model.generate(rationale_prompt_str)
-            rationale_parsed = routing_rationale_parser.parse(rationale_response)
+            elif disposition == "escalate_to_human_review":
+                # 1. HITL Task.
+                task_facts = GenerateHITLReviewTaskUseCase().execute(document_facts)
+                task_prompt_str = hitl_review_task_prompt.format(
+                    task_facts=str(task_facts),
+                    format_instructions=hitl_review_task_parser.get_format_instructions(),
+                )
+                task_response = model.generate(task_prompt_str)
+                task_parsed = hitl_review_task_parser.parse(task_response)
 
-            if rationale_parsed.rationale:
-                updates["escalation_rationale"] = rationale_parsed.rationale
+                if task_parsed.task_description:
+                    updates["hitl_review_task"] = task_parsed.task_description
 
-            if reasons_facts:
-                updates["escalation_reasons"] = reasons_facts
+                # 2. Rationale.
+                rationale_uc = GenerateEscalationRationaleUseCase()
+                reasons_facts, rationale_facts = rationale_uc.execute(document_facts)
+                rationale_prompt_str = routing_rationale_prompt.format(
+                    rationale_facts=str(rationale_facts),
+                    format_instructions=routing_rationale_parser.get_format_instructions(),
+                )
+                rationale_response = model.generate(rationale_prompt_str)
+                rationale_parsed = routing_rationale_parser.parse(rationale_response)
 
-        return updates
+                if rationale_parsed.rationale:
+                    updates["escalation_rationale"] = rationale_parsed.rationale
+
+                if reasons_facts:
+                    updates["escalation_reasons"] = reasons_facts
+
+            log.info("completed", generated_fields=sorted(updates.keys()))
+            return updates
+        except Exception as e:
+            log_exception(log, "failed", e)
+            raise
 
     return generate_artifacts_node

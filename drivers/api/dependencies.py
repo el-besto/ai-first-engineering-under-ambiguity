@@ -12,11 +12,14 @@ from app.adapters.policy_lookup.fake import FakePolicyLookup
 from app.adapters.review_queue.fake import FakeReviewQueue
 from app.adapters.safety.fake import FakePIIGuardrail
 from app.adapters.safety.vaultless_guardrail import VaultlessPIIGuardrail
+from app.infrastructure.telemetry.logger import get_logger, log_exception
 from app.interface_adapters.orchestrators.triage_graph_factory import (
     AdapterRegistry,
     build_triage_graph,
 )
 from drivers.api.config import APIConfig
+
+logger = get_logger(__name__).bind(driver="APIDependencies", surface="api")
 
 # Initialize DSPy on the main thread (module import time) to avoid FastAPI threadpool RuntimeError
 _api_config = APIConfig()
@@ -43,32 +46,44 @@ def get_triage_graph(config: APIConfig = Depends(get_api_config)) -> CompiledSta
     Builds the triage graph injecting live explicit adapters
     if env domain vars are set, otherwise falls back to fakes.
     """
-    if config.llm_main_model and config.llm_main_api_key:
-        model_adapter = LiveChatModelAdapter(
-            model_name=config.llm_main_model,
-            api_key=config.llm_main_api_key,
-            api_base=config.llm_main_api_base,
-            requests_per_minute=config.llm_main_requests_per_minute,
+    log = logger.bind(operation="get_triage_graph")
+    log.info("started")
+    try:
+        if config.llm_main_model and config.llm_main_api_key:
+            model_adapter = LiveChatModelAdapter(
+                model_name=config.llm_main_model,
+                api_key=config.llm_main_api_key,
+                api_base=config.llm_main_api_base,
+                requests_per_minute=config.llm_main_requests_per_minute,
+            )
+            model_mode = "live"
+        else:
+            model_adapter = FakeModelAdapter()
+            model_mode = "fake"
+
+        if config.llm_guardrail_secret_key:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
+
+            pii_guardrail = VaultlessPIIGuardrail(
+                secret_key_hex=config.llm_guardrail_secret_key, compiled_model_path=model_path
+            )
+            pii_mode = "vaultless"
+        else:
+            pii_guardrail = FakePIIGuardrail()
+            pii_mode = "fake"
+
+        adapters = AdapterRegistry(
+            document_store=FakeDocumentStore(),
+            policy_lookup=FakePolicyLookup(),
+            review_queue=FakeReviewQueue(),
+            pii_guardrail=pii_guardrail,
+            model=model_adapter,
+            evaluation_recorder=FakeEvaluationRecorder(),
         )
-    else:
-        model_adapter = FakeModelAdapter()
-
-    if config.llm_guardrail_secret_key:
-        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-        model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
-
-        pii_guardrail = VaultlessPIIGuardrail(
-            secret_key_hex=config.llm_guardrail_secret_key, compiled_model_path=model_path
-        )
-    else:
-        pii_guardrail = FakePIIGuardrail()
-
-    adapters = AdapterRegistry(
-        document_store=FakeDocumentStore(),
-        policy_lookup=FakePolicyLookup(),
-        review_queue=FakeReviewQueue(),
-        pii_guardrail=pii_guardrail,
-        model=model_adapter,
-        evaluation_recorder=FakeEvaluationRecorder(),
-    )
-    return build_triage_graph(adapters)
+        graph = build_triage_graph(adapters)
+        log.info("completed", model_mode=model_mode, pii_mode=pii_mode)
+        return graph
+    except Exception as e:
+        log_exception(log, "failed", e)
+        raise
