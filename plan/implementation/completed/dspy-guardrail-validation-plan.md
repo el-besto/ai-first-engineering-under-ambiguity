@@ -11,9 +11,9 @@ This document serves as a single checkpoint and final regression suite for the D
 - Root tracker: `plan/death-claim/workshop-spec.md`
 - Slice anchor: `tests/acceptance/features/test_death_claim_intake_triage.py`
 - DSPy Phases:
-  - `plan/implementation/dspy-guardrail-phase-1-compilation.md`
-  - `plan/implementation/dspy-guardrail-phase-2-integration.md`
-  - `plan/implementation/dspy-guardrail-phase-3-live-e2e-tests.md`
+  - `plan/implementation/completed/dspy-guardrail-phase-1-compilation.md`
+  - `plan/implementation/completed/dspy-guardrail-phase-2-integration.md`
+  - `plan/implementation/completed/dspy-guardrail-phase-3-live-e2e-tests.md`
 
 ## Validation Scope
 

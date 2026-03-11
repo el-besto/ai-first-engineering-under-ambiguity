@@ -52,5 +52,13 @@ Completed documents:
   - live E2E model tests via Pytest
 - `completed/langgraph-phase-7-validation-plan.md`
   - validation posture for Phase 7 E2E live tests
+- `completed/dspy-guardrail-phase-1-compilation.md`
+  - local SLM offline prompt Compilation
+- `completed/dspy-guardrail-phase-2-integration.md`
+  - Vaultless PII Guardrail runtime integration
+- `completed/dspy-guardrail-phase-3-live-e2e-tests.md`
+  - live E2E model tests for SLM + Guardrail + OpenAI
+- `completed/dspy-guardrail-validation-plan.md`
+  - validation posture for DSPy Guardrail integration
 
 Use `change-reports/` for substantial autonomous or semi-autonomous implementation passes after code starts landing.
