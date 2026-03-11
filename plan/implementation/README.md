@@ -26,8 +26,6 @@ Current implementation order:
 
 Current live documents:
 
-- `tooling-validation-plan.md`
-  - validation posture for tooling, guardrails, and thin local runtime checks
 - `change-reports/`
 
 Completed documents:
@@ -44,5 +42,11 @@ Completed documents:
   - PII guardrail and artifact generation nodes
 - `completed/langgraph-phase-4-live-model-wiring.md`
   - live model adapter and dependency injection
+- `completed/langgraph-phase-5-prompts-and-parsers.md`
+  - DSPy prompt templates and Pydantic output parsers
+- `completed/langgraph-phase-6-surfaces.md`
+  - FastAPI and Streamlit integrations
+- `completed/tooling-validation-plan.md`
+  - validation posture for tooling, guardrails, and thin local runtime checks
 
 Use `change-reports/` for substantial autonomous or semi-autonomous implementation passes after code starts landing.

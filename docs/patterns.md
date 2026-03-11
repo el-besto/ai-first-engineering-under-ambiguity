@@ -48,13 +48,7 @@ Use this precedence order when multiple docs overlap:
    - `plan/decisions/_langgraph-architecture-decisions.md`
    - `plan/death-claim/workshop-spec.md`
    - `plan/death-claim/steel-thread.md`
-   - `plan/implementation/repo-bootstrap-plan.md`
-   - `plan/implementation/tooling-validation-plan.md`
-   - `plan/implementation/acceptance-contract-plan.md`
-   - `plan/implementation/langgraph-phase-1-state.md`
-   - `plan/implementation/langgraph-phase-2-deterministic-triage.md`
-   - `plan/implementation/langgraph-phase-3-privacy-and-generation.md`
-   - `plan/implementation/langgraph-phase-4-live-model-wiring.md`
+   - `plan/implementation/README.md`
    - `plan/death-claim/tree-a-code-map.md`
    - `plan/death-claim/tree-a-worked-example.md`
 3. Upstream Lean-Clean standards:
@@ -88,13 +82,7 @@ Inspect these sources before updating this document:
 - `cspell.config.yaml`
 - `../lean-clean-code/lean-clean-python-style-guide/AGENT_REFERENCE.md`
 - `plan/decisions/_langgraph-architecture-decisions.md`
-- `plan/implementation/repo-bootstrap-plan.md`
-- `plan/implementation/tooling-validation-plan.md`
-- `plan/implementation/acceptance-contract-plan.md`
-- `plan/implementation/langgraph-phase-1-state.md`
-- `plan/implementation/langgraph-phase-2-deterministic-triage.md`
-- `plan/implementation/langgraph-phase-3-privacy-and-generation.md`
-- `plan/implementation/langgraph-phase-4-live-model-wiring.md`
+- `plan/implementation/README.md`
 - `plan/death-claim/process-understanding.md`
 - `plan/death-claim/workshop-spec.md`
 - `plan/death-claim/steel-thread.md`

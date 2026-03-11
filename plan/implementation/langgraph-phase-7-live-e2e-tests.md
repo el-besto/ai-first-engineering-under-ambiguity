@@ -12,7 +12,7 @@ This phase must adhere to the following established boundaries:
 
 - **Workshop spec:** `plan/death-claim/workshop-spec.md`
 - **PLAN_HUMAN_FINAL:** `.scratch/PLAN_HUMAN_FINAL.md` (Block 6 - Harden and Validate)
-- **Tooling Validation Plan:** `plan/implementation/tooling-validation-plan.md` (Live-Model Verification)
+- **Tooling Validation Plan:** `plan/implementation/completed/tooling-validation-plan.md` (Live-Model Verification)
 
 ## Out Of Scope
 
