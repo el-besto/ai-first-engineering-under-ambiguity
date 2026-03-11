@@ -73,7 +73,7 @@ api: ## Boot the thin FastAPI ingress shell
 	uv run uvicorn drivers.api.main:app --reload --port 8000
 
 ui: ## Boot the thin Streamlit workbench shell
-	uv run streamlit run drivers/ui/streamlit/app.py
+	PYTHONPATH=. uv run streamlit run drivers/ui/streamlit/streamlit_app.py
 
 test: ## Execute the current test suite via pytest
 	uv run pytest tests/ -v

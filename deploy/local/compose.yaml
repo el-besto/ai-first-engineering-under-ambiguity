@@ -18,7 +18,7 @@ services:
     build:
       context: ../../
       dockerfile: Dockerfile
-    command: ["uv", "run", "streamlit", "run", "drivers/ui/streamlit/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    command: ["uv", "run", "streamlit", "run", "drivers/ui/streamlit/streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
     ports:
       - "8501:8501"
     env_file:

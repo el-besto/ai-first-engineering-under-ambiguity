@@ -24,6 +24,7 @@ words:
   - Genalog
   - HITL
   - htmlcov
+  - httpx
   - inmem
   - inspectable
   - Langchain
@@ -42,14 +43,18 @@ words:
   - pytest
   - PYTHONDONTWRITEBYTECODE
   - Pythonic
+  - pythonpath
   - PYTHONUNBUFFERED
+  - pyyaml
   - Recompiles
   - rollups
   - Streamlit
+  - structlog
   - Synthea
   - tamasfe
   - Tiltfile
   - Touchpoint
+  - typer
   - uvicorn
   - venv
   - Xfrozen

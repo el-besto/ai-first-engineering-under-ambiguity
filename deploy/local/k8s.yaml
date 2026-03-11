@@ -52,7 +52,7 @@ spec:
       containers:
         - name: app
           image: bestow-poc-app
-          command: ["uv", "run", "streamlit", "run", "drivers/ui/streamlit/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+          command: ["uv", "run", "streamlit", "run", "drivers/ui/streamlit/streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
           envFrom:
             - secretRef:
                 name: bestow-env
