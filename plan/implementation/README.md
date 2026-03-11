@@ -50,5 +50,7 @@ Completed documents:
   - validation posture for tooling, guardrails, and thin local runtime checks
 - `completed/langgraph-phase-7-live-e2e-tests.md`
   - live E2E model tests via Pytest
+- `completed/langgraph-phase-7-validation-plan.md`
+  - validation posture for Phase 7 E2E live tests
 
 Use `change-reports/` for substantial autonomous or semi-autonomous implementation passes after code starts landing.
