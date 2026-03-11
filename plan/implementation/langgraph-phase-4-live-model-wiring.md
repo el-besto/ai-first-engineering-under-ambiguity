@@ -62,6 +62,7 @@ Implement in this order:
 
 Verify the completion of this phase with evidence that:
 
+- Review `docs/patterns.md` against the implemented changes. If any rule or architectural pattern is violated, halt and prompt the user to decide on resolution versus explicit waiver.
 - `docker compose up` or `tilt up` locally mounts Streamlit and FastAPI successfully.
 - Submitting the 3 known fixtures directly inside Streamlit yields the 3 separate, correct deterministic branch dispositions.
 - Live LLM artifacts are generated securely without leaking physical PII (verified via LangSmith/Studio trace inspection if enabled locally).

@@ -6,6 +6,7 @@ This file is the single source of truth for repository-specific agent instructio
 
 ### 1.1 Git Commit and Push Policy
 
+- Before you commit any code changes, you MUST read `docs/patterns.md` to verify no architectural or style rules were violated. If a discrepancy or violation is found, you must STOP, identify the exact discrepancy to the user, and ask them if they want to resolve it or proceed with an explicit exception.
 - Never run `git commit` or `git push` without explicit user permission.
 - Never use `git commit --no-verify`.
 - If commit hooks modify files, re-check `git status`, re-stage the intended files, and rerun the commit.
