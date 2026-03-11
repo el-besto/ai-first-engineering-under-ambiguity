@@ -4,7 +4,7 @@
 
 - **Scenario:** Death Claim Triage (Tree A)
 - **Phase Goal:** Implement the `tokenize_pii` pre-model guardrail node, and build the `generate_artifacts` node with a Fake Model adapter to prove the pipeline securely.
-- **Status:** awaiting_review
+- **Status:** implemented
 
 ## Contract Inputs
 

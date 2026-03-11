@@ -5,6 +5,7 @@ from langgraph.graph.state import CompiledStateGraph
 
 from app.adapters.document_intake.protocol import DocumentStoreProtocol
 from app.adapters.evals.protocol import EvaluationRecorderProtocol
+from app.adapters.model.protocol import ModelAdapter
 from app.adapters.policy_lookup.protocol import PolicyLookupProtocol
 from app.adapters.review_queue.protocol import ReviewQueueProtocol
 from app.adapters.safety.protocol import PIIGuardrailAdapter
@@ -13,6 +14,12 @@ from app.interface_adapters.orchestrators.nodes.assess_triage_node import (
 )
 from app.interface_adapters.orchestrators.nodes.extract_facts_node import (
     extract_facts_node,
+)
+from app.interface_adapters.orchestrators.nodes.generate_artifacts_node import (
+    build_generate_artifacts_node,
+)
+from app.interface_adapters.orchestrators.nodes.tokenize_pii_node import (
+    build_tokenize_pii_node,
 )
 from app.interface_adapters.orchestrators.triage_graph_state import TriageGraphState
 
@@ -25,6 +32,7 @@ class AdapterRegistry:
     policy_lookup: PolicyLookupProtocol
     review_queue: ReviewQueueProtocol
     pii_guardrail: PIIGuardrailAdapter
+    model: ModelAdapter
     evaluation_recorder: EvaluationRecorderProtocol
 
 
@@ -38,6 +46,8 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
     # Define nodes
     workflow.add_node("extract_facts", extract_facts_node)
     workflow.add_node("assess_triage", assess_triage_node)
+    workflow.add_node("tokenize_pii", build_tokenize_pii_node(adapters.pii_guardrail))
+    workflow.add_node("generate_artifacts", build_generate_artifacts_node(adapters.model))
 
     # Basic linear flow for Phase 2
     workflow.add_edge(START, "extract_facts")
@@ -51,10 +61,13 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
         "assess_triage",
         route_disposition,
         {
-            "proceed": END,
-            "request_more_information": END,
-            "escalate_to_human_review": END,
+            "proceed": "tokenize_pii",
+            "request_more_information": "tokenize_pii",
+            "escalate_to_human_review": "tokenize_pii",
         },
     )
+
+    workflow.add_edge("tokenize_pii", "generate_artifacts")
+    workflow.add_edge("generate_artifacts", END)
 
     return workflow.compile()
