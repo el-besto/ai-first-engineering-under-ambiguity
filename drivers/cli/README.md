@@ -12,16 +12,17 @@ This directory contains the `cli` driver for the Bestow backend. It is built usi
 
 ## Command Reference
 
-| Namespace | Command  | Description                                                                   |
-|:----------|:---------|:------------------------------------------------------------------------------|
-| `health`  | `deps`   | Check required local system binaries (Docker, Tilt, uv) and `.env`.           |
-| `health`  | `api`    | Ping the local FastAPI ingress to ensure it is healthy.                       |
-| `infra`   | `status` | List running Docker containers associated with the project.                   |
-| `infra`   | `clean`  | Tear down local infrastructure running under `tilt`.                          |
-| `llm`     | `quota`  | Check API key quota boundaries for the configured OpenAI organization.        |
-| `llm`     | `ping`   | Measure the latency to the `gpt-4o-mini` chat completion endpoint.            |
-| `graph`   | `run`    | Execute the Triage StateGraph locally against a predefined fake scenario.     |
-| `graph`   | `trace`  | Generate and export a `.png` topology diagram of the current LangGraph state. |
+| Namespace | Command                  | Description                                                                   |
+|:----------|:-------------------------|:------------------------------------------------------------------------------|
+| `health`  | `deps`                   | Check required local system binaries (Docker, Tilt, uv) and `.env`.           |
+| `health`  | `api`                    | Ping the local FastAPI ingress to ensure it is healthy.                       |
+| `infra`   | `status`                 | List running Docker containers associated with the project.                   |
+| `infra`   | `clean`                  | Tear down local infrastructure running under `tilt`.                          |
+| `infra`   | `generate-guardrail-key` | Generate a random 32-byte hex key for Vaultless Guardrail and write to .env.  |
+| `llm`     | `quota`                  | Check API key quota boundaries for the configured OpenAI organization.        |
+| `llm`     | `ping`                   | Measure the latency to the `gpt-4o-mini` chat completion endpoint.            |
+| `graph`   | `run`                    | Execute the Triage StateGraph locally against a predefined fake scenario.     |
+| `graph`   | `trace`                  | Generate and export a `.png` topology diagram of the current LangGraph state. |
 
 ---
 
@@ -55,6 +56,12 @@ Destroy the currently running local cluster entirely:
 
 ```bash
 ./cli infra clean
+```
+
+Generate a secure secret key for the local PII Guardrail and automatically insert it into your `.env` file:
+
+```bash
+./cli infra generate-guardrail-key
 ```
 
 ### 🧠 LLM Usage & Connectivity

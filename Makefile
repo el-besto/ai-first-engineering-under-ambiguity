@@ -84,6 +84,9 @@ test-live: ## Execute the live E2E test suite via pytest against OpenAI API
 compile-dspy: ## Compile the DSPy PII Guardrail locally against Ollama
 	uv run python scripts/compile_dspy_guardrail.py
 
+generate-guardrail-key: ## Generate a random 32-byte hex key for the Vaultless Guardrail and save to .env
+	uv run python -m drivers.cli.main infra generate-guardrail-key
+
 tilt: ## Start Tilt for local infrastructure deployment
 	tilt up
 

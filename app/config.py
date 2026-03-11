@@ -31,3 +31,6 @@ class BaseConfig(BaseSettings):
     llm_guardrail_model: str | None = Field(default=None, description="Model to use for PII redaction")
     llm_guardrail_api_base: str | None = Field(default=None, description="Base URL for the guardrail model")
     llm_guardrail_api_key: str | None = Field(default=None, repr=False, description="API key for the guardrail model")
+    llm_guardrail_secret_key: str | None = Field(
+        default=None, repr=False, description="32-byte secret key for vaultless AES-GCM PII encryption"
+    )

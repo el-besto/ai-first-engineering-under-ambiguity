@@ -3,6 +3,7 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - AESGCM
   - agentic
   - ainvoke
   - anonymization
@@ -56,6 +57,7 @@ words:
   - Touchpoint
   - typer
   - uvicorn
+  - Vaultless
   - venv
   - Xfrozen
   - yzhang

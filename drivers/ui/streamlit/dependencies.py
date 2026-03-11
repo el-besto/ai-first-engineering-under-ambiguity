@@ -1,3 +1,6 @@
+import os
+
+import dspy
 import streamlit as st
 from langgraph.graph.state import CompiledStateGraph
 
@@ -8,6 +11,7 @@ from app.adapters.model.live_chat_model_adapter import LiveChatModelAdapter
 from app.adapters.policy_lookup.fake import FakePolicyLookup
 from app.adapters.review_queue.fake import FakeReviewQueue
 from app.adapters.safety.fake import FakePIIGuardrail
+from app.adapters.safety.vaultless_guardrail import VaultlessPIIGuardrail
 from app.interface_adapters.orchestrators.triage_graph_factory import (
     AdapterRegistry,
     build_triage_graph,
@@ -32,11 +36,30 @@ def get_triage_graph(config: UIConfig) -> CompiledStateGraph:
     else:
         model_adapter = FakeModelAdapter()
 
+    if config.llm_guardrail_secret_key:
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
+
+        # Configure global DSPy LM if provided
+        if config.llm_guardrail_model:
+            lm = dspy.LM(
+                config.llm_guardrail_model,
+                api_base=config.llm_guardrail_api_base or "http://localhost:11434",
+                api_key=config.llm_guardrail_api_key or "",
+            )
+            dspy.settings.configure(lm=lm)
+
+        pii_guardrail = VaultlessPIIGuardrail(
+            secret_key_hex=config.llm_guardrail_secret_key, compiled_model_path=model_path
+        )
+    else:
+        pii_guardrail = FakePIIGuardrail()
+
     adapters = AdapterRegistry(
         document_store=FakeDocumentStore(),
         policy_lookup=FakePolicyLookup(),
         review_queue=FakeReviewQueue(),
-        pii_guardrail=FakePIIGuardrail(),
+        pii_guardrail=pii_guardrail,
         model=model_adapter,
         evaluation_recorder=FakeEvaluationRecorder(),
     )
