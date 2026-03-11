@@ -337,11 +337,12 @@ Use this section to record how `bestow-poc` adopts Lean-Clean LLM, LangGraph, an
 - Repo-local v1 topology preference: keep the workflow phase-oriented and legible. Current preferred shape is deterministic extraction and triage first, then `tokenize_pii`, then disposition-specific artifact generation (`D3` for deterministic routing; repo-local topology choice from `plan/decisions/_langgraph-architecture-decisions.md`)
 - Conditional routing rule: branch on deterministic state such as `disposition`, not on unstructured model output (Lean-Clean `D3`)
 
-#### 7.1.2 Model Adapters And Structured Output
+#### 7.1.2 Model Adapters, Structured Output, and Prompt Boundaries
 
 - Prompt or signature location: planned `app/adapters/model/prompts/`, with parsers in planned `app/adapters/model/parsers/` and live providers in planned `app/adapters/model/providers/`
-- Structured output rule: use explicit parsers or small adapter-local schemas and map immediately into internal artifact types (Lean-Clean `B9`, `C3`)
-- Model organization rule: deterministic routing, completeness, ambiguity, reviewability, and no-adjudication policy stay outside the model; external LLM calls are for bounded artifact generation only (Lean-Clean `D3`; repo-local generation boundary from `plan/decisions/_langgraph-architecture-decisions.md`)
+- Boundary rule: Models and prompts must stay completely out of domain entities, use-cases, and graph state (Lean-Clean `Golden Rule 6`, `C8`)
+- Structured output rule: use explicit parsers or small adapter-local Pydantic schemas and map immediately into internal dataclass types. Never import Pydantic into the domain (Lean-Clean `B9`, `C3`, `Golden Rule 3`)
+- LLM payload rule: Build `openai_payload` strings/dicts only at the gateway boundaries. Do not merge `**kwargs` strings inside use-cases or graph nodes (Lean-Clean `B1`, `Golden Rule 1`)
 - Provider injection rule: live provider adapters are opt-in via dependency wiring and environment configuration; tests and default local runs keep a fake adapter path available (Lean-Clean `C4`, `C8`; repo-local live-wiring plan in `plan/implementation/langgraph-phase-4-live-model-wiring.md`)
 - Fake-vs-live rule: preserve the same protocol boundary for fake and live model adapters so acceptance tests, Streamlit, and FastAPI do not fork behavior (Lean-Clean `C4`, `A7`)
 
@@ -352,7 +353,20 @@ Use this section to record how `bestow-poc` adopts Lean-Clean LLM, LangGraph, an
 #### 7.1.4 DSPy And Local SLM
 
 - DSPy rule: if DSPy is introduced, keep it feature-local and adapter-facing, behind the same protocol boundaries as any other model integration. Do not use DSPy to replace deterministic triage routing or policy enforcement (Lean-Clean `B14`, `C8`, `D3`)
+- Signature Design rule: Treat DSPy Signatures as comprehensive instruction sets, not just I/O contracts. Include a Role Definition, Goal Statement, Process Steps, and Decision Rules in the signature docstring (Elysia Pattern 1).
+- Typed Output rule: Use DSPy typed `OutputField` with Pydantic models for automatic JSON → object parsing at the adapter boundary. Do not manually parse JSON dicts (DSPy Reference).
+- Reasoning Fields rule: Include a `reasoning: str` OutputField to ensure LLM transparency and chain-of-thought before it generates the final disposition or artifacts (Elysia Pattern 4).
 - Stretch-path rule: DSPy or local SLM work is confined to the privacy seam and must remain swappable behind `PIIGuardrailAdapter` (repo-local stretch path, not a universal Lean-Clean requirement)
+
+#### 7.1.5 Prompt Engineering (Elysia Patterns)
+
+If writing raw prompts or DSPy Signatures, apply these Elysia production patterns:
+
+- **Comprehensive Context:** Define the persona, goal, and step-by-step reasoning process directly in the prompt/signature docstring.
+- **Detailed Field Descriptions:** Provide extensive `desc=` kwargs for DSPy fields. Show concrete formats, edge cases (e.g., "If no result, return empty list []"), and constraints.
+- **Explicit "Do NOT" rules:** List known failure modes or anti-patterns explicitly in the prompt (e.g., "Do NOT create generic roles like 'Role 1'").
+- **Multi-Output Fields:** Break complex generation tasks into multiple distinct OutputFields rather than asking for one massive JSON blob.
+- **Input Context:** Use `InputField` descriptions to explain *how* the LLM should use the input data, not just what it is.
 
 ### 7.2 API-Specific Patterns
 
@@ -490,6 +504,113 @@ def map_state_to_triage_result(state: TriageGraphState) -> TriageResult:
 ```
 
 This is correct because additive fields use explicit reducers and the graph state is mapped back into the domain result at the edge, consistent with Lean-Clean `A2.1` and `B8`.
+
+```python
+# additional canonical example: structured LLM output mapped immediately at the boundary (Lean-Clean Rule B9/C3)
+from pydantic import BaseModel, Field
+
+# 1. Pydantic schema lives ONLY in the adapter/gateway
+class RequirementsChecklistSchema(BaseModel):
+    items: list[str] = Field(description="Missing documents needed")
+
+# 2. LangChain parses against the Pydantic schema
+result = llm.with_structured_output(RequirementsChecklistSchema).invoke(prompt)
+
+# 3. Map immediately into the frozen Domain dataclass before returning to use-cases/graph
+return CompletenessAssessment(
+    is_complete=False,
+    missing_items=tuple(result.items)
+)
+```
+
+This is correct because the vendor-specific Pydantic schema and the LangChain parsing mechanics are fully contained in the adapter, preventing Pydantic from bleeding into the immutable Domain layer (Lean-Clean `Golden Rule 3`).
+
+```python
+# additional canonical example: Elysia-style DSPy Signature (Lean-Clean Rule 7.1.5)
+import dspy
+
+class AssessReviewability(dspy.Signature):
+    """
+    You are a triage routing agent. Your goal is to determine if a claim contains enough
+    legible information for a human to review it, or if it must be rejected outright.
+
+    Core Analysis Process:
+    1. Read the parsed OCR text of the claim documents
+    2. Check if the core identifying fields (Name, SSN, Date of Death) are legible
+    3. Determine if the document represents a death claim
+
+    Decision Rules:
+    - If the document is completely illegible, it is NOT reviewable
+    - If it is clear the document is NOT a death claim (e.g. it is a car insurance policy), it is NOT reviewable
+    """
+
+    ocr_text: str = dspy.InputField(
+        desc="Parsed text from the claimant's uploaded documents. Use this to determine if the text is legible and relevant."
+    )
+
+    reasoning: str = dspy.OutputField(
+        desc="""
+        A 2-3 sentence explanation of your decision.
+
+        Your reasoning should address:
+        - Whether the text was legible
+        - Whether the document type was correct
+
+        Example: "The uploaded document is a clear, legible scan of a death certificate. Therefore it is reviewable."
+        """
+    )
+
+    is_reviewable: bool = dspy.OutputField(
+        desc="True if a human can review this claim, False if it must be rejected as illegible/irrelevant."
+    )
+```
+
+This is correct because it treats the Signature as a comprehensive instruction set. It defines the role, goal, and rules in the docstring. It uses `desc=` on every field to explain formatting and constraints, and it requires a `reasoning` field for transparency BEFORE the final boolean decision is made.
+
+```python
+# additional canonical example: Layered Guardrails (Lean-Clean Rule D2)
+@dataclass(slots=True, frozen=True)
+class GuardrailDecision:
+    allowed: bool
+    reason: str | None = None
+
+def pre_model_guardrail(user_text: str) -> GuardrailDecision:
+    if "password" in user_text.lower():
+        return GuardrailDecision(False, "Blocked before model call: sensitive input.")
+    return GuardrailDecision(True)
+
+def post_model_guardrail(answer: str, citations: tuple[str, ...]) -> GuardrailDecision:
+    if not citations:
+        return GuardrailDecision(False, "Blocked after model call: no citations.")
+    return GuardrailDecision(True)
+```
+
+This is correct because guardrails are implemented as explicit, deterministic layers (pre-model, post-model, retrieval, output) rather than a single black-box LLM call or middleware hook.
+
+```python
+# additional canonical example: Deterministic Routing (Lean-Clean Rule D3)
+from enum import StrEnum
+
+class RouteName(StrEnum):
+    direct = "direct"
+    retrieve = "retrieve"
+    escalate = "escalate"
+
+@dataclass(slots=True, frozen=True)
+class RouterDecision:
+    route: RouteName
+    reason: str
+
+def route_request(user_text: str) -> RouterDecision:
+    text = user_text.lower()
+    if "approve" in text or "exception" in text:
+        return RouterDecision(RouteName.escalate, "Human decision required.")
+    if "policy" in text:
+        return RouterDecision(RouteName.retrieve, "Explicit knowledge-backed route.")
+    return RouterDecision(RouteName.direct, "Simple request.")
+```
+
+This is correct because the system defaults to deterministic routing based on bounded `StrEnum` outcomes instead of asking an LLM to hallucinate a path. Routing logic is testable and explicit.
 
 ### 9.2 Anti-Patterns
 
