@@ -9,7 +9,7 @@ This document specifically owns validation checks ensuring the completed graph a
 ## Current Source Inputs
 
 - Root tracker: `plan/death-claim/workshop-spec.md`
-- Phase tracker: `plan/implementation/langgraph-phase-7-live-e2e-tests.md`
+- Phase tracker: `plan/implementation/completed/langgraph-phase-7-live-e2e-tests.md`
 - Target slice: `tests/acceptance/features/test_live_e2e_triage.py`
 
 ## Validation Scope

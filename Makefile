@@ -76,7 +76,10 @@ ui: ## Boot the thin Streamlit workbench shell
 	PYTHONPATH=. uv run streamlit run drivers/ui/streamlit/streamlit_app.py
 
 test: ## Execute the current test suite via pytest
-	uv run pytest tests/ -v
+	uv run pytest -m "not live" tests/ -v
+
+test-live: ## Execute the live E2E test suite via pytest against OpenAI API
+	uv run pytest -m live tests/ -v
 
 tilt: ## Start Tilt for local infrastructure deployment
 	tilt up
