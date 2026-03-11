@@ -24,6 +24,12 @@ app = typer.Typer(help="LangGraph debugging and execution tools.")
 
 def get_cli_triage_graph():
     """Builds the triage graph for CLI execution."""
+    import os
+
+    import dspy
+
+    from app.adapters.safety.vaultless_guardrail import VaultlessPIIGuardrail
+
     if settings.llm_main_api_key:
         model_adapter = LiveChatModelAdapter(
             model_name="gpt-4o-mini",
@@ -32,11 +38,27 @@ def get_cli_triage_graph():
     else:
         model_adapter = FakeModelAdapter()
 
+    if settings.llm_guardrail_secret_key:
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
+        if settings.llm_guardrail_model:
+            lm = dspy.LM(
+                settings.llm_guardrail_model,
+                api_base=settings.llm_guardrail_api_base or "http://localhost:11434",
+                api_key=settings.llm_guardrail_api_key,
+            )
+            dspy.settings.configure(lm=lm)
+        pii_guardrail = VaultlessPIIGuardrail(
+            secret_key_hex=settings.llm_guardrail_secret_key, compiled_model_path=model_path
+        )
+    else:
+        pii_guardrail = FakePIIGuardrail()
+
     adapters = AdapterRegistry(
         document_store=FakeDocumentStore(),
         policy_lookup=FakePolicyLookup(),
         review_queue=FakeReviewQueue(),
-        pii_guardrail=FakePIIGuardrail(),
+        pii_guardrail=pii_guardrail,
         model=model_adapter,
         evaluation_recorder=FakeEvaluationRecorder(),
     )

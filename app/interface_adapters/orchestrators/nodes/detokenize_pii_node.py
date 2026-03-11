@@ -34,9 +34,6 @@ def build_detokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
 
         try:
             # Detokenize only the state fields that may contain model-visible tokens.
-            if "document_facts" in state:
-                updates["document_facts"] = recursive_detokenize(state["document_facts"])
-
             if case_summary := state.get("case_summary"):
                 updates["case_summary"] = recursive_detokenize(case_summary)
 

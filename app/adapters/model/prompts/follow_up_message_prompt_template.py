@@ -16,6 +16,8 @@ Your goal is to draft a follow-up message to a claimant requesting missing docum
 - Be clear about what exactly is missing.
 - If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
   Do not replace it with "anonymized" or omit it.
+- If the checklist facts appear heavily tokenized or lack specific details, you MUST still generate a valid JSON
+  response containing a generic message. Do NOT refuse to respond.
 
 # Context
 Missing Items / Checklist Facts:

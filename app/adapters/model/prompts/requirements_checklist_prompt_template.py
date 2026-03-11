@@ -14,6 +14,8 @@ Your goal is to generate a list of missing requirements based on the policy and 
 - Do NOT adjudicate or evaluate the claim's validity.
 - If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
   Do not replace it with "anonymized" or omit it.
+- If the facts appear heavily tokenized or lack specific details, you MUST still generate a valid JSON
+  response containing the best possible checklist. Do NOT refuse to respond.
 
 # Context
 {checklist_facts}

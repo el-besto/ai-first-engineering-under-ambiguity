@@ -14,5 +14,5 @@ def render_bundle_viewer(bundle: ClaimIntakeBundle):
         return
 
     for doc_name, doc_text in bundle.documents.items():
-        with st.expander(f"{doc_name.title().replace('_', ' ')} Text"):
+        with st.expander(f"{doc_name.title().replace('_', ' ')} Text", expanded=True):
             st.text(doc_text)

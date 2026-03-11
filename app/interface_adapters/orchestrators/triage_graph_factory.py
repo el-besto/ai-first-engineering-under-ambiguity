@@ -18,8 +18,14 @@ from app.interface_adapters.orchestrators.nodes.detokenize_pii_node import (
 from app.interface_adapters.orchestrators.nodes.extract_facts_node import (
     extract_facts_node,
 )
-from app.interface_adapters.orchestrators.nodes.generate_artifacts_node import (
-    build_generate_artifacts_node,
+from app.interface_adapters.orchestrators.nodes.generate_hitl_artifacts_node import (
+    build_generate_hitl_artifacts_node,
+)
+from app.interface_adapters.orchestrators.nodes.generate_missing_info_artifacts_node import (
+    build_generate_missing_info_artifacts_node,
+)
+from app.interface_adapters.orchestrators.nodes.generate_proceed_artifacts_node import (
+    build_generate_proceed_artifacts_node,
 )
 from app.interface_adapters.orchestrators.nodes.tokenize_pii_node import (
     build_tokenize_pii_node,
@@ -50,7 +56,9 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
     workflow.add_node("extract_facts", extract_facts_node)
     workflow.add_node("assess_triage", assess_triage_node)
     workflow.add_node("tokenize_pii", build_tokenize_pii_node(adapters.pii_guardrail))
-    workflow.add_node("generate_artifacts", build_generate_artifacts_node(adapters.model))
+    workflow.add_node("generate_proceed_artifacts", build_generate_proceed_artifacts_node(adapters.model))
+    workflow.add_node("generate_missing_info_artifacts", build_generate_missing_info_artifacts_node(adapters.model))
+    workflow.add_node("generate_hitl_artifacts", build_generate_hitl_artifacts_node(adapters.model))
     workflow.add_node("detokenize_pii", build_detokenize_pii_node(adapters.pii_guardrail))
 
     # Basic linear flow for Phase 2
@@ -71,8 +79,19 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
         },
     )
 
-    workflow.add_edge("tokenize_pii", "generate_artifacts")
-    workflow.add_edge("generate_artifacts", "detokenize_pii")
+    workflow.add_conditional_edges(
+        "tokenize_pii",
+        route_disposition,
+        {
+            "proceed": "generate_proceed_artifacts",
+            "request_more_information": "generate_missing_info_artifacts",
+            "escalate_to_human_review": "generate_hitl_artifacts",
+        },
+    )
+
+    workflow.add_edge("generate_proceed_artifacts", "detokenize_pii")
+    workflow.add_edge("generate_missing_info_artifacts", "detokenize_pii")
+    workflow.add_edge("generate_hitl_artifacts", "detokenize_pii")
     workflow.add_edge("detokenize_pii", END)
 
     return workflow.compile()

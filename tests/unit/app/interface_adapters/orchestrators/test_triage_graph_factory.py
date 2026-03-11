@@ -34,7 +34,10 @@ def test_build_triage_graph_compiles_successfully():
         "extract_facts",
         "assess_triage",
         "tokenize_pii",
-        "generate_artifacts",
+        "generate_proceed_artifacts",
+        "generate_missing_info_artifacts",
+        "generate_hitl_artifacts",
+        "detokenize_pii",
     ]
 
     for node in expected_nodes:

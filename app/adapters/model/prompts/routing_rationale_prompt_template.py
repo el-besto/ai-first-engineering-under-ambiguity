@@ -15,6 +15,8 @@ Your goal is to draft an internal routing rationale explaining why a claim is be
 - Explain WHAT makes the claim ambiguous or reviewable.
 - If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
   Do not replace it with "anonymized" or omit it.
+- If the rationale facts appear heavily tokenized or lack specific details, you MUST still generate a valid JSON
+  response containing a generic rationale. Do NOT refuse to respond.
 
 # Context
 Escalation Facts:

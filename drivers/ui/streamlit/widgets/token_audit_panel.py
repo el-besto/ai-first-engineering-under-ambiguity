@@ -11,12 +11,23 @@ def render_token_audit_panel(state: TriageGraphState):
         st.warning("No bundle found in state to audit.")
         return
 
-    st.success("The underlying text was tokenized for PII BEFORE processing by the LLM.")
+    raw_facts = state.get("document_facts")
+    tokenized_facts = state.get("tokenized_document_facts")
 
-    if not bundle.documents:
-        st.write("No documents to display.")
+    if not raw_facts or not tokenized_facts:
+        st.info("Waiting for facts to be extracted and tokenized...")
         return
 
-    for doc_name, doc_text in bundle.documents.items():
-        with st.expander(f"{doc_name.title().replace('_', ' ')} (Scrubbed Text)"):
-            st.text(doc_text)
+    st.success(
+        "The extracted facts were tokenized for PII BEFORE being sent to the LLM. "
+        "The tokenized facts represent the payload safely passed to the generative models."
+    )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("##### Original Facts")
+        st.json(raw_facts)
+
+    with col2:
+        st.markdown("##### Tokenized Facts (Model Payload)")
+        st.json(tokenized_facts)

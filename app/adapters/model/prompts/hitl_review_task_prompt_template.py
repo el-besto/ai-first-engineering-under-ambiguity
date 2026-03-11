@@ -15,6 +15,8 @@ Your goal is to draft a task description for a human-in-the-loop (HITL) reviewer
 - Instruct the reviewer on what to verify or investigate.
 - If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
   Do not replace it with "anonymized" or omit it.
+- If the task facts appear heavily tokenized or lack specific details, you MUST still generate a valid JSON
+  response containing a generic task description. Do NOT refuse to respond.
 
 # Context
 Task Facts:

@@ -3,13 +3,7 @@ import uuid
 import streamlit as st
 
 from app.infrastructure.telemetry.logger import bind_context, clear_context, configure_logging, get_logger
-from drivers.ui.config import UIConfig
-
-
-@st.cache_resource
-def get_config() -> UIConfig:
-    return UIConfig()
-
+from drivers.ui.config import get_config
 
 config = get_config()
 

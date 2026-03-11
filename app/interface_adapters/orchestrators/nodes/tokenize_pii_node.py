@@ -10,10 +10,8 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
     def tokenize_pii_node(state: TriageGraphState) -> dict[str, Any]:
         """
         Tokenizes PII in document_facts before passing to generative model nodes.
-        Places tokenized output in 'document_facts' to replace sensitive data,
-        or into a new field depending on state. For now, we update 'document_facts'
-        with tokenized data to prevent leakage, but we should make sure we don't
-        lose the original facts if needed elsewhere.
+        Places tokenized output in 'tokenized_document_facts' to preserve the original
+        'document_facts' for internal use.
         """
         logger = get_logger(__name__).bind(node="tokenize_pii")
         op_log = logger.bind(operation="tokenize_pii")
@@ -45,7 +43,7 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
             tokenized_facts = recursive_tokenize(facts)
             log.info("completed", tokenized=True)
             return {
-                "document_facts": tokenized_facts,
+                "tokenized_document_facts": tokenized_facts,
             }
         except Exception as e:
             log_exception(log, "failed", e)

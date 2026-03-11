@@ -18,6 +18,7 @@ class TriageGraphState(TypedDict, total=False):
 
     # Extracted data and logic routing properties
     document_facts: dict
+    tokenized_document_facts: dict
     is_complete: bool
     is_ambiguous: bool
 

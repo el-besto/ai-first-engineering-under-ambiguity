@@ -22,6 +22,10 @@ spec:
           env:
             - name: LANGSMITH_TRACING
               value: "false"
+            - name: PYTHONPATH
+              value: "."
+            - name: LLM_GUARDRAIL_API_BASE
+              value: "http://ollama:11434"
           ports:
             - containerPort: 8501
 ---

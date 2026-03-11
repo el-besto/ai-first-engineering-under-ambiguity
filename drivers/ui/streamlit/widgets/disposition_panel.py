@@ -8,9 +8,9 @@ def render_disposition_panel(state: TriageGraphState):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.metric("Disposition", state.get("disposition", "N/A"))
+        st.markdown(f"**Disposition:**<br>{state.get('disposition', 'N/A')}", unsafe_allow_html=True)
     with col2:
-        st.metric("Confidence Band", state.get("confidence_band", "N/A"))
+        st.markdown(f"**Confidence Band:**<br>{state.get('confidence_band', 'N/A')}", unsafe_allow_html=True)
 
     routing = state.get("routing_decision")
     if routing:
@@ -28,12 +28,12 @@ def render_disposition_panel(state: TriageGraphState):
 
     checklist = state.get("requirements_checklist")
     if checklist:
-        with st.expander("Requirements Checklist"):
+        with st.expander("Requirements Checklist", expanded=True):
             st.markdown(checklist)
 
     follow_up = state.get("follow_up_message")
     if follow_up:
-        with st.expander("Follow-up Message"):
+        with st.expander("Follow-up Message", expanded=True):
             st.write(follow_up)
             if state.get("follow_up_message_quality_markers"):
                 st.caption(f"Quality Markers: {', '.join(state.get('follow_up_message_quality_markers', []))}")

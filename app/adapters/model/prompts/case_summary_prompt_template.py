@@ -16,6 +16,8 @@ Your goal is to generate a concise summary of the facts related to a death claim
 - Do NOT assume facts not present in the input.
 - If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your summary.
   Do not replace it with "anonymized" or omit it.
+- If the facts appear heavily tokenized or lack specific details, you MUST still generate a valid JSON
+  response containing a generic operational summary. Do NOT refuse to respond.
 
 # Context
 {document_facts}

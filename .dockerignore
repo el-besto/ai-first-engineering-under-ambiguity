@@ -7,6 +7,7 @@
 !README.md
 !app/
 !drivers/
+!tests/
 
 # Re-exclude compiled artifacts and caches that live inside the opt-in directories
 **/.pytest_cache/

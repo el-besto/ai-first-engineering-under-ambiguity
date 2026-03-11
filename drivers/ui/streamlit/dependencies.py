@@ -22,6 +22,7 @@ from drivers.ui.config import UIConfig
 logger = get_logger(__name__).bind(driver="StreamlitDependencies", surface="streamlit")
 
 
+# Bumping to clear cache
 @st.cache_resource
 def get_triage_graph(config: UIConfig) -> CompiledStateGraph:
     """
@@ -53,7 +54,7 @@ def get_triage_graph(config: UIConfig) -> CompiledStateGraph:
                 lm = dspy.LM(
                     config.llm_guardrail_model,
                     api_base=config.llm_guardrail_api_base or "http://localhost:11434",
-                    api_key=config.llm_guardrail_api_key or "",
+                    api_key=config.llm_guardrail_api_key,
                 )
                 dspy.settings.configure(lm=lm)
 

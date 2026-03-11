@@ -7,18 +7,14 @@ from app.infrastructure.telemetry.logger import get_logger, log_exception
 from app.interface_adapters.orchestrators.triage_graph_state import (
     TriageGraphState,
 )
-from drivers.ui.config import UIConfig
+from drivers.ui.config import get_config
 from drivers.ui.streamlit.dependencies import get_triage_graph
 from drivers.ui.streamlit.widgets.bundle_viewer import render_bundle_viewer
 from drivers.ui.streamlit.widgets.disposition_panel import render_disposition_panel
+from drivers.ui.streamlit.widgets.graph_topology_panel import render_graph_topology_panel
 from drivers.ui.streamlit.widgets.token_audit_panel import render_token_audit_panel
 
 logger = get_logger(__name__).bind(page="triage_workbench", surface="streamlit")
-
-
-@st.cache_resource
-def get_config() -> UIConfig:
-    return UIConfig()
 
 
 config = get_config()
@@ -71,10 +67,13 @@ if bundle_to_run:
 
         st.success("Triage Workflow Completed!")
 
-        tab1, tab2 = st.tabs(["Disposition", "Security Audit"])
+        tab1, tab2, tab3 = st.tabs(["Disposition", "Security Audit", "Graph Topology"])
 
         with tab1:
             render_disposition_panel(result)
 
         with tab2:
             render_token_audit_panel(result)
+
+        with tab3:
+            render_graph_topology_panel(graph)
