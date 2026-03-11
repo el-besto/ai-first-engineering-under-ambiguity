@@ -1,7 +1,9 @@
 # Patterns & Conventions - bestow-poc
 
-**Purpose:** Repo-wide v1 implementation policy for `bestow-poc`, grounded in the
-current death-claim steel thread and Lean-Clean Tree A baseline.
+**Purpose:** Repo-wide v1 implementation policy for `bestow-poc`, adopting the
+Lean-Clean standards from
+`lean-clean-python-style-guide/AGENT_REFERENCE.md` and narrowing them only where
+repo-local code, tests, decisions, or deferred-hardening items require it.
 
 **Maintenance Note:** This repo is still doc-first. When this document names
 paths under `app/`, `drivers/`, `deploy/`, or `tests/`, treat them as planned
@@ -55,20 +57,29 @@ Use this precedence order when multiple docs overlap:
 2. Narrow repo docs:
    - `AGENT_RULES.md`
    - `PROJECT_PLAN.md`
+   - `plan/decisions/_langgraph-architecture-decisions.md`
    - `plan/death-claim/workshop-spec.md`
    - `plan/death-claim/steel-thread.md`
    - `plan/implementation/repo-bootstrap-plan.md`
    - `plan/implementation/tooling-validation-plan.md`
    - `plan/implementation/acceptance-contract-plan.md`
+   - `plan/implementation/langgraph-phase-1-state.md`
+   - `plan/implementation/langgraph-phase-2-deterministic-triage.md`
+   - `plan/implementation/langgraph-phase-3-privacy-and-generation.md`
+   - `plan/implementation/langgraph-phase-4-live-model-wiring.md`
    - `plan/death-claim/tree-a-code-map.md`
    - `plan/death-claim/tree-a-worked-example.md`
-3. `docs/patterns.md`
-4. Historical or execution-draft artifacts under `.scratch/`
+3. Upstream Lean-Clean standards:
+   - `../lean-clean-code/lean-clean-python-style-guide/AGENT_REFERENCE.md`
+4. `docs/patterns.md`
+5. Historical or execution-draft artifacts under `.scratch/`
 
 Repo-specific exception:
 
 - For rules marked provisional in this document, the active defer register is
   `plan/death-claim/deferred-hardening.md`.
+- This file is a downstream adoption layer. It should pass Lean-Clean standards
+  into `bestow-poc`, then record repo-local exceptions or narrower choices.
 
 ---
 
@@ -77,7 +88,8 @@ Repo-specific exception:
 ### 2.1 Objective
 
 Keep `docs/patterns.md` accurate, minimal, and directly actionable for
-implementers and reviewers while the repo moves from planning to code.
+implementers and reviewers by passing Lean-Clean standards into this repo and
+documenting only the repo-local adoptions, exceptions, and deferments.
 
 ### 2.2 Inputs To Inspect
 
@@ -90,9 +102,15 @@ Inspect these sources before updating this document:
 - `.markdownlint-cli2.yaml`
 - `.editorconfig`
 - `cspell.config.yaml`
+- `../lean-clean-code/lean-clean-python-style-guide/AGENT_REFERENCE.md`
+- `plan/decisions/_langgraph-architecture-decisions.md`
 - `plan/implementation/repo-bootstrap-plan.md`
 - `plan/implementation/tooling-validation-plan.md`
 - `plan/implementation/acceptance-contract-plan.md`
+- `plan/implementation/langgraph-phase-1-state.md`
+- `plan/implementation/langgraph-phase-2-deterministic-triage.md`
+- `plan/implementation/langgraph-phase-3-privacy-and-generation.md`
+- `plan/implementation/langgraph-phase-4-live-model-wiring.md`
 - `plan/death-claim/process-understanding.md`
 - `plan/death-claim/workshop-spec.md`
 - `plan/death-claim/steel-thread.md`
@@ -175,9 +193,12 @@ Reviewers must confirm:
 - Cross-layer transformations happen in mappers, presenters, parsers, and
   adapter boundaries, not in entities or use-cases.
 - LangGraph owns workflow runtime, but business rules stay in entities and
-  use-cases.
-- Graph state must not carry raw PII, vendor clients, prompt templates, or
-  persistence handles.
+  use-cases (Lean-Clean `C8`).
+- Graph state must not carry vendor clients, prompt templates, or persistence
+  handles. Raw PII in graph state is a temporary deferred-hardening exception
+  only where already documented; do not widen that exception, and always place a
+  `tokenize_pii` boundary before any external model call (Lean-Clean `B8`,
+  `C8`; repo-local exception via `plan/death-claim/deferred-hardening.md`).
 - Every triage run ends in exactly one bounded disposition:
   `proceed`, `request_more_information`, or
   `escalate_to_human_review`.
@@ -298,6 +319,23 @@ Planned Tree A mapper and presenter locations:
   orchestrator, use-cases, and adapters
 - Ownership rule: drivers and dependency modules create and close external
   clients; entities, use-cases, and graph state do not own client lifecycle
+- LangGraph factory rule: compile graphs in a factory such as
+  `build_triage_graph(adapters: AdapterRegistry)` and inject adapters through
+  closures over a small registry object rather than through state or globals
+  (Lean-Clean `B8`, `C8`; current repo decision in
+  `plan/decisions/_langgraph-architecture-decisions.md`)
+- Graph state rule: prefer a flat `TypedDict` accumulation state with simple
+  values or known dataclasses; use `Annotated[..., operator.add]` reducers for
+  append-only list fields and map back into `TriageResult` at the boundary
+  (Lean-Clean `A2.1`, `B8`)
+- Graph branching rule: conditional edges branch on typed disposition or other
+  deterministic state, never on free-form model text (Lean-Clean `D3`)
+- Current v1 topology preference: this repo currently favors phase-oriented
+  nodes over one giant node, following the implementation-phase split of
+  deterministic extraction and routing first, then privacy and artifact
+  generation. This is a repo-local preference from
+  `plan/decisions/_langgraph-architecture-decisions.md`, not a universal
+  Lean-Clean rule.
 
 Primary planned delivery entrypoints:
 
@@ -404,19 +442,66 @@ triage results, reviewability flags, or escalation reasons.
 
 ### 7.1 AI / LLM Patterns
 
+Use this section to record how `bestow-poc` adopts Lean-Clean LLM, LangGraph,
+and future DSPy standards from
+`../lean-clean-code/lean-clean-python-style-guide/AGENT_REFERENCE.md`.
+
+#### 7.1.1 LangGraph Workflow Shape
+
+- Graph orchestration location: LangGraph factories and node wrappers live in
+  `app/interface_adapters/orchestrators/`; nodes stay thin and delegate to
+  use-cases or adapter-backed helpers (Lean-Clean `C8`, `B8`)
+- Graph state pattern: use a flat `TypedDict` for accumulation, keep reducers
+  explicit, and provide a dedicated mapper from graph state to `TriageResult`
+  (Lean-Clean `A2.1`, `B8`)
+- This repo currently uses `StateGraph` rather than `create_agent` because the
+  workflow has explicit state, branching, and future privacy/HITL steps
+  (Lean-Clean `B7`, `C8`; repo-local decision in
+  `plan/decisions/_langgraph-architecture-decisions.md`)
+- Repo-local v1 topology preference: keep the workflow phase-oriented and
+  legible. Current preferred shape is deterministic extraction and triage first,
+  then `tokenize_pii`, then disposition-specific artifact generation
+  (`D3` for deterministic routing; repo-local topology choice from
+  `plan/decisions/_langgraph-architecture-decisions.md`)
+- Conditional routing rule: branch on deterministic state such as
+  `disposition`, not on unstructured model output (Lean-Clean `D3`)
+
+#### 7.1.2 Model Adapters And Structured Output
+
 - Prompt or signature location: planned `app/adapters/model/prompts/`, with
   parsers in planned `app/adapters/model/parsers/` and live providers in planned
   `app/adapters/model/providers/`
 - Structured output rule: use explicit parsers or small adapter-local schemas
-  and map immediately into internal artifact types
+  and map immediately into internal artifact types (Lean-Clean `B9`, `C3`)
 - Model organization rule: deterministic routing, completeness, ambiguity,
   reviewability, and no-adjudication policy stay outside the model; external LLM
-  calls are for bounded artifact generation only
+  calls are for bounded artifact generation only (Lean-Clean `D3`; repo-local
+  generation boundary from
+  `plan/decisions/_langgraph-architecture-decisions.md`)
+- Provider injection rule: live provider adapters are opt-in via dependency
+  wiring and environment configuration; tests and default local runs keep a fake
+  adapter path available (Lean-Clean `C4`, `C8`; repo-local live-wiring plan in
+  `plan/implementation/langgraph-phase-4-live-model-wiring.md`)
+- Fake-vs-live rule: preserve the same protocol boundary for fake and live model
+  adapters so acceptance tests, Streamlit, and FastAPI do not fork behavior
+  (Lean-Clean `C4`, `A7`)
+
+#### 7.1.3 Evaluation And Validation
+
 - Evaluation and observability rule: keep a fake model adapter for deterministic
   tests, but validate the demo path with live provider-backed runs across the
-  representative cases or dispositions
+  representative cases or dispositions (Lean-Clean `D8`, `B12`; repo-local live
+  validation plan in `plan/implementation/langgraph-phase-4-live-model-wiring.md`)
+
+#### 7.1.4 DSPy And Local SLM
+
+- DSPy rule: if DSPy is introduced, keep it feature-local and adapter-facing,
+  behind the same protocol boundaries as any other model integration. Do not use
+  DSPy to replace deterministic triage routing or policy enforcement
+  (Lean-Clean `B14`, `C8`, `D3`)
 - Stretch-path rule: DSPy or local SLM work is confined to the privacy seam and
-  must remain swappable behind `PIIGuardrailAdapter`
+  must remain swappable behind `PIIGuardrailAdapter` (repo-local stretch path,
+  not a universal Lean-Clean requirement)
 
 ### 7.2 API-Specific Patterns
 
@@ -454,8 +539,14 @@ Rules:
 - raw claim context goes in; tokenized safe context and a reversible token map
   come out
 - raw PII must never cross the external model boundary
+- preferred topology is an explicit `tokenize_pii` step before any external
+  model-backed generation node (Lean-Clean `D2`; repo-local topology preference)
 - graph state, logs, and traces carry safe tokens or bounded identifiers rather
-  than raw claimant demographics or document text
+  than raw claimant demographics or document text after tokenization (Lean-Clean
+  `B8`, `D2`)
+- if a transitional phase temporarily keeps raw claim data in pre-generation
+  graph state, treat that as a deferred-hardening exception only and do not
+  expand the scope of that exception
 - the reversible token map stays in a bounded secure process
 - a local SLM stretch path may improve token detection, but it must not widen
   the boundary or absorb broader triage reasoning
@@ -490,7 +581,7 @@ Rules:
 ### 8.2 Unit / Acceptance / Integration Guidance
 
 - Unit tests: required for pure policies, entity helpers, reviewability logic,
-  no-adjudication checks, and the PII guardrail boundary
+  no-adjudication checks, graph-state mapping, and the PII guardrail boundary
 - Acceptance tests: required for behavior changes that affect representative
   triage outcomes, artifact generation, or disposition rules
 - Integration or smoke tests: required for the graph-owned path and for thin API
@@ -507,6 +598,8 @@ Rules:
   canonical representative case bundles
 - Mocks or spies: allowed only for narrow edge assertions when a fake would add
   needless complexity
+- Graph tests: keep graph compilation, state mapping, and deterministic routing
+  tests separate from live-model or surface-wiring tests
 - Anti-pattern: do not duplicate scenario truth across many one-off mocks or
   tests that drift away from the three canonical fixture bundles
 
@@ -536,6 +629,53 @@ async def post_triage(payload: DeathClaimRequest, deps: ApiDeps):
 This is correct because the driver stays thin, mapping happens once, the graph
 owns workflow runtime, and presentation stays at the edge.
 
+```python
+# additional canonical example: graph factory with closure-based adapter injection
+@dataclass(slots=True, frozen=True)
+class AdapterRegistry:
+    document_store: DocumentStoreProtocol
+    policy_lookup: PolicyLookupProtocol
+    review_queue: ReviewQueueProtocol
+    pii_guardrail: PIIGuardrailAdapter
+    evaluation_recorder: EvaluationRecorderProtocol
+
+
+def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
+    workflow = StateGraph(TriageGraphState)
+
+    def assess_triage(state: TriageGraphState) -> dict:
+        disposition = DecideTriageDispositionUseCase().execute(
+            state["is_complete"], state["is_ambiguous"]
+        )
+        return {"disposition": disposition}
+
+    workflow.add_node("assess_triage", assess_triage)
+    return workflow.compile()
+```
+
+This is correct because dependencies are injected through a registry and
+closures, the graph state stays transport-like, and business logic still lives
+behind typed use-cases, consistent with Lean-Clean `B8` and `C8`.
+
+```python
+# additional canonical example: state accumulation with explicit reducers and final mapping
+class TriageGraphState(TypedDict, total=False):
+    claim_bundle: ClaimIntakeBundle
+    disposition: str
+    escalation_reasons: Annotated[list[str], operator.add]
+
+
+def map_state_to_triage_result(state: TriageGraphState) -> TriageResult:
+    return TriageResult(
+        disposition=state.get("disposition", "unknown"),
+        escalation_reasons=state.get("escalation_reasons", []),
+    )
+```
+
+This is correct because additive fields use explicit reducers and the graph
+state is mapped back into the domain result at the edge, consistent with
+Lean-Clean `A2.1` and `B8`.
+
 ### 9.2 Anti-Patterns
 
 ```python
@@ -552,7 +692,19 @@ async def triage_node(state, openai_client):
 
 This is incorrect because it sends raw PII to an external model, hides routing
 policy inside the graph node, mutates untyped state, and bypasses the adapter
-and use-case boundaries.
+and use-case boundaries. That violates Lean-Clean `D3`, `B8`, and `C8`, plus
+the repo-local privacy boundary.
+
+```python
+# bad: graph state carries runtime dependencies and prompt ownership
+class BadGraphState(TypedDict):
+    claim_bundle: ClaimIntakeBundle
+    openai_client: Any
+    prompt_template: str
+```
+
+This is incorrect because graph state is for workflow data, not runtime clients
+or prompt management. That violates Lean-Clean `B8` and `C8`.
 
 ### 9.3 Migration Guidance
 
@@ -572,6 +724,9 @@ As code lands:
 
 - `2026-03-10`: Initial repo-specific version created from
   `.scratch/patterns.template.md` and the current death-claim planning docs
+- `2026-03-11`: Added concrete LangGraph, LLM-boundary, and future DSPy
+  implementation patterns based on `plan/implementation/` and the LangGraph
+  decision record
 
 ### 10.2 Open Gaps / TODOs
 
