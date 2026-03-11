@@ -4,7 +4,7 @@
 
 - **Scenario:** Death Claim Triage (Tree A)
 - **Phase Goal:** Build the aggregate nodes (`extract_facts`, `assess_triage`) using our deterministic use cases. Ensure routing logic exactly matches the three canonical fixtures.
-- **Status:** awaiting_review
+- **Status:** implemented
 
 ## Contract Inputs
 

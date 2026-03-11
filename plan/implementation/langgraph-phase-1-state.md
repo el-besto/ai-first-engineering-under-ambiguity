@@ -65,6 +65,7 @@ Implement in this order:
 
 Verify the completion of this phase with evidence that:
 
+- Review `docs/patterns.md` against the implemented changes. If any rule or architectural pattern is violated, halt and prompt the user to decide on resolution versus explicit waiver.
 - `make check` passes with Pyright confirming valid TypedDict structures.
 - Unit tests pass demonstrating successful instantiation of a `CompiledGraph`.
 - The graph diagram can be rendered or inspected.

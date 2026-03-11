@@ -17,6 +17,7 @@ class TriageGraphState(TypedDict, total=False):
     claim_bundle: ClaimIntakeBundle
 
     # Extracted data and logic routing properties
+    document_facts: dict
     is_complete: bool
     is_ambiguous: bool
 

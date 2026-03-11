@@ -8,6 +8,12 @@ from app.adapters.evals.protocol import EvaluationRecorderProtocol
 from app.adapters.policy_lookup.protocol import PolicyLookupProtocol
 from app.adapters.review_queue.protocol import ReviewQueueProtocol
 from app.adapters.safety.protocol import PIIGuardrailAdapter
+from app.interface_adapters.orchestrators.nodes.assess_triage_node import (
+    assess_triage_node,
+)
+from app.interface_adapters.orchestrators.nodes.extract_facts_node import (
+    extract_facts_node,
+)
 from app.interface_adapters.orchestrators.triage_graph_state import TriageGraphState
 
 
@@ -29,47 +35,26 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
     """
     workflow = StateGraph(TriageGraphState)
 
-    # Mock placeholder nodes that simply return the state untouched
-    # In future phases, these will be replaced with actual use cases / logic
-
-    def normalize_claim_bundle(state: TriageGraphState) -> dict:
-        return {}
-
-    def extract_document_facts(state: TriageGraphState) -> dict:
-        return {}
-
-    def assess_completeness(state: TriageGraphState) -> dict:
-        return {}
-
-    def detect_ambiguity(state: TriageGraphState) -> dict:
-        return {}
-
-    def decide_triage_disposition(state: TriageGraphState) -> dict:
-        return {}
-
-    def handle_request_more_information(state: TriageGraphState) -> dict:
-        return {}
-
-    def handle_escalate_to_human_review(state: TriageGraphState) -> dict:
-        return {}
-
     # Define nodes
-    workflow.add_node("normalize_claim_bundle", normalize_claim_bundle)
-    workflow.add_node("extract_document_facts", extract_document_facts)
-    workflow.add_node("assess_completeness", assess_completeness)
-    workflow.add_node("detect_ambiguity", detect_ambiguity)
-    workflow.add_node("decide_triage_disposition", decide_triage_disposition)
-    workflow.add_node("handle_request_more_information", handle_request_more_information)
-    workflow.add_node("handle_escalate_to_human_review", handle_escalate_to_human_review)
+    workflow.add_node("extract_facts", extract_facts_node)
+    workflow.add_node("assess_triage", assess_triage_node)
 
-    # Basic linear flow for mock/placeholder purposes
-    workflow.add_edge(START, "normalize_claim_bundle")
-    workflow.add_edge("normalize_claim_bundle", "extract_document_facts")
-    workflow.add_edge("extract_document_facts", "assess_completeness")
-    workflow.add_edge("assess_completeness", "detect_ambiguity")
-    workflow.add_edge("detect_ambiguity", "decide_triage_disposition")
+    # Basic linear flow for Phase 2
+    workflow.add_edge(START, "extract_facts")
+    workflow.add_edge("extract_facts", "assess_triage")
 
-    # For now, end at disposition. Branching logic comes in later phases.
-    workflow.add_edge("decide_triage_disposition", END)
+    # Conditional routing based on disposition
+    def route_disposition(state: TriageGraphState) -> str:
+        return state.get("disposition", "unknown")
+
+    workflow.add_conditional_edges(
+        "assess_triage",
+        route_disposition,
+        {
+            "proceed": END,
+            "request_more_information": END,
+            "escalate_to_human_review": END,
+        },
+    )
 
     return workflow.compile()
