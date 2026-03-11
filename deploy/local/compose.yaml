@@ -25,3 +25,15 @@ services:
       - ../../.env
     environment:
       - LANGSMITH_TRACING=false
+
+  ollama:
+    image: ollama/ollama:0.5.12
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # Ollama needs to start and then pull the model
+    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 5 && ollama pull llama3.1:8b && wait"]
+
+volumes:
+  ollama_data:

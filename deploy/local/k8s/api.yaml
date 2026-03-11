@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: app
+          image: bestow-poc-app
+          command: ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "uvicorn", "drivers.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+          envFrom:
+            - secretRef:
+                name: bestow-env
+                optional: true
+          env:
+            - name: LANGSMITH_TRACING
+              value: "false"
+          ports:
+            - containerPort: 8000
+            - containerPort: 5678
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 8000
+      targetPort: 8000

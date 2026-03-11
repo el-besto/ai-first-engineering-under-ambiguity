@@ -1,0 +1,37 @@
+{
+  "traces": [],
+  "train": [],
+  "demos": [
+    {
+      "augmented": true,
+      "document": "John Doe passed away on 01/15/2026. The beneficiary is Jane Doe. Policy #123456789.",
+      "pii_entities": "John Doe, 01/15/2026, Jane Doe, 123456789"
+    },
+    {
+      "augmented": true,
+      "document": "My son, Robert Smith, died from a heart attack. Please contact me at 555-0198.",
+      "pii_entities": "Robert Smith, 555-0198"
+    }
+  ],
+  "signature": {
+    "instructions": "You are an enterprise Vaultless PII Guardrail. Your goal is to identify and extract all Personally \nIdentifiable Information (PII) and sensitive entities from the document text.\n\nProcess Steps:\n1. Read the document text carefully.\n2. Identify sensitive entities: names, SSNs, financial accounts, dates of birth, phone numbers, emails.\n3. Return them exactly as they appear in the text, as a comma-separated list.\n\nDecision Rules:\n- If no PII is found, return an empty string.\n- Do NOT rephrase names or dates. Use exact string matches.",
+    "fields": [
+      {
+        "prefix": "Document:",
+        "description": "The source document snippet."
+      },
+      {
+        "prefix": "Pii Entities:",
+        "description": "Comma-separated list of exact string matches of sensitive entities (e.g., names, specific company names, SSNs, financial accounts, dates of birth)."
+      }
+    ]
+  },
+  "lm": null,
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.13",
+      "dspy": "3.1.3",
+      "cloudpickle": "3.1"
+    }
+  }
+}

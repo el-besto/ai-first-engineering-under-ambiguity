@@ -81,6 +81,9 @@ test: ## Execute the current test suite via pytest
 test-live: ## Execute the live E2E test suite via pytest against OpenAI API
 	uv run pytest -m live tests/ -v
 
+compile-dspy: ## Compile the DSPy PII Guardrail locally against Ollama
+	uv run python scripts/compile_dspy_guardrail.py
+
 tilt: ## Start Tilt for local infrastructure deployment
 	tilt up
 
