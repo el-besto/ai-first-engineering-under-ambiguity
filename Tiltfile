@@ -6,6 +6,11 @@ local_resource(
 
 docker_build('bestow-poc-app', '.', dockerfile='Dockerfile')
 
+import os
+
+if os.path.exists('.env'):
+    k8s_yaml(local('kubectl create secret generic bestow-env --from-env-file=.env --dry-run=client -o yaml', quiet=True))
+
 k8s_yaml('deploy/local/k8s.yaml')
 
 k8s_resource('api', port_forwards=['8000:8000'])

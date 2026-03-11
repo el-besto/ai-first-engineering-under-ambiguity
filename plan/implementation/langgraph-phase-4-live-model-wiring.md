@@ -55,7 +55,7 @@ The minimum supporting surface required to satisfy this phase:
 Implement in this order:
 
 1. Build `live_chat_model_adapter.py` using LangChain's generic `init_chat_model`.
-2. Update `.env.local.example` and `config` models to enforce explicit domain vars (`LLM_MAIN_MODEL`, `LLM_MAIN_API_KEY`, etc.).
+2. Update `.env.example` and `config` models to enforce explicit domain vars (`LLM_MAIN_MODEL`, `LLM_MAIN_API_KEY`, etc.).
 3. Construct the provider injection swap in `drivers/api/dependencies.py`. Ensure the `APIConfig` is used to map explicit vars to the model adapter endpoints.
 4. Construct the same provider injection swap in `drivers/ui/streamlit/dependencies.py` injecting `UIConfig`.
 5. Wrap `TriageGraphState` back into the final `TriageResult` at the driver boundary API mapping edge.

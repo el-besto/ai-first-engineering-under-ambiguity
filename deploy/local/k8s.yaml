@@ -15,6 +15,10 @@ spec:
         - name: app
           image: bestow-poc-app
           command: ["uv", "run", "uvicorn", "drivers.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+          envFrom:
+            - secretRef:
+                name: bestow-env
+                optional: true
           env:
             - name: LANGSMITH_TRACING
               value: "false"
@@ -49,6 +53,10 @@ spec:
         - name: app
           image: bestow-poc-app
           command: ["uv", "run", "streamlit", "run", "drivers/ui/streamlit/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+          envFrom:
+            - secretRef:
+                name: bestow-env
+                optional: true
           env:
             - name: LANGSMITH_TRACING
               value: "false"

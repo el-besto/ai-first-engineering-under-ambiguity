@@ -195,8 +195,7 @@ bestow-poc/
 │
 ├─ deploy/
 │  └─ local/
-│     ├─ compose.yaml
-│     └─ .env.local.example
+│     └─ compose.yaml
 │
 ├─ tests/
 │  ├─ acceptance/
@@ -488,7 +487,7 @@ bestow-poc/
 ├─ deploy/
 │  ├─ local/
 │  │  ├─ compose.yaml
-│  │  └─ .env.local.example
+│  │  └─ .env.example
 │  ├─ kubernetes/
 │  │  ├─ api.yaml
 │  │  ├─ worker.yaml
