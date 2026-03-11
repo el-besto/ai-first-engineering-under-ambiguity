@@ -131,42 +131,46 @@ bestow-poc/
 │  │     ├─ api_request_mapper.py
 │  │     └─ response_mapper.py
 │  │
-│  └─ adapters/
-│     ├─ policy_lookup/
-│     │  ├─ protocol.py
-│     │  └─ fake.py
-│     ├─ document_intake/
-│     │  ├─ protocol.py
-│     │  ├─ fake.py
-│     │  ├─ death_certificate_parser.py
-│     │  └─ beneficiary_record_parser.py
-│     ├─ model/
-│     │  ├─ protocol.py
-│     │  ├─ fake.py
-│     │  ├─ prompts/
-│     │  │  ├─ case_summary_prompt_template.py
-│     │  │  ├─ requirements_checklist_prompt_template.py
-│     │  │  ├─ follow_up_message_prompt_template.py
-│     │  │  └─ routing_rationale_prompt_template.py
-│     │  ├─ parsers/
-│     │  │  ├─ case_summary_parser.py
-│     │  │  ├─ checklist_parser.py
-│     │  │  ├─ follow_up_message_parser.py
-│     │  │  └─ routing_rationale_parser.py
-│     │  └─ providers/
-│     │     └─ openai_adapter.py
-│     ├─ safety/
-│     │  ├─ protocol.py
-│     │  ├─ fake.py
-│     │  ├─ pii_guardrail_adapter.py
-│     │  ├─ token_mapper.py
-│     │  ├─ claimant_message_policy.py
-│     │  ├─ routing_rationale_policy.py
-│     │  ├─ reviewability_policy.py
-│     │  └─ no_adjudication_validator.py
-│     └─ review_queue/
-│        ├─ protocol.py
-│        └─ fake.py
+│  ├─ adapters/
+│  │  ├─ policy_lookup/
+│  │  │  ├─ protocol.py
+│  │  │  └─ fake.py
+│  │  ├─ document_intake/
+│  │  │  ├─ protocol.py
+│  │  │  ├─ fake.py
+│  │  │  ├─ death_certificate_parser.py
+│  │  │  └─ beneficiary_record_parser.py
+│  │  ├─ model/
+│  │  │  ├─ protocol.py
+│  │  │  ├─ fake.py
+│  │  │  ├─ prompts/
+│  │  │  │  ├─ case_summary_prompt_template.py
+│  │  │  │  ├─ requirements_checklist_prompt_template.py
+│  │  │  │  ├─ follow_up_message_prompt_template.py
+│  │  │  │  └─ routing_rationale_prompt_template.py
+│  │  │  ├─ parsers/
+│  │  │  │  ├─ case_summary_parser.py
+│  │  │  │  ├─ checklist_parser.py
+│  │  │  │  ├─ follow_up_message_parser.py
+│  │  │  │  └─ routing_rationale_parser.py
+│  │  │  └─ providers/
+│  │  │     └─ openai_adapter.py
+│  │  ├─ safety/
+│  │  │  ├─ protocol.py
+│  │  │  ├─ fake.py
+│  │  │  ├─ pii_guardrail_adapter.py
+│  │  │  ├─ token_mapper.py
+│  │  │  ├─ claimant_message_policy.py
+│  │  │  ├─ routing_rationale_policy.py
+│  │  │  ├─ reviewability_policy.py
+│  │  │  └─ no_adjudication_validator.py
+│  │  └─ review_queue/
+│  │     ├─ protocol.py
+│  │     └─ fake.py
+│  │
+│  └─ infrastructure/
+│     └─ telemetry/
+│        └─ logger.py
 │
 ├─ drivers/
 │  ├─ api/
@@ -387,6 +391,7 @@ bestow-poc/
 │     │     └─ postgres.py
 │     ├─ telemetry/
 │     │  ├─ trace_logger.py
+│     │  ├─ logger.py
 │     │  ├─ metrics.py
 │     │  ├─ otel.py
 │     │  └─ dashboards.py
