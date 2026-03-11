@@ -39,6 +39,7 @@ The minimum supporting surface required to satisfy this phase:
 
 - Both UI and API MUST invoke the exact same `TriageGraphFactory.build_triage_graph()` instance.
 - Live model configuration must be opted-in via `.env`, defaulting to fake-backed if credentials are missing to protect CI pipelines.
+- **Security Check**: When configuring `OPENAI_API_KEY` in `APIConfig`/`UIConfig`, ensure it is defined using Pydantic's `Field(..., repr=False)` to prevent accidental logging or exposure of the token in trace outputs.
 - Acceptance fixtures must complete end-to-end dynamically producing meaningful `CASE_SUMMARY`, `REQUIREMENTS_CHECKLIST`, `FOLLOW_UP_MESSAGE`, and `HITL_REVIEW_TASK`.
 
 ## Deferred Items Touched (If Any)
@@ -53,8 +54,8 @@ The minimum supporting surface required to satisfy this phase:
 Implement in this order:
 
 1. Build `live_openai_adapter.py` using `langchain_openai`.
-2. Construct the provider injection swap in `drivers/api/dependencies.py`.
-3. Construct the same provider injection swap in `drivers/ui/streamlit/dependencies.py`.
+2. Construct the provider injection swap in `drivers/api/dependencies.py`. Ensure the `APIConfig` is used to configure live model endpoints.
+3. Construct the same provider injection swap in `drivers/ui/streamlit/dependencies.py` injecting `UIConfig`.
 4. Wrap `TriageGraphState` back into the final `TriageResult` at the driver boundary API mapping edge.
 5. Create Live-Model Acceptance Tests ensuring all 3 case bounds pass.
 

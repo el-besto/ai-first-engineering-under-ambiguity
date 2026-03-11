@@ -42,6 +42,7 @@ pip-wheel-metadata/
 .env.*
 !.env.example
 !.env.sample
+!.env.local.example
 
 # Logs and runtime files
 *.log

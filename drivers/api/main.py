@@ -1,4 +1,3 @@
-import os
 import uuid
 
 from fastapi import FastAPI, Request
@@ -10,10 +9,15 @@ from app.infrastructure.telemetry.logger import (
     configure_logging,
     get_logger,
 )
+from drivers.api.config import APIConfig
 
 # Initialize logging based on environment
-env = os.getenv("ENVIRONMENT", "development")
-configure_logging(environment=env)
+config = APIConfig()
+configure_logging(
+    environment=config.environment,
+    log_level=config.log_level,
+    log_format=config.log_format,
+)
 logger = get_logger(__name__)
 
 app = FastAPI()

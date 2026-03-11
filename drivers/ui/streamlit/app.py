@@ -1,13 +1,24 @@
-import os
 import uuid
 
 import streamlit as st
 
 from app.infrastructure.telemetry.logger import bind_context, configure_logging, get_logger
+from drivers.ui.config import UIConfig
+
+
+@st.cache_resource
+def get_config() -> UIConfig:
+    return UIConfig()
+
+
+config = get_config()
 
 # Initialize logging
-env = os.getenv("ENVIRONMENT", "development")
-configure_logging(environment=env)
+configure_logging(
+    environment=config.environment,
+    log_level=config.log_level,
+    log_format=config.log_format,
+)
 logger = get_logger(__name__)
 
 st.set_page_config(page_title="Death Claim Triage Workbench", layout="wide")
