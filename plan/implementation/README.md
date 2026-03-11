@@ -36,5 +36,13 @@ Completed documents:
   - scaffold, tooling, local runtime, and privacy-seam bootstrap
 - `completed/acceptance-contract-plan.md`
   - fixture-driven PoC code-path implementation plan
+- `completed/langgraph-phase-1-state.md`
+  - TriageGraphState and factory initialization
+- `completed/langgraph-phase-2-deterministic-triage.md`
+  - extraction and triage routing nodes
+- `completed/langgraph-phase-3-privacy-and-generation.md`
+  - PII guardrail and artifact generation nodes
+- `completed/langgraph-phase-4-live-model-wiring.md`
+  - live model adapter and dependency injection
 
 Use `change-reports/` for substantial autonomous or semi-autonomous implementation passes after code starts landing.
