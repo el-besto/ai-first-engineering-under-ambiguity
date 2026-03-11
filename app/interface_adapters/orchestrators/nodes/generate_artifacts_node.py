@@ -16,6 +16,7 @@ from app.adapters.model.prompts.requirements_checklist_prompt_template import (
 )
 from app.adapters.model.prompts.routing_rationale_prompt_template import routing_rationale_prompt
 from app.adapters.model.protocol import ModelAdapter
+from app.entities.case_summary import CaseSummary
 from app.interface_adapters.orchestrators.triage_graph_state import TriageGraphState
 from app.use_cases.generate_escalation_rationale_uc import GenerateEscalationRationaleUseCase
 from app.use_cases.generate_hitl_review_task_uc import GenerateHITLReviewTaskUseCase
@@ -40,7 +41,11 @@ def build_generate_artifacts_node(model: ModelAdapter):
         )
         summary_response = model.generate(summary_prompt_str)
         summary_parsed = case_summary_parser.parse(summary_response)
-        updates["case_summary"] = map_to_case_summary(summary_parsed)
+
+        # Map Pydantic to string representation
+        mapped_case_summary = map_to_case_summary(summary_parsed)
+        if mapped_case_summary:
+            updates["case_summary"] = CaseSummary(summary_text=mapped_case_summary.summary_text)
 
         if disposition == "request_more_information":
             # 1. Checklist
@@ -51,16 +56,21 @@ def build_generate_artifacts_node(model: ModelAdapter):
             )
             checklist_response = model.generate(checklist_prompt_str)
             checklist_parsed = checklist_parser.parse(checklist_response)
-            updates["requirements_checklist"] = map_to_requirements_checklist_string(checklist_parsed)
+
+            mapped_checklist_str = map_to_requirements_checklist_string(checklist_parsed)
+            if mapped_checklist_str:
+                updates["requirements_checklist"] = mapped_checklist_str
 
             # 2. Tone / FollowUp Message
             msg_prompt_str = follow_up_message_prompt.format(
-                requirements_checklist=updates["requirements_checklist"],
+                requirements_checklist=updates.get("requirements_checklist", ""),
                 format_instructions=follow_up_message_parser.get_format_instructions(),
             )
             msg_response = model.generate(msg_prompt_str)
             msg_parsed = follow_up_message_parser.parse(msg_response)
-            updates["follow_up_message"] = msg_parsed.message
+
+            if msg_parsed.message:
+                updates["follow_up_message"] = msg_parsed.message
             updates["follow_up_message_quality_markers"] = msg_parsed.quality_markers
 
         elif disposition == "escalate_to_human_review":
@@ -72,7 +82,9 @@ def build_generate_artifacts_node(model: ModelAdapter):
             )
             task_response = model.generate(task_prompt_str)
             task_parsed = hitl_review_task_parser.parse(task_response)
-            updates["hitl_review_task"] = task_parsed.task_description
+
+            if task_parsed.task_description:
+                updates["hitl_review_task"] = task_parsed.task_description
 
             # 2. Rationale
             rationale_uc = GenerateEscalationRationaleUseCase()
@@ -83,8 +95,12 @@ def build_generate_artifacts_node(model: ModelAdapter):
             )
             rationale_response = model.generate(rationale_prompt_str)
             rationale_parsed = routing_rationale_parser.parse(rationale_response)
-            updates["escalation_rationale"] = rationale_parsed.rationale
-            updates["escalation_reasons"] = reasons_facts
+
+            if rationale_parsed.rationale:
+                updates["escalation_rationale"] = rationale_parsed.rationale
+
+            if reasons_facts:
+                updates["escalation_reasons"] = reasons_facts
 
         return updates
 

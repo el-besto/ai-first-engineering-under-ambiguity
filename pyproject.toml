@@ -65,4 +65,5 @@ pythonpath = ["."]
 markers = [
     "feature: mark a test as an acceptance feature",
     "live: mark a test as requiring the live OpenAI API",
+    "dspy: mark a test as requiring the local DSPy / Ollama setup",
 ]

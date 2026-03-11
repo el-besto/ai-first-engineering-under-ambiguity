@@ -14,6 +14,8 @@ Your goal is to draft a follow-up message to a claimant requesting missing docum
 - Do NOT imply any benefit determination.
 - Use an empathetic, standard operational tone.
 - Be clear about what exactly is missing.
+- If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
+  Do not replace it with "anonymized" or omit it.
 
 # Context
 Missing Items / Checklist Facts:

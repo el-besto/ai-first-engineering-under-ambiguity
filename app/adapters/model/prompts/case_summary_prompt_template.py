@@ -6,14 +6,16 @@ Your goal is to generate a concise summary of the facts related to a death claim
 
 # Process
 1. Read the provided document facts carefully.
-2. Formulate a chain of thought reasoning about the key elements present.
-3. Generate a 1-paragraph, operational summary.
+9. Formulate a chain of thought reasoning about the key elements present.
+10. Generate a 1-paragraph, operational summary including the names of key individuals if available.
 
 # Rules
 - Do NOT adjudicate the claim.
 - Do NOT imply any benefit determination.
 - Use an empathetic, standard operational tone.
 - Do NOT assume facts not present in the input.
+- If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your summary.
+  Do not replace it with "anonymized" or omit it.
 
 # Context
 {document_facts}

@@ -12,6 +12,9 @@ from app.adapters.safety.protocol import PIIGuardrailAdapter
 from app.interface_adapters.orchestrators.nodes.assess_triage_node import (
     assess_triage_node,
 )
+from app.interface_adapters.orchestrators.nodes.detokenize_pii_node import (
+    build_detokenize_pii_node,
+)
 from app.interface_adapters.orchestrators.nodes.extract_facts_node import (
     extract_facts_node,
 )
@@ -48,6 +51,7 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
     workflow.add_node("assess_triage", assess_triage_node)
     workflow.add_node("tokenize_pii", build_tokenize_pii_node(adapters.pii_guardrail))
     workflow.add_node("generate_artifacts", build_generate_artifacts_node(adapters.model))
+    workflow.add_node("detokenize_pii", build_detokenize_pii_node(adapters.pii_guardrail))
 
     # Basic linear flow for Phase 2
     workflow.add_edge(START, "extract_facts")
@@ -68,6 +72,7 @@ def build_triage_graph(adapters: AdapterRegistry) -> CompiledStateGraph:
     )
 
     workflow.add_edge("tokenize_pii", "generate_artifacts")
-    workflow.add_edge("generate_artifacts", END)
+    workflow.add_edge("generate_artifacts", "detokenize_pii")
+    workflow.add_edge("detokenize_pii", END)
 
     return workflow.compile()

@@ -18,6 +18,21 @@ from app.interface_adapters.orchestrators.triage_graph_factory import (
 )
 from drivers.api.config import APIConfig
 
+# Initialize DSPy on the main thread (module import time) to avoid FastAPI threadpool RuntimeError
+_api_config = APIConfig()
+if _api_config.llm_guardrail_model:
+    lm_kwargs = {}
+    if _api_config.llm_guardrail_api_base:
+        lm_kwargs["api_base"] = _api_config.llm_guardrail_api_base
+    else:
+        lm_kwargs["api_base"] = "http://localhost:11434"
+
+    if _api_config.llm_guardrail_api_key:
+        lm_kwargs["api_key"] = _api_config.llm_guardrail_api_key
+
+    lm = dspy.LM(_api_config.llm_guardrail_model, **lm_kwargs)
+    dspy.settings.configure(lm=lm)
+
 
 def get_api_config() -> APIConfig:
     return APIConfig()
@@ -41,15 +56,6 @@ def get_triage_graph(config: APIConfig = Depends(get_api_config)) -> CompiledSta
     if config.llm_guardrail_secret_key:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
-
-        # Configure global DSPy LM if provided
-        if config.llm_guardrail_model:
-            lm = dspy.LM(
-                config.llm_guardrail_model,
-                api_base=config.llm_guardrail_api_base or "http://localhost:11434",
-                api_key=config.llm_guardrail_api_key or "",
-            )
-            dspy.settings.configure(lm=lm)
 
         pii_guardrail = VaultlessPIIGuardrail(
             secret_key_hex=config.llm_guardrail_secret_key, compiled_model_path=model_path

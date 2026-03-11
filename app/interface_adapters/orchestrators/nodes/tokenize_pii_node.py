@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 from app.adapters.safety.protocol import PIIGuardrailAdapter
@@ -23,22 +22,20 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
         # or recursively tokenize the dictionary. The use case takes `raw_text: str`.
         uc = TokenizePIIForModelUseCase(pii_guardrail)
 
-        # Convert facts to string to tokenize them.
-        facts_str = json.dumps(facts)
-        tokenized_text, _ = uc.execute(facts_str)
+        def recursive_tokenize(obj: Any) -> Any:
+            if isinstance(obj, str):
+                tokenized_text, _ = uc.execute(obj)
+                return tokenized_text
+            elif isinstance(obj, dict):
+                return {k: recursive_tokenize(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [recursive_tokenize(v) for v in obj]
+            return obj
 
-        # Update state with the tokenized facts so that subsequent nodes (generate_artifacts)
-        # do not see raw PII.
-        # We replace document_facts with the tokenized version.
-        # Alternatively, we could store it as 'tokenized_facts', but replacing it
-        # strictly enforces the privacy boundary.
-        tokenized_facts = json.loads(tokenized_text)
+        tokenized_facts = recursive_tokenize(facts)
 
         return {
             "document_facts": tokenized_facts,
-            # We don't store token_map back into the graph state implicitly,
-            # we just ensure document_facts is now safe.
-            # But wait, if we need it to detokenize? For now, we just pass tokenized text.
         }
 
     return tokenize_pii_node

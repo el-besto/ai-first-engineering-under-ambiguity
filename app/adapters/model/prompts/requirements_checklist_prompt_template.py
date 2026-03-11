@@ -12,6 +12,8 @@ Your goal is to generate a list of missing requirements based on the policy and 
 # Rules
 - Do NOT add missing items that are not derived from the provided facts.
 - Do NOT adjudicate or evaluate the claim's validity.
+- If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
+  Do not replace it with "anonymized" or omit it.
 
 # Context
 {checklist_facts}

@@ -121,6 +121,12 @@ bestow-poc/
 │  │
 │  ├─ interface_adapters/
 │  │  ├─ orchestrators/
+│  │  │  ├─ nodes/
+│  │  │  │  ├─ extract_facts_node.py
+│  │  │  │  ├─ assess_triage_node.py
+│  │  │  │  ├─ tokenize_pii_node.py
+│  │  │  │  ├─ generate_artifacts_node.py
+│  │  │  │  └─ detokenize_pii_node.py
 │  │  │  ├─ death_claim_triage_graph.py
 │  │  │  ├─ triage_graph_state.py
 │  │  │  └─ death_claim_triage_orchestrator.py
