@@ -40,6 +40,23 @@ format-md-all: ## Format all markdown files in the repo
 	@node $(TOOLS_DIR)/format-markdown.cjs --all
 	@echo "$(GREEN)Markdown formatting complete.$(NC)"
 
+##@ Python Formatting
+
+.PHONY: format-py format-py-all format
+format-py: ## Run Ruff linter and formatter on modified python files
+	@echo "$(BLUE)Formatting modified python files...$(NC)"
+	@uv run ruff check --fix
+	@uv run ruff format
+	@echo "$(GREEN)Python formatting complete.$(NC)"
+
+format-py-all: ## Run Ruff linter and formatter on all python files
+	@echo "$(BLUE)Formatting all python files...$(NC)"
+	@uv run ruff check --fix .
+	@uv run ruff format .
+	@echo "$(GREEN)Python formatting complete.$(NC)"
+
+format: format-md format-py ## Format all modified markdown and python files
+
 ##@ Local Runtime / Scaffolds
 
 .PHONY: install dev debug api ui test tilt up
