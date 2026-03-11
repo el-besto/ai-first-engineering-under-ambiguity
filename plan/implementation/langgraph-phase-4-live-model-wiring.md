@@ -27,7 +27,7 @@ The minimum supporting surface required to satisfy this phase:
 
 ### New Files
 
-- `app/adapters/model/live_openai_adapter.py` - Provider-backed adapter implementing `model/protocol.py`.
+- `app/adapters/model/live_chat_model_adapter.py` - Generic provider-backed adapter implementing `model/protocol.py` (wrapping LangChain's `init_chat_model`).
 
 ### Modified Files
 
@@ -39,7 +39,8 @@ The minimum supporting surface required to satisfy this phase:
 
 - Both UI and API MUST invoke the exact same `TriageGraphFactory.build_triage_graph()` instance.
 - Live model configuration must be opted-in via `.env`, defaulting to fake-backed if credentials are missing to protect CI pipelines.
-- **Security Check**: When configuring `OPENAI_API_KEY` in `APIConfig`/`UIConfig`, ensure it is defined using Pydantic's `Field(..., repr=False)` to prevent accidental logging or exposure of the token in trace outputs.
+- **Security Check**: When configuring `LLM_MAIN_MODEL` and API Keys in `APIConfig`/`UIConfig`, ensure keys are defined using Pydantic's `Field(..., repr=False)` to prevent accidental logging or exposure of the token in trace outputs.
+- The model adapter MUST be generically configurable (accepting `model_name`, `api_base`, `api_key`) to seamlessly support later injection of a local SLM (via Ollama/vLLM) for the DSPy PII redaction stretch goal without needing to author a new adapter class.
 - Acceptance fixtures must complete end-to-end dynamically producing meaningful `CASE_SUMMARY`, `REQUIREMENTS_CHECKLIST`, `FOLLOW_UP_MESSAGE`, and `HITL_REVIEW_TASK`.
 
 ## Deferred Items Touched (If Any)
@@ -53,11 +54,12 @@ The minimum supporting surface required to satisfy this phase:
 
 Implement in this order:
 
-1. Build `live_openai_adapter.py` using `langchain_openai`.
-2. Construct the provider injection swap in `drivers/api/dependencies.py`. Ensure the `APIConfig` is used to configure live model endpoints.
-3. Construct the same provider injection swap in `drivers/ui/streamlit/dependencies.py` injecting `UIConfig`.
-4. Wrap `TriageGraphState` back into the final `TriageResult` at the driver boundary API mapping edge.
-5. Create Live-Model Acceptance Tests ensuring all 3 case bounds pass.
+1. Build `live_chat_model_adapter.py` using LangChain's generic `init_chat_model`.
+2. Update `.env.local.example` and `config` models to enforce explicit domain vars (`LLM_MAIN_MODEL`, `LLM_MAIN_API_KEY`, etc.).
+3. Construct the provider injection swap in `drivers/api/dependencies.py`. Ensure the `APIConfig` is used to map explicit vars to the model adapter endpoints.
+4. Construct the same provider injection swap in `drivers/ui/streamlit/dependencies.py` injecting `UIConfig`.
+5. Wrap `TriageGraphState` back into the final `TriageResult` at the driver boundary API mapping edge.
+6. Create Live-Model Acceptance Tests ensuring all 3 case bounds pass.
 
 ## Verification Plan
 
@@ -70,5 +72,6 @@ Verify the completion of this phase with evidence that:
 
 ## Assumptions
 
-- We are using OpenAI models via standard local environment variables.
+- We will utilize explicit domain variables (`LLM_*`) to maintain strict routing control between main logic and future guardrail nodes.
+- The `PIIGuardrailAdapter` will remain in place, and this generic adapter sets the stage for injecting a local SLM specifically into that guardrail node as a stretch goal.
 - We rely strictly on the 3 canonical text fixtures to prevent scope bloat.
