@@ -26,12 +26,12 @@ This phase must adhere to the following established boundaries:
 
 - `drivers/ui/streamlit/pages/1_triage_workbench.py` - The primary demo UI page.
 - `drivers/ui/streamlit/widgets/bundle_viewer.py` - Panel displaying the original intake input.
-- `drivers/ui/streamlit/widgets/disposition_panel.py` - Panel displaying the LLM-generated artifacts, routing decision, and confidence band.
+- `drivers/ui/streamlit/widgets/disposition_panel.py` - Panel displaying the LLM-generated artifacts (including the new `hitl_review_task`), routing decision, and confidence band.
 - `drivers/ui/streamlit/widgets/token_audit_panel.py` - A crucial visual audit panel proving that PII was scrubbed *before* hitting the LLM.
 - `drivers/api/routes/health.py`
 - `drivers/api/routes/triage.py`
 - `drivers/api/schemas/death_claim_request.py`
-- `drivers/api/schemas/death_claim_response.py`
+- `drivers/api/schemas/death_claim_response.py` (ensure to include the new `hitl_review_task` field)
 
 ### Modified Files
 
