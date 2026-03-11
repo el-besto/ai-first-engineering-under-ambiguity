@@ -1,23 +1,16 @@
-import typing
 import uuid
 
-from fastapi import Depends, FastAPI, Request
-from langgraph.graph.state import CompiledStateGraph
-from pydantic import BaseModel
+from fastapi import FastAPI, Request
 
-from app.entities.claim_intake_bundle import ClaimIntakeBundle
 from app.infrastructure.telemetry.logger import (
     bind_context,
     clear_context,
     configure_logging,
     get_logger,
 )
-from app.interface_adapters.orchestrators.triage_graph_state import (
-    TriageGraphState,
-    map_state_to_triage_result,
-)
 from drivers.api.config import APIConfig
-from drivers.api.dependencies import get_triage_graph
+from drivers.api.routes.health import router as health_router
+from drivers.api.routes.triage import router as triage_router
 
 # Initialize logging based on environment
 config = APIConfig()
@@ -29,6 +22,9 @@ configure_logging(
 logger = get_logger(__name__)
 
 app = FastAPI()
+
+app.include_router(health_router)
+app.include_router(triage_router)
 
 
 @app.middleware("http")
@@ -49,36 +45,3 @@ async def correlation_id_middleware(request: Request, call_next):
         raise
     finally:
         clear_context()
-
-
-class TriageRequest(BaseModel):
-    policy_number: str
-
-
-@app.get("/health")
-def health_check():
-    logger.info("health_check_ping")
-    return {"status": "healthy"}
-
-
-@app.post("/triage")
-def run_triage(
-    req: TriageRequest,
-    graph: CompiledStateGraph = Depends(get_triage_graph),  # noqa: B008
-):
-    logger.info("triage_requested", policy_number=req.policy_number)
-
-    # Map strict scenario names to bundle fakes for the PoC
-    policy_str = req.policy_number.upper()
-    if "MISSING" in policy_str:
-        bundle = ClaimIntakeBundle.fake_missing_information()
-    elif "AMBIGUOUS" in policy_str:
-        bundle = ClaimIntakeBundle.fake_ambiguous()
-    else:
-        bundle = ClaimIntakeBundle.fake_complete()
-
-    initial_state = {"claim_bundle": bundle}
-    # Execute the graph
-    result = typing.cast(TriageGraphState, graph.invoke(initial_state))
-
-    return map_state_to_triage_result(result)
