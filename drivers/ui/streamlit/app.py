@@ -42,9 +42,7 @@ st.write("Submit a canonical test case to trace the LangGraph orchestrator.")
 
 graph = get_triage_graph(config)
 
-policy_number = st.text_input(
-    "Enter Policy Number (e.g. CASE_A_COMPLETE, CASE_B_MISSING, CASE_C_AMBIGUOUS)"
-)
+policy_number = st.text_input("Enter Policy Number (e.g. CASE_A_COMPLETE, CASE_B_MISSING, CASE_C_AMBIGUOUS)")
 if st.button("Run Triage"):
     policy_str = policy_number.upper()
     if "MISSING" in policy_str:
@@ -68,13 +66,9 @@ if st.button("Run Triage"):
                 {
                     "disposition": result.disposition,
                     "confidence_band": result.confidence_band,
-                    "case_summary": (
-                        dataclasses.asdict(result.case_summary) if result.case_summary else None
-                    ),
+                    "case_summary": (dataclasses.asdict(result.case_summary) if result.case_summary else None),
                     "routing_decision": (
-                        dataclasses.asdict(result.routing_decision)
-                        if result.routing_decision
-                        else None
+                        dataclasses.asdict(result.routing_decision) if result.routing_decision else None
                     ),
                     "requirements_checklist": result.requirements_checklist,
                     "follow_up_message": result.follow_up_message,

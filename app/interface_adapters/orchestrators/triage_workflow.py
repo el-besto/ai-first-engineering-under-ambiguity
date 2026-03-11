@@ -44,9 +44,7 @@ class TriageOrchestrator:
 
         is_complete = AssessCompletenessUseCase().execute(facts)
         is_ambiguous = DetectAmbiguityUseCase().execute(facts)
-        disposition, confidence = DecideTriageDispositionUseCase().execute(
-            is_complete, is_ambiguous
-        )
+        disposition, confidence = DecideTriageDispositionUseCase().execute(is_complete, is_ambiguous)
 
         checklist = None
         follow_up = None
@@ -62,9 +60,7 @@ class TriageOrchestrator:
             follow_up, quality_markers = GenerateFollowUpMessageUseCase().execute(checklist)
             reviewability_flags = ["Missing required documents"]
         elif disposition == "escalate_to_human_review":
-            escalation_reasons, escalation_rationale = GenerateEscalationRationaleUseCase().execute(
-                facts
-            )
+            escalation_reasons, escalation_rationale = GenerateEscalationRationaleUseCase().execute(facts)
             hitl_review_task = GenerateHITLReviewTaskUseCase().execute(facts)
 
         if is_ambiguous:

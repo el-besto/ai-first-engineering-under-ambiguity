@@ -19,28 +19,16 @@ class ClaimIntakeBundle:
 
     @classmethod
     def _get_base_fixture_dir(cls) -> Path:
-        return (
-            Path(__file__).parent.parent.parent
-            / "tests"
-            / "acceptance"
-            / "fixtures"
-            / "death_claim"
-        )
+        return Path(__file__).parent.parent.parent / "tests" / "acceptance" / "fixtures" / "death_claim"
 
     @classmethod
     def fake_complete(cls) -> "ClaimIntakeBundle":
-        return cls.load_from_fixture(
-            "CASE_A_COMPLETE", cls._get_base_fixture_dir() / "case_a_complete"
-        )
+        return cls.load_from_fixture("CASE_A_COMPLETE", cls._get_base_fixture_dir() / "case_a_complete")
 
     @classmethod
     def fake_missing_information(cls) -> "ClaimIntakeBundle":
-        return cls.load_from_fixture(
-            "CASE_B_MISSING", cls._get_base_fixture_dir() / "case_b_missing_information"
-        )
+        return cls.load_from_fixture("CASE_B_MISSING", cls._get_base_fixture_dir() / "case_b_missing_information")
 
     @classmethod
     def fake_ambiguous(cls) -> "ClaimIntakeBundle":
-        return cls.load_from_fixture(
-            "CASE_C_AMBIGUOUS", cls._get_base_fixture_dir() / "case_c_ambiguous"
-        )
+        return cls.load_from_fixture("CASE_C_AMBIGUOUS", cls._get_base_fixture_dir() / "case_c_ambiguous")

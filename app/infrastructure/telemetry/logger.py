@@ -123,9 +123,7 @@ def clear_context() -> None:
     structlog.contextvars.clear_contextvars()
 
 
-def log_exception(
-    logger: structlog.stdlib.BoundLogger, event: str, exc: Exception, **extra_context: Any
-) -> None:
+def log_exception(logger: structlog.stdlib.BoundLogger, event: str, exc: Exception, **extra_context: Any) -> None:
     logger.error(
         event,
         **{
