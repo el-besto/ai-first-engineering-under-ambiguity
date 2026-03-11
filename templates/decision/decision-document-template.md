@@ -1,3 +1,4 @@
+<!-- AGENT INSTRUCTION: You MUST read `templates/decision/decision-document-template.README.md` before using this template to create a new decision record. Do not alter the structure of this document. -->
 # [Task Name]: Decisions Needed
 
 > **Template Version:** 1.0 (2025-10-13)
