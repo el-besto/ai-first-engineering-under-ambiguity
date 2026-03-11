@@ -63,6 +63,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "langchain" },
     { name = "langchain-core" },
     { name = "langchain-openai" },
     { name = "langgraph" },
@@ -89,6 +90,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.6" },
+    { name = "langchain", specifier = ">=0.3.0" },
     { name = "langchain-core", specifier = ">=0.3.21" },
     { name = "langchain-openai", specifier = ">=0.2.11" },
     { name = "langgraph", specifier = ">=0.2.56" },
@@ -737,6 +739,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/19/74/a633ee74eb36c44aa6d1095e7cc5569bebf04342ee146178e2d36600708b/jsonschema_specifications-2025.9.1.tar.gz", hash = "sha256:b540987f239e745613c7a9176f3edb72b832a4ac465cf02712288397832b5e8d", size = 32855, upload-time = "2025-09-08T01:34:59.186Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl", hash = "sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe", size = 18437, upload-time = "2025-09-08T01:34:57.871Z" },
+]
+
+[[package]]
+name = "langchain"
+version = "1.2.11"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "langchain-core" },
+    { name = "langgraph" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/ed/990ec469ee2c4876adc367a1bb10143132a54a6fd9757269d2e440d65b37/langchain-1.2.11.tar.gz", hash = "sha256:1b0f680de88c178898a69f9814025729110fc68365b2c33cd2ba978114d5fc0a", size = 566207, upload-time = "2026-03-10T19:46:14.519Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/24/c9fd2d6f31ef7444e163aa9295c2c661892c8b2b683b4b6dd190ffd29a2f/langchain-1.2.11-py3-none-any.whl", hash = "sha256:ccc5d23e2568efa6e3cb2dde268a267d7f090bdad47d7e1ee5f0c9769e8cb7b9", size = 112136, upload-time = "2026-03-10T19:46:12.433Z" },
 ]
 
 [[package]]
