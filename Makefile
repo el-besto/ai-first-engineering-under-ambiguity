@@ -43,6 +43,9 @@ tilt: ## Start Tilt for local infrastructure deployment
 tilt-down: ## Tear down Tilt infrastructure deployment
 	tilt down
 
+kill-tilt: ## Forcibly kill any stray Tilt processes occupying ports
+	pkill -f tilt || true
+
 prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binaries
 	bash tools/prepare-rancher-desktop.sh
 

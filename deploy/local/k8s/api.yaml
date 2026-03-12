@@ -22,8 +22,6 @@ spec:
           env:
             - name: LANGSMITH_TRACING
               value: "false"
-            - name: LLM_GUARDRAIL_API_BASE
-              value: "http://host.docker.internal:11434"
           ports:
             - containerPort: 8000
             - containerPort: 5678

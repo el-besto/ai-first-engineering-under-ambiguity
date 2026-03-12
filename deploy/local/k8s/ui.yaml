@@ -24,8 +24,6 @@ spec:
               value: "false"
             - name: PYTHONPATH
               value: "."
-            - name: LLM_GUARDRAIL_API_BASE
-              value: "http://host.docker.internal:11434"
           ports:
             - containerPort: 8501
 ---

@@ -12,7 +12,6 @@ services:
       - ../../.env
     environment:
       - LANGSMITH_TRACING=false
-      - LLM_GUARDRAIL_API_BASE=http://host.docker.internal:11434
 
   ui:
     image: bestow-poc-app
@@ -27,7 +26,6 @@ services:
     environment:
       - LANGSMITH_TRACING=false
       - PYTHONPATH=.
-      - LLM_GUARDRAIL_API_BASE=http://host.docker.internal:11434
 
   ollama:
     image: ollama/ollama:0.5.12
