@@ -61,7 +61,7 @@ class TestLiveDSPyE2ETriage:
             if "tokenize_pii" in step:
                 # 1. Assert the Privacy Boundary mid-flight
                 # The state directly after tokenization should be redacted
-                mid_flight_facts = str(step["tokenize_pii"].get("document_facts", {}))
+                mid_flight_facts = str(step["tokenize_pii"].get("tokenized_document_facts", {}))
 
                 # Verify raw PII strings not present in mid-flight facts
                 assert "Jane Doe" not in mid_flight_facts

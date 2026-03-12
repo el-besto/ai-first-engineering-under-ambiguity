@@ -27,20 +27,13 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
 
         log.info("started", fact_count=len(facts))
         try:
-            # Recursively tokenize strings because the use case operates on raw text.
+            # Serialize the entire facts payload into a JSON string to batch request the guardrail
             uc = TokenizePIIForModelUseCase(pii_guardrail, log)
+            import json
 
-            def recursive_tokenize(obj: Any) -> Any:
-                if isinstance(obj, str):
-                    tokenized_text, _ = uc.execute(obj)
-                    return tokenized_text
-                elif isinstance(obj, dict):
-                    return {k: recursive_tokenize(v) for k, v in obj.items()}
-                elif isinstance(obj, list):
-                    return [recursive_tokenize(v) for v in obj]
-                return obj
-
-            tokenized_facts = recursive_tokenize(facts)
+            payload_str = json.dumps(facts)
+            tokenized_payload_str, _ = uc.execute(payload_str)
+            tokenized_facts = json.loads(tokenized_payload_str)
             log.info("completed", tokenized=True)
             return {
                 "tokenized_document_facts": tokenized_facts,
