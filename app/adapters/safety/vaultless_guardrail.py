@@ -45,8 +45,7 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
         # once global threadpool issue in Streamlit is fixed
         # Explicitly configure DSPy locally inside this instance to survive ThreadPoolExecutor boundaries
         # that commonly bite Frameworks like Streamlit and LangGraph.
-        lm = dspy.LM(model_name, api_base=api_base, api_key=api_key)
-        dspy.settings.configure(lm=lm)
+        self._lm = dspy.LM(model_name, api_base=api_base, api_key=api_key)
 
         # Load DSPy Extractor
         self._extractor = dspy.Predict(ExtractPII)
@@ -96,7 +95,8 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
         log.info("started", input_chars=len(raw_input))
         try:
             # 1. Ask DSPy to extract PII.
-            prediction = self._extractor(document=raw_input)
+            with dspy.settings.context(lm=self._lm):
+                prediction = self._extractor(document=raw_input)
             pii_entities_str = prediction.pii_entities
 
             if not pii_entities_str:
