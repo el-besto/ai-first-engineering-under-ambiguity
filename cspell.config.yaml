@@ -6,6 +6,7 @@ words:
   - AESGCM
   - agentic
   - ainvoke
+  - ALIP
   - anonymization
   - asyncio
   - charliermarsh
@@ -16,11 +17,14 @@ words:
   - dataclass
   - dataclasses
   - debugpy
+  - Decendent
   - demoability
+  - Docling
   - dotenv
   - dspy
   - evals
   - fastapi
+  - fintech
   - genai
   - Genalog
   - HITL
@@ -28,13 +32,16 @@ words:
   - httpx
   - inmem
   - inspectable
+  - jailbreaking
   - Langchain
   - langgraph
   - Langsmith
+  - MEAP
   - memgraph
   - mypy
   - NAIC
   - negotiables
+  - OIPA
   - Ollama
   - pkill
   - pseudonymized
@@ -61,6 +68,7 @@ words:
   - uvicorn
   - Vaultless
   - venv
+  - workshopping
   - Xfrozen
   - yzhang
 ignoreWords: []
