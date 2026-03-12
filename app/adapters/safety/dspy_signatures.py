@@ -14,6 +14,8 @@ class ExtractPII(dspy.Signature):
     Decision Rules:
     - If no PII is found, return an empty string.
     - Do NOT rephrase names or dates. Use exact string matches.
+    - Do NOT extract field labels, keys, or metadata prefixes (e.g., do NOT extract 'Name:',
+      'Policy Number:', 'Status:', 'Face Amount:', etc.). Only extract the actual sensitive value.
     """
 
     document = dspy.InputField(

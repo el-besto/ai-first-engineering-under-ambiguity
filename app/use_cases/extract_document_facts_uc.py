@@ -31,5 +31,6 @@ class ExtractDocumentFactsUseCase:
                 facts["deceased_name"] = deceased_match.group(1).strip()
 
         facts["missing_fields"] = missing_fields
+        facts["document_texts"] = bundle.documents
         self.logger.info("completed", extracted_fields=list(facts.keys()))
         return facts

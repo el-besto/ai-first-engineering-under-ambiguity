@@ -37,6 +37,16 @@ def main():
             "document": "Please send the funds to account number 9876543210 at Chase Bank.",
             "pii_entities": "9876543210, Chase Bank",
         },
+        {
+            "document": (
+                "Policy Number: POL-99999\nInsured: Charlie Davis\nStatus: Pending Lapsed\nFace Amount: $500,000"
+            ),
+            "pii_entities": "POL-99999, Charlie Davis, $500,000",
+        },
+        {
+            "document": "Name: John Smith\nAccount Balance: $10,000\nAccount Status: Active",
+            "pii_entities": "John Smith, $10,000",
+        },
     ]
 
     # 2. Convert to DSPy Examples

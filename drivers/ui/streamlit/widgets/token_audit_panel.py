@@ -13,16 +13,24 @@ def render_token_audit_panel(state: TriageGraphState):
 
     raw_facts = state.get("document_facts")
     tokenized_facts = state.get("tokenized_document_facts")
+    tokenized_docs = tokenized_facts.get("document_texts", {}) if tokenized_facts else {}
 
     if not raw_facts or not tokenized_facts:
         st.info("Waiting for facts to be extracted and tokenized...")
         return
 
     st.success(
-        "The extracted facts were tokenized for PII BEFORE being sent to the LLM. "
-        "The tokenized facts represent the payload safely passed to the generative models."
+        "The extracted facts and full document text were tokenized for PII BEFORE being sent to the LLM. "
+        "The tokenized data represents the payload safely passed to the generative models."
     )
 
+    if tokenized_docs:
+        st.markdown("### Tokenized Document Text")
+        for doc_name, doc_text in tokenized_docs.items():
+            with st.expander(f"Tokenized {doc_name.title().replace('_', ' ')}", expanded=False):
+                st.text(doc_text)
+
+    st.markdown("### Facts (Metadata)")
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("##### Original Facts")

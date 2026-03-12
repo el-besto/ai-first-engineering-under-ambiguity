@@ -14,11 +14,11 @@
     }
   ],
   "signature": {
-    "instructions": "You are an enterprise Vaultless PII Guardrail. Your goal is to identify and extract all Personally \nIdentifiable Information (PII) and sensitive entities from the document text.\n\nProcess Steps:\n1. Read the document text carefully.\n2. Identify sensitive entities: names, SSNs, financial accounts, dates of birth, phone numbers, emails.\n3. Return them exactly as they appear in the text, as a comma-separated list.\n\nDecision Rules:\n- If no PII is found, return an empty string.\n- Do NOT rephrase names or dates. Use exact string matches.",
+    "instructions": "You are an enterprise Vaultless PII Guardrail. Your goal is to identify and extract all Personally\nIdentifiable Information (PII) and sensitive entities from the document text.\n\nProcess Steps:\n1. Read the document text carefully.\n2. Identify sensitive entities: names, SSNs, financial accounts, dates of birth, phone numbers, emails.\n3. Return them exactly as they appear in the text, as a comma-separated list.\n\nDecision Rules:\n- If no PII is found, return an empty string.\n- Do NOT rephrase names or dates. Use exact string matches.\n- Do NOT extract field labels, keys, or metadata prefixes (e.g., do NOT extract 'Name:', 'Policy Number:', 'Status:', 'Face Amount:', etc.). Only extract the actual sensitive value.",
     "fields": [
       {
         "prefix": "Document:",
-        "description": "The source document snippet."
+        "description": "Extract all Personally Identifiable Information (PII) from the input document. Return a comma-separated list of the exact substrings that represent sensitive entities (e.g., names, specific company names, SSNs, financial accounts, dates of birth)."
       },
       {
         "prefix": "Pii Entities:",

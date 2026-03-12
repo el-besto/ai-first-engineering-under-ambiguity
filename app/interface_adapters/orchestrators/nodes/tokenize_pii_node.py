@@ -31,9 +31,20 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
             uc = TokenizePIIForModelUseCase(pii_guardrail, log)
             import json
 
-            payload_str = json.dumps(facts)
+            docs = facts.get("document_texts", {})
+            facts_without_docs = {k: v for k, v in facts.items() if k != "document_texts"}
+
+            payload_str = json.dumps(facts_without_docs)
             tokenized_payload_str, _ = uc.execute(payload_str)
             tokenized_facts = json.loads(tokenized_payload_str)
+
+            tokenized_docs = {}
+            for doc_name, text in docs.items():
+                tok_text, _ = uc.execute(text)
+                tokenized_docs[doc_name] = tok_text
+
+            tokenized_facts["document_texts"] = tokenized_docs
+
             log.info("completed", tokenized=True)
             return {
                 "tokenized_document_facts": tokenized_facts,
