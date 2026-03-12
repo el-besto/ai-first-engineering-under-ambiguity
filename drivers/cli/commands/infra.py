@@ -77,8 +77,8 @@ def generate_guardrail_key() -> None:
 
     print_info("Updating .env file with LLM_GUARDRAIL_SECRET_KEY...")
     try:
-        # Use python-dotenv to set the key safely
-        dotenv.set_key(env_path, "LLM_GUARDRAIL_SECRET_KEY", secret_key)
+        # Use python-dotenv to set the key safely, avoiding quotes which break k8s
+        dotenv.set_key(env_path, "LLM_GUARDRAIL_SECRET_KEY", secret_key, quote_mode="never")
         print_success("Key successfully generated and saved to .env!")
         print_success(f"Key: {secret_key}")
     except Exception as e:
