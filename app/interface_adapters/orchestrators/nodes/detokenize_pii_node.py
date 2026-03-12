@@ -49,9 +49,6 @@ def build_detokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
             if escalation_rationale := state.get("escalation_rationale"):
                 updates["escalation_rationale"] = recursive_detokenize(escalation_rationale)
 
-            if escalation_reasons := state.get("escalation_reasons"):
-                updates["escalation_reasons"] = recursive_detokenize(escalation_reasons)
-
             log.info("completed", updated_fields=sorted(updates.keys()))
             return updates
         except Exception as e:
