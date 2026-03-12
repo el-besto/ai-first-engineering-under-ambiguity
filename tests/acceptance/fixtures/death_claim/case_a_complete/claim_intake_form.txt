@@ -3,3 +3,4 @@ Claimant Relation: Spouse
 Deceased Name: John Doe
 Date of Death: 2025-10-15
 Death Certificate Attached: Yes
+Policy Number: POL-123456

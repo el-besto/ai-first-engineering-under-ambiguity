@@ -13,7 +13,10 @@ Your goal is to draft a follow-up message to a claimant requesting missing docum
 - Do NOT adjudicate the claim.
 - Do NOT imply any benefit determination.
 - Use an empathetic, standard operational tone.
-- Be clear about what exactly is missing.
+- Be clear and comprehensive: explicitly list EVERY single missing item from
+  the checklist in your message. Ensure no missing item is left out.
+- Tailor the message to specifically reference these missing items naturally.
+  Do not write a generic "information is missing" message.
 - If you see anonymized tokens (e.g., TOK-123), you MUST output the exact token string in your message.
   Do not replace it with "anonymized" or omit it.
 - If the checklist facts appear heavily tokenized or lack specific details, you MUST still generate a valid JSON
