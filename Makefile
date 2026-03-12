@@ -15,7 +15,7 @@ help: ## Display available targets
 
 ##@ Local Runtime / Scaffolds
 
-.PHONY: install dev debug api ui compile-dspy generate-guardrail-key tilt tilt-down prepare-rancher-desktop up
+.PHONY: install dev debug api ui compile-dspy generate-guardrail-key tilt tilt-down prepare-rancher-desktop up down
 install: ## Bootstrap and install the virtual environment dependencies
 	uv sync
 
@@ -57,6 +57,31 @@ prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binar
 
 up: ## Start the minimal docker-compose services manually
 	docker compose -f deploy/local/compose.yaml up -d
+
+down: ## Stop the minimal docker-compose services and remove volumes
+	docker compose -f deploy/local/compose.yaml down -v
+
+##@ Cleanup
+
+.PHONY: clean eject
+
+clean: ## Remove all temporary directories, python caches, and build outputs
+	@echo "$(BLUE)Cleaning temporary directories and caches...$(NC)"
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	find . -type d -name ".ruff_cache" -exec rm -rf {} +
+	rm -rf out/
+	rm -rf .uv_cache/
+	@echo "$(GREEN)Clean complete.$(NC)"
+
+eject: clean ## Completely remove all local resources, environments, and sensitive info
+	@echo "$(BLUE)Ejecting all local project state...$(NC)"
+	-docker compose -f deploy/local/compose.yaml down -v 2>/dev/null || true
+	-tilt down 2>/dev/null || true
+	rm -f .env
+	rm -rf .langgraph_api/
+	rm -rf .venv/
+	@echo "$(GREEN)Ejection complete. The repository is now clean.$(NC)"
 
 ##@ Formatting
 

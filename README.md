@@ -82,6 +82,14 @@ make up
 * **Run the Test Suite:** `uv run pytest`
 * **Linting and Formatting:** `make format-py-all` and `make format-md-all`
 
+### 4. Environment Cleanup
+
+When you need to completely teardown the project's infrastructure or reset your environment, use the provided cleanup targets:
+
+* **`make down`**: Stops the minimal Docker Compose services and removes volumes.
+* **`make clean`**: Removes all temporary python cache directories (`__pycache__`, `.pytest_cache`, `.ruff_cache`, `.uv_cache`) and build outputs (`out/`).
+* **`make eject`**: Completely removes all local resources. It runs `clean`, removes your local virtual environment (`.venv`) and `.env` file, and gracefully shuts down running Docker or Tilt infrastructure.
+
 ## Configuration
 
 This project manages environment variables using `pydantic-settings` via configuration classes (`app/config.py`).
