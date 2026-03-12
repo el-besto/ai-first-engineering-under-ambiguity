@@ -64,5 +64,5 @@ k8s_yaml(namespace_inject(read_file('deploy/local/k8s/ui.yaml'), 'bestow-poc'))
 
 # 5. Resource definitions
 k8s_resource('api', port_forwards=['8000:8000', '5678:5678'], labels=['apps'])
-k8s_resource('ui', port_forwards=['8501:8501'], labels=['apps'])
+k8s_resource('ui', port_forwards=['8501:8501', '5679:5679'], labels=['apps'])
 # k8s_resource('ollama', port_forwards=['11434:11434'], labels=['apps'])
