@@ -44,7 +44,7 @@ cp .env.example .env
 
 Review your `.env` file to ensure the configuration maps correctly to your setup.
 
-* The `LLM_GUARDRAIL_API_BASE` should be set to `http://host.docker.internal:11434` for local Mac development so the containers can route out to your natively running Ollama instance.
+* The `LLM_GUARDRAIL_API_BASE` should be set to `http://host.docker.internal:11434` for local Mac development so the containers can route out to your natively running Ollama instance. (Tip: You can use `make config-tilt` and `make config-local` to quickly toggle these local networking targets.)
 * Set your `LLM_MAIN_API_KEY` to an active OpenAI key.
 * Generate a secure hex key for the `LLM_GUARDRAIL_SECRET_KEY`:
 

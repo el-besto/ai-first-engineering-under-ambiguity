@@ -84,3 +84,36 @@ def generate_guardrail_key() -> None:
     except Exception as e:
         print_error(f"Failed to update .env file: {e}")
         raise typer.Exit(code=1) from e
+
+
+@app.command("set-config")
+def set_config(
+    tilt: bool = typer.Option(False, "--tilt", help="Configure for Tilt (Docker) environment"),
+    local: bool = typer.Option(False, "--local", help="Configure for local Mac native environment"),
+) -> None:
+    """Toggle environment configurations for local VS tilt (Docker) execution."""
+    if tilt and local:
+        print_error("Cannot specify both --tilt and --local.")
+        raise typer.Exit(code=1)
+    if not tilt and not local:
+        print_error("Must specify either --tilt or --local.")
+        raise typer.Exit(code=1)
+
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    env_path = os.path.join(root_dir, ".env")
+
+    if not os.path.exists(env_path):
+        print_error(f".env file not found at {env_path}")
+        raise typer.Exit(code=1)
+
+    api_base = "http://host.docker.internal:11434" if tilt else "http://localhost:11434"
+    target_name = "Tilt (Docker)" if tilt else "Local Native Mac"
+
+    print_info(f"Configuring environment for {target_name}...")
+    try:
+        dotenv.set_key(env_path, "LLM_GUARDRAIL_API_BASE", api_base, quote_mode="never")
+        print_success(f"Successfully configured LLM_GUARDRAIL_API_BASE for {target_name}!")
+        print_success(f"Value: {api_base}")
+    except Exception as e:
+        print_error(f"Failed to update .env file: {e}")
+        raise typer.Exit(code=1) from e

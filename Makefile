@@ -37,6 +37,12 @@ compile-dspy: ## Compile the DSPy PII Guardrail locally against Ollama
 generate-guardrail-key: ## Generate a random 32-byte hex key for the Vaultless Guardrail and save to .env
 	uv run python -m drivers.cli.main infra generate-guardrail-key
 
+config-tilt: ## Configure the local .env API Base targets for Tilt/Docker execution
+	uv run python -m drivers.cli.main infra set-config --tilt
+
+config-local: ## Configure the local .env API Base targets for Host/Mac native execution
+	uv run python -m drivers.cli.main infra set-config --local
+
 tilt: ## Start Tilt for local infrastructure deployment
 	tilt up
 
