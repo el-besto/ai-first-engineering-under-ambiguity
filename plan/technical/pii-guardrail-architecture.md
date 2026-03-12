@@ -119,7 +119,7 @@ Use this formula to estimate costs based on OpenAI's pricing structure:
 *Current API Pricing (per 1M tokens):*
 
 * *GPT-4o: $5.00 Input / $15.00 Output*
-* *GPT-4o-mini: $0.15 Input / $0.60 Output*
+* *gpt-4.1-mini : $0.15 Input / $0.60 Output*
 
 ---
 

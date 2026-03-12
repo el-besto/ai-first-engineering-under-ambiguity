@@ -6,7 +6,6 @@ Use it when you want to:
 
 - start a new implementation-control document from a known shape
 - start a new decision record from a known shape
-- produce reviewer-friendly reports after an autonomous or semi-autonomous implementation pass
 - keep repeated scaffolding out of `plan/`
 
 Directory split:
@@ -18,7 +17,6 @@ Directory split:
   - `acceptance-contract-plan.template.md` for fixture-driven PoC behavior work
   - `repo-bootstrap-plan.template.md` for setup, scaffold, and local runtime bootstrap
   - `tooling-validation-plan.template.md` for guardrail, runtime, and validation passes
-  - `slice-change-report.template.md` for implementation-pass reporting
 - `plan/decisions/`
   - live filled-in decision records for this repo
 - `plan/death-claim/`

@@ -4,6 +4,8 @@ import streamlit as st
 
 from app.infrastructure.telemetry.logger import bind_context, clear_context, configure_logging, get_logger
 from drivers.ui.config import get_config
+from drivers.ui.streamlit.widgets.env_vars_panel import render_env_vars_panel
+from drivers.ui.streamlit.widgets.quick_links_panel import render_quick_links_panel
 
 config = get_config()
 
@@ -33,3 +35,6 @@ st.markdown(
     through the LangGraph orchestrator.
     """
 )
+
+render_quick_links_panel()
+render_env_vars_panel()

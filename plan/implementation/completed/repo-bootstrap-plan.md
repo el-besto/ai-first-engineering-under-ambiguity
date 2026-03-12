@@ -60,8 +60,8 @@ LangGraph local development defaults:
 Standardized `Makefile` targets should include:
 
 - `make install`
-- `make dev`
-- `make debug`
+- `make studio`
+- `make studio-debug`
 - `make api`
 - `make ui`
 - `make test`

@@ -16,6 +16,11 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
         logger = get_logger(__name__).bind(node="tokenize_pii")
         op_log = logger.bind(operation="tokenize_pii")
         bundle = state.get("claim_bundle")
+        if isinstance(bundle, dict):
+            from app.entities.claim_intake_bundle import ClaimIntakeBundle
+
+            bundle = ClaimIntakeBundle(**bundle)
+
         if bundle is None:
             op_log.warning("validation_failed", reason="missing_claim_bundle")
             raise ValueError("claim_bundle is required in state to tokenize PII")

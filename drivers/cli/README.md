@@ -20,7 +20,7 @@ This directory contains the `cli` driver for the Bestow backend. It is built usi
 | `infra`   | `clean`                  | Tear down local infrastructure running under `tilt`.                          |
 | `infra`   | `generate-guardrail-key` | Generate a random 32-byte hex key for Vaultless Guardrail and write to .env.  |
 | `llm`     | `quota`                  | Check API key quota boundaries for the configured OpenAI organization.        |
-| `llm`     | `ping`                   | Measure the latency to the `gpt-4o-mini` chat completion endpoint.            |
+| `llm`     | `ping`                   | Measure the latency to the `gpt-4.1-mini` chat completion endpoint.           |
 | `graph`   | `run`                    | Execute the Triage StateGraph locally against a predefined fake scenario.     |
 | `graph`   | `trace`                  | Generate and export a `.png` topology diagram of the current LangGraph state. |
 

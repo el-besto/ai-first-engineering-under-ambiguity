@@ -11,7 +11,9 @@ from drivers.ui.config import get_config
 from drivers.ui.streamlit.dependencies import get_triage_graph
 from drivers.ui.streamlit.widgets.bundle_viewer import render_bundle_viewer
 from drivers.ui.streamlit.widgets.disposition_panel import render_disposition_panel
+from drivers.ui.streamlit.widgets.env_vars_panel import render_env_vars_panel
 from drivers.ui.streamlit.widgets.graph_topology_panel import render_graph_topology_panel
+from drivers.ui.streamlit.widgets.quick_links_panel import render_quick_links_panel
 from drivers.ui.streamlit.widgets.token_audit_panel import render_token_audit_panel
 
 logger = get_logger(__name__).bind(page="triage_workbench", surface="streamlit")
@@ -77,3 +79,6 @@ if bundle_to_run:
 
         with tab3:
             render_graph_topology_panel(graph)
+
+render_quick_links_panel()
+render_env_vars_panel()

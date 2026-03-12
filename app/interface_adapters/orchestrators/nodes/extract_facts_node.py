@@ -13,6 +13,11 @@ def extract_facts_node(state: TriageGraphState) -> dict[str, Any]:
     logger = get_logger(__name__).bind(node="extract_facts")
     op_log = logger.bind(operation="extract_facts")
     bundle = state.get("claim_bundle")
+    if isinstance(bundle, dict):
+        from app.entities.claim_intake_bundle import ClaimIntakeBundle
+
+        bundle = ClaimIntakeBundle(**bundle)
+
     if not bundle:
         op_log.warning("validation_failed", reason="missing_claim_bundle")
         raise ValueError("claim_bundle is required in state to extract facts")

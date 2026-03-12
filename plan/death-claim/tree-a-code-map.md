@@ -88,91 +88,85 @@ bestow-poc/
 │
 ├─ app/
 │  ├─ entities/
-│  │  ├─ claim_intake_bundle.py
-│  │  ├─ policy_context.py
-│  │  ├─ document_facts.py
-│  │  ├─ pii_token_map.py
-│  │  ├─ completeness_assessment.py
 │  │  ├─ ambiguity_assessment.py
-│  │  ├─ reviewability_assessment.py
-│  │  ├─ triage_disposition.py
-│  │  ├─ confidence_band.py
 │  │  ├─ case_summary.py
-│  │  ├─ requirements_checklist.py
+│  │  ├─ claim_intake_bundle.py
+│  │  ├─ completeness_assessment.py
+│  │  ├─ confidence_band.py
+│  │  ├─ document_facts.py
 │  │  ├─ follow_up_request.py
+│  │  ├─ hitl_review_task.py
+│  │  ├─ pii_token_map.py
+│  │  ├─ policy_context.py
+│  │  ├─ requirements_checklist.py
+│  │  ├─ reviewability_assessment.py
 │  │  ├─ routing_decision.py
-│  │  └─ hitl_review_task.py
+│  │  └─ triage_disposition.py
 │  │
 │  ├─ use_cases/
-│  │  ├─ normalize_claim_bundle_uc.py
-│  │  ├─ verify_policy_context_uc.py
-│  │  ├─ extract_document_facts_uc.py
-│  │  ├─ tokenize_pii_for_model_uc.py
-│  │  ├─ assemble_model_context_uc.py
 │  │  ├─ assess_completeness_uc.py
-│  │  ├─ detect_ambiguity_uc.py
-│  │  ├─ assess_reviewability_uc.py
 │  │  ├─ decide_triage_disposition_uc.py
-│  │  ├─ generate_case_summary_uc.py
-│  │  ├─ generate_requirements_checklist_uc.py
+│  │  ├─ detect_ambiguity_uc.py
+│  │  ├─ extract_document_facts_uc.py
+│  │  ├─ generate_escalation_rationale_uc.py
 │  │  ├─ generate_follow_up_message_uc.py
-│  │  ├─ generate_routing_decision_uc.py
-│  │  └─ create_hitl_review_task_uc.py
+│  │  ├─ generate_hitl_review_task_uc.py
+│  │  ├─ generate_requirements_checklist_uc.py
+│  │  ├─ normalize_claim_bundle_uc.py
+│  │  ├─ protocols.py
+│  │  └─ tokenize_pii_for_model_uc.py
 │  │
 │  ├─ interface_adapters/
-│  │  ├─ orchestrators/
-│  │  │  ├─ nodes/
-│  │  │  │  ├─ extract_facts_node.py
-│  │  │  │  ├─ assess_triage_node.py
-│  │  │  │  ├─ tokenize_pii_node.py
-│  │  │  │  ├─ generate_artifacts_node.py
-│  │  │  │  └─ detokenize_pii_node.py
-│  │  │  ├─ death_claim_triage_graph.py
-│  │  │  ├─ triage_graph_state.py
-│  │  │  └─ death_claim_triage_orchestrator.py
-│  │  ├─ presenters/
-│  │  │  └─ triage_result_presenter.py
-│  │  └─ mappers/
-│  │     ├─ workbench_request_mapper.py
-│  │     ├─ api_request_mapper.py
-│  │     └─ response_mapper.py
+│  │  └─ orchestrators/
+│  │     ├─ death_claim_triage_graph.py
+│  │     ├─ triage_graph_factory.py
+│  │     ├─ triage_graph_state.py
+│  │     ├─ triage_workflow.py
+│  │     └─ nodes/
+│  │        ├─ assess_triage_node.py
+│  │        ├─ detokenize_pii_node.py
+│  │        ├─ extract_facts_node.py
+│  │        ├─ generate_artifacts_node.py
+│  │        ├─ generate_hitl_artifacts_node.py
+│  │        ├─ generate_missing_info_artifacts_node.py
+│  │        ├─ generate_proceed_artifacts_node.py
+│  │        └─ tokenize_pii_node.py
 │  │
 │  ├─ adapters/
-│  │  ├─ policy_lookup/
-│  │  │  ├─ protocol.py
-│  │  │  └─ fake.py
 │  │  ├─ document_intake/
-│  │  │  ├─ protocol.py
-│  │  │  ├─ fake.py
+│  │  │  ├─ beneficiary_record_parser.py
 │  │  │  ├─ death_certificate_parser.py
-│  │  │  └─ beneficiary_record_parser.py
-│  │  ├─ model/
-│  │  │  ├─ protocol.py
 │  │  │  ├─ fake.py
-│  │  │  ├─ prompts/
-│  │  │  │  ├─ case_summary_prompt_template.py
-│  │  │  │  ├─ requirements_checklist_prompt_template.py
-│  │  │  │  ├─ follow_up_message_prompt_template.py
-│  │  │  │  └─ routing_rationale_prompt_template.py
+│  │  │  └─ protocol.py
+│  │  ├─ model/
+│  │  │  ├─ config.py
+│  │  │  ├─ fake.py
+│  │  │  ├─ protocol.py
 │  │  │  ├─ parsers/
-│  │  │  │  ├─ case_summary_parser.py
 │  │  │  │  ├─ checklist_parser.py
 │  │  │  │  ├─ follow_up_message_parser.py
 │  │  │  │  └─ routing_rationale_parser.py
+│  │  │  ├─ prompts/
+│  │  │  │  ├─ follow_up_message_prompt_template.py
+│  │  │  │  ├─ requirements_checklist_prompt_template.py
+│  │  │  │  └─ routing_rationale_prompt_template.py
 │  │  │  └─ providers/
 │  │  │     └─ openai_adapter.py
-│  │  ├─ safety/
-│  │  │  ├─ protocol.py
+│  │  ├─ policy_lookup/
 │  │  │  ├─ fake.py
-│  │  │  ├─ pii_guardrail_adapter.py
-│  │  │  ├─ token_mapper.py
-│  │  │  ├─ claimant_message_policy.py
-│  │  │  ├─ routing_rationale_policy.py
-│  │  │  ├─ reviewability_policy.py
-│  │  │  └─ no_adjudication_validator.py
-│  │  └─ review_queue/
+│  │  │  └─ protocol.py
+│  │  ├─ review_queue/
+│  │  │  ├─ fake.py
+│  │  │  └─ protocol.py
+│  │  └─ safety/
+│  │     ├─ claimant_message_policy.py
+│  │     ├─ fake.py
+│  │     ├─ no_adjudication_validator.py
+│  │     ├─ pii_guardrail_adapter.py
 │  │     ├─ protocol.py
-│  │     └─ fake.py
+│  │     ├─ reviewability_policy.py
+│  │     ├─ routing_rationale_policy.py
+│  │     └─ token_mapper.py
 │  │
 │  └─ infrastructure/
 │     └─ telemetry/
@@ -180,24 +174,44 @@ bestow-poc/
 │
 ├─ drivers/
 │  ├─ api/
+│  │  ├─ config.py
+│  │  ├─ dependencies.py
 │  │  ├─ main.py
 │  │  ├─ routes/
 │  │  │  ├─ health.py
 │  │  │  └─ triage.py
-│  │  ├─ schemas/
-│  │  │  ├─ death_claim_request.py
-│  │  │  └─ death_claim_response.py
-│  │  └─ dependencies.py
+│  │  └─ schemas/
+│  │     ├─ death_claim_request.py
+│  │     └─ death_claim_response.py
+│  │
+│  ├─ cli/
+│  │  ├─ __main__.py
+│  │  ├─ config.py
+│  │  ├─ main.py
+│  │  ├─ README.md
+│  │  ├─ commands/
+│  │  │  ├─ data.py
+│  │  │  ├─ graph.py
+│  │  │  ├─ health.py
+│  │  │  ├─ infra.py
+│  │  │  └─ llm.py
+│  │  └─ utils/
+│  │     ├─ console.py
+│  │     ├─ requests.py
+│  │     └─ tables.py
+│  │
 │  └─ ui/
+│     ├─ config.py
 │     └─ streamlit/
-│        ├─ app.py
+│        ├─ dependencies.py
+│        ├─ streamlit_app.py
 │        ├─ pages/
 │        │  └─ 1_triage_workbench.py
-│        ├─ widgets/
-│        │  ├─ bundle_viewer.py
-│        │  ├─ disposition_panel.py
-│        │  └─ token_audit_panel.py
-│        └─ dependencies.py
+│        └─ widgets/
+│           ├─ bundle_viewer.py
+│           ├─ disposition_panel.py
+│           ├─ graph_topology_panel.py
+│           └─ token_audit_panel.py
 │
 ├─ deploy/
 │  └─ local/

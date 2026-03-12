@@ -26,7 +26,8 @@ Current implementation order:
 
 Current live documents:
 
-- `change-reports/`
+<!-- AGENT: List active implementation plans here. Use `- none` if empty. -->
+- none
 
 Completed documents:
 
@@ -64,5 +65,3 @@ Completed documents:
   - Composable Artifact Nodes and PII Audit
 - `completed/langgraph-phase-8-validation-plan.md`
   - validation posture for Phase 8 Composable Artifact Nodes and PII Audit
-
-Use `change-reports/` for substantial autonomous or semi-autonomous implementation passes after code starts landing.

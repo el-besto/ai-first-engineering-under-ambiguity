@@ -16,7 +16,6 @@ Use this template when:
 Do **NOT** use this template when:
 
 - The work is simple enough to be completed in one sitting (use standard task lists or PR descriptions).
-- You are documenting a completed slice to stakeholders (use `slice-change-report.template.md`).
 
 ## How to Use
 

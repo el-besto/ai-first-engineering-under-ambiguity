@@ -11,7 +11,7 @@ This guide covers how to set up the repository for local development, focusing o
 1. **Python Development Environment:**
     * Install `uv` (the fast Python package installer and resolver).
 2. **Container Runtimes:**
-    * **Docker Desktop** or **OrbStack** (OrbStack is highly recommended for performance).
+    * **Rancher Desktop** (Highly recommended as it provides an embedded `k3s` Kubernetes cluster out of the box) or **OrbStack**.
     * **Tilt** (for local Kubernetes development loop): `brew install tilt`
 3. **Local LLM Guardrail (Ollama):**
     * The PII Tokenizer Guardrail uses a local Small Language Model (SLM) for deterministic tokenization.
@@ -26,7 +26,7 @@ This guide covers how to set up the repository for local development, focusing o
 ### 1. Initial Setup
 
 > [!NOTE]
-> **Tilt Automation:** If you intend to run the application via Kubernetes with Tilt (Path A), the `tilt up` command will automatically bootstrap your virtual environment, create your `.env` file, generate a new guardrail hex key, and pull the required Ollama model. The only manual step required is adding your `LLM_MAIN_API_KEY` to the `.env` file!
+> **Tilt Automation:** If you intend to run the application via Kubernetes with Tilt (Path A), the `tilt up` command will automatically bootstrap your virtual environment, create your `.env` file, generate a new guardrail hex key, and pull the required Ollama model. The only manual step required is adding your `LLM_MAIN_API_KEY` to the `.env` file! Once set, open the [Tilt dashboard](http://localhost:10350/r/ui/overview) and update the kubernetes secret (`infra > overwrite-k8s-secret`) and restart the `api` and/or `ui` depending on how you want to trigger Triage Cases.
 
 If you are not using Tilt or need to manually bootstrap the project for other local workflows, follow these steps:
 
@@ -81,6 +81,7 @@ make up
 * **View the UI:** Open [http://localhost:8501](http://localhost:8501)
 * **Run the Test Suite:** `uv run pytest`
 * **Linting and Formatting:** `make format-py-all` and `make format-md-all`
+  * `make validate` runs formatters, typecheck and non-live tests
 
 ### 4. Environment Cleanup
 

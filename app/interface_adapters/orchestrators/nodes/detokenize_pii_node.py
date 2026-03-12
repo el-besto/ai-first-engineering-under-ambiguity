@@ -26,6 +26,11 @@ def build_detokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
         logger = get_logger(__name__).bind(node="detokenize_pii")
         op_log = logger.bind(operation="detokenize_pii")
         bundle = state.get("claim_bundle")
+        if isinstance(bundle, dict):
+            from app.entities.claim_intake_bundle import ClaimIntakeBundle
+
+            bundle = ClaimIntakeBundle(**bundle)
+
         if bundle is None:
             op_log.warning("validation_failed", reason="missing_claim_bundle")
             raise ValueError("claim_bundle is required in state to detokenize PII")

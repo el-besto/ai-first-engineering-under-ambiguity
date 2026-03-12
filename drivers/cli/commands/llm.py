@@ -65,7 +65,7 @@ def quota(
     print_info("\nChecking Rate Limits and Quota via a test ChatCompletion...")
 
     data = json.dumps(
-        {"model": "gpt-4o-mini", "messages": [{"role": "user", "content": "Hi"}], "max_tokens": 1}
+        {"model": "gpt-4.1-mini ", "messages": [{"role": "user", "content": "Hi"}], "max_tokens": 1}
     ).encode("utf-8")
 
     req = urllib.request.Request(
@@ -128,10 +128,10 @@ def ping(
         print_error("Error: API Key is not set.")
         raise typer.Exit(code=1)
 
-    print_info(f"Pinging target LLM: {target} (gpt-4o-mini)...")
+    print_info(f"Pinging target LLM: {target} (gpt-4.1-mini )...")
 
     data = json.dumps(
-        {"model": "gpt-4o-mini", "messages": [{"role": "user", "content": "ping"}], "max_tokens": 1}
+        {"model": "gpt-4.1-mini ", "messages": [{"role": "user", "content": "ping"}], "max_tokens": 1}
     ).encode("utf-8")
 
     req = urllib.request.Request(

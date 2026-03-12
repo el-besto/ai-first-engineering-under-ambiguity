@@ -16,6 +16,11 @@ def assess_triage_node(state: TriageGraphState) -> dict[str, Any]:
     op_log = logger.bind(operation="assess_triage")
     document_facts = state.get("document_facts", {})
     bundle = state.get("claim_bundle")
+    if isinstance(bundle, dict):
+        from app.entities.claim_intake_bundle import ClaimIntakeBundle
+
+        bundle = ClaimIntakeBundle(**bundle)
+
     if bundle is None:
         op_log.warning("validation_failed", reason="missing_claim_bundle")
         raise ValueError("claim_bundle is required in state to assess triage")

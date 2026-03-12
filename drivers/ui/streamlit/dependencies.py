@@ -53,9 +53,9 @@ def get_triage_graph(config: UIConfig) -> CompiledStateGraph:
             pii_guardrail = VaultlessPIIGuardrail(
                 secret_key_hex=config.llm_guardrail_secret_key,
                 compiled_model_path=model_path,
-                api_base=config.llm_guardrail_api_base or "http://localhost:11434",
-                api_key=config.llm_guardrail_api_key or "local-dev",
-                model_name=config.llm_guardrail_model or "ollama/llama3.1:8b",
+                api_base=config.llm_guardrail_api_base,
+                api_key=config.llm_guardrail_api_key,
+                model_name=config.llm_guardrail_model,
             )
             pii_mode = "vaultless"
         else:

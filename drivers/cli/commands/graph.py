@@ -32,7 +32,7 @@ def get_cli_triage_graph():
 
     if settings.llm_main_api_key:
         model_adapter = LiveChatModelAdapter(
-            model_name="gpt-4o-mini",
+            model_name="gpt-4.1-mini ",
             api_key=settings.llm_main_api_key,
         )
     else:

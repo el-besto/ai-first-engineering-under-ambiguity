@@ -10,5 +10,12 @@
   "[markdown]": {
     "editor.formatOnSave": true
   },
-  "python.analysis.typeCheckingMode": "standard"
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true,
+    "**/.uv_cache": true
+  },
+  "python.analysis.typeCheckingMode": "standard",
+  "git.autofetch": false
 }

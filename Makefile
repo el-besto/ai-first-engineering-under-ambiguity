@@ -15,24 +15,21 @@ help: ## Display available targets
 
 ##@ Local Runtime / Scaffolds
 
-.PHONY: install dev debug api ui compile-dspy generate-guardrail-key tilt tilt-down prepare-rancher-desktop up down
+.PHONY: install api kill-api ui kill-ui compile-dspy generate-guardrail-key tilt tilt-down kill-tilt prepare-rancher-desktop up down
 install: ## Bootstrap and install the virtual environment dependencies
 	uv sync
-
-dev: ## Start the LangGraph development loop locally
-	uv run langgraph dev
-
-debug: ## Start LangGraph development loop with a debugger port open
-	PYDEVD_DISABLE_FILE_VALIDATION=1 uv run python -Xfrozen_modules=off -m langgraph_cli dev --debug-port 5678
 
 api: ## Boot the thin FastAPI ingress shell
 	uv run uvicorn drivers.api.main:app --reload --port 8000
 
+kill-api: ## Forcibly kill any stray FastAPI processes occupying ports
+	pkill -f uvicorn || true
+
 ui: ## Boot the thin Streamlit workbench shell
 	PYTHONPATH=. uv run streamlit run drivers/ui/streamlit/streamlit_app.py
 
-compile-dspy: ## Compile the DSPy PII Guardrail locally against Ollama
-	uv run python scripts/compile_dspy_guardrail.py
+kill-ui: ## Forcibly kill any stray Streamlit processes occupying ports
+	pkill -f streamlit || true
 
 generate-guardrail-key: ## Generate a random 32-byte hex key for the Vaultless Guardrail and save to .env
 	uv run python -m drivers.cli.main infra generate-guardrail-key
@@ -52,19 +49,33 @@ tilt-down: ## Tear down Tilt infrastructure deployment
 kill-tilt: ## Forcibly kill any stray Tilt processes occupying ports
 	pkill -f tilt || true
 
-prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binaries
-	bash tools/prepare-rancher-desktop.sh
-
 up: ## Start the minimal docker-compose services manually
 	docker compose -f deploy/local/compose.yaml up -d
 
 down: ## Stop the minimal docker-compose services and remove volumes
 	docker compose -f deploy/local/compose.yaml down -v
 
+compile-dspy: ## Compile the DSPy PII Guardrail locally against Ollama
+	uv run python scripts/compile_dspy_guardrail.py
+
+prepare-rancher-desktop: ## Re-point Docker CLI plugins to Rancher Desktop binaries
+	bash tools/prepare-rancher-desktop.sh
+
+##@ LangSmith Studio
+
+.PHONY: install studio studio-debug kill-studio
+studio: ## Start the LangGraph development loop locally
+	uv run langgraph dev
+
+studio-debug: ## Start LangGraph development loop with a debugger port open
+	PYDEVD_DISABLE_FILE_VALIDATION=1 uv run python -Xfrozen_modules=off -m langgraph_cli dev --debug-port 5678
+
+kill-studio: ## Forcibly kill any stray LangGraph Studio processes occupying ports
+	pkill -f langgraph || true
+
 ##@ Cleanup
 
 .PHONY: clean eject
-
 clean: ## Remove all temporary directories, python caches, and build outputs
 	@echo "$(BLUE)Cleaning temporary directories and caches...$(NC)"
 	find . -type d -name "__pycache__" -exec rm -rf {} +

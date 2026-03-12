@@ -17,6 +17,11 @@ def build_generate_missing_info_artifacts_node(model: ModelAdapter):
         logger = get_logger(__name__).bind(node="generate_missing_info_artifacts")
         op_log = logger.bind(operation="generate_missing_info_artifacts")
         bundle = state.get("claim_bundle")
+        if isinstance(bundle, dict):
+            from app.entities.claim_intake_bundle import ClaimIntakeBundle
+
+            bundle = ClaimIntakeBundle(**bundle)
+
         if bundle is None:
             op_log.warning("validation_failed", reason="missing_claim_bundle")
             raise ValueError("claim_bundle is required in state to generate artifacts")
