@@ -25,6 +25,11 @@ This guide covers how to set up the repository for local development, focusing o
 
 ### 1. Initial Setup
 
+> [!NOTE]
+> **Tilt Automation:** If you intend to run the application via Kubernetes with Tilt (Path A), the `tilt up` command will automatically bootstrap your virtual environment, create your `.env` file, generate a new guardrail hex key, and pull the required Ollama model. The only manual step required is adding your `LLM_MAIN_API_KEY` to the `.env` file!
+
+If you are not using Tilt or need to manually bootstrap the project for other local workflows, follow these steps:
+
 Bootstrap your virtual environment and resolve dependencies:
 
 ```bash
