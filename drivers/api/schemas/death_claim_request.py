@@ -6,6 +6,6 @@ class DeathClaimRequest(BaseModel):
         ...,
         description=(
             "The policy number for the death claim to be triaged. "
-            "Use 'AMBIGUOUS' or 'MISSING' in the string to trigger different test fakes."
+            "Use 'A' / 'COMPLETE', 'B' / 'MISSING', or 'C' / 'AMBIGUOUS' in the string to trigger different test fakes."
         ),
     )
