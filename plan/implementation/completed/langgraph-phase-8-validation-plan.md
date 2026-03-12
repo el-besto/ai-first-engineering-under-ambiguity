@@ -13,7 +13,7 @@ acceptance-contract plan.
 ## Current Source Inputs
 
 - Root tracker: `plan/death-claim/steel-thread.md`
-- Slice anchor: `plan/implementation/langgraph-phase-8-composable-artifact-nodes-and-pii-audit.md`
+- Slice anchor: `plan/implementation/completed/langgraph-phase-8-composable-artifact-nodes-and-pii-audit.md`
 - Deferred hardening: `plan/death-claim/deferred-hardening.md`
 - Repo patterns: `docs/patterns.md`
 

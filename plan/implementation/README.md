@@ -60,5 +60,9 @@ Completed documents:
   - live E2E model tests for SLM + Guardrail + OpenAI
 - `completed/dspy-guardrail-validation-plan.md`
   - validation posture for DSPy Guardrail integration
+- `completed/langgraph-phase-8-composable-artifact-nodes-and-pii-audit.md`
+  - Composable Artifact Nodes and PII Audit
+- `completed/langgraph-phase-8-validation-plan.md`
+  - validation posture for Phase 8 Composable Artifact Nodes and PII Audit
 
 Use `change-reports/` for substantial autonomous or semi-autonomous implementation passes after code starts landing.

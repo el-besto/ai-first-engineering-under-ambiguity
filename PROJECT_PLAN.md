@@ -21,7 +21,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - [x] Define target user, requirements, assumptions, and success criteria in [plan/death-claim/steel-thread.md](plan/death-claim/steel-thread.md)
 - [x] Define the [synthetic data strategy and fixture sources](plan/death-claim/synthetic-data-plan.md) for the chosen workflow
 - [x] Establish the minimal Lean-Clean steel-thread structure for the PoC, using `uv`, FastAPI, Ruff, Pyright, Docker, Tilt, and VS Code configuration where they support the chosen slice
-- [ ] Build a thin-slice prototype that demonstrates the improvement
+- [x] Build a thin-slice prototype that demonstrates the improvement
 - [ ] Prepare demo notes covering research, ideation, prototype, and LLM/cloud usage
 - [ ] Record a narrated video of 5 minutes or less
 - [ ] Review and send the submission
@@ -54,7 +54,7 @@ Bestow wants a short rapid-prototyping exercise that shows how I think as a Staf
 - [x] Shape the prototype as a minimal Lean-Clean steel thread with only the layers, drivers, and adapters needed for the end-to-end slice
   - Current implementation-control docs: tracked in [plan/implementation/README.md](plan/implementation/README.md)
 - [ ] Add supporting tooling and local infrastructure only where it improves development flow, demoability, or technical credibility
-- [ ] Build a thin-slice prototype that clearly shows the improved experience or system behavior
+- [x] Build a thin-slice prototype that clearly shows the improved experience or system behavior
 - [ ] Prepare a concise demo narrative that ties together research, requirements, prototype, and technical approach
 
 ## Constraints and assumptions
