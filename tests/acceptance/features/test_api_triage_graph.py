@@ -7,7 +7,7 @@ from drivers.api.main import app
 
 
 def get_test_api_config() -> APIConfig:
-    return APIConfig(llm_main_api_key=None, llm_main_model=None)
+    return APIConfig(llm_main_api_key=None, llm_main_model=None, llm_guardrail_secret_key=None)
 
 
 app.dependency_overrides[get_api_config] = get_test_api_config

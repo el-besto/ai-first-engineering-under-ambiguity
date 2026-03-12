@@ -1,6 +1,5 @@
 import os
 
-import dspy
 from fastapi import Depends
 from langgraph.graph.state import CompiledStateGraph
 
@@ -20,21 +19,6 @@ from app.interface_adapters.orchestrators.triage_graph_factory import (
 from drivers.api.config import APIConfig
 
 logger = get_logger(__name__).bind(driver="APIDependencies", surface="api")
-
-# Initialize DSPy on the main thread (module import time) to avoid FastAPI threadpool RuntimeError
-_api_config = APIConfig()
-if _api_config.llm_guardrail_model:
-    lm_kwargs = {}
-    if _api_config.llm_guardrail_api_base:
-        lm_kwargs["api_base"] = _api_config.llm_guardrail_api_base
-    else:
-        lm_kwargs["api_base"] = "http://localhost:11434"
-
-    if _api_config.llm_guardrail_api_key:
-        lm_kwargs["api_key"] = _api_config.llm_guardrail_api_key
-
-    lm = dspy.LM(_api_config.llm_guardrail_model, **lm_kwargs)
-    dspy.settings.configure(lm=lm)
 
 
 def get_api_config() -> APIConfig:
@@ -66,7 +50,11 @@ def get_triage_graph(config: APIConfig = Depends(get_api_config)) -> CompiledSta
             model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
 
             pii_guardrail = VaultlessPIIGuardrail(
-                secret_key_hex=config.llm_guardrail_secret_key, compiled_model_path=model_path
+                secret_key_hex=config.llm_guardrail_secret_key,
+                compiled_model_path=model_path,
+                api_base=config.llm_guardrail_api_base or "http://localhost:11434",
+                api_key=config.llm_guardrail_api_key or "local-dev",
+                model_name=config.llm_guardrail_model or "ollama/llama3.1:8b",
             )
             pii_mode = "vaultless"
         else:

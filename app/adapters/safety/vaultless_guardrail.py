@@ -19,7 +19,14 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
     into format-preserving tokens (TOK-...) to maintain referential integrity.
     """
 
-    def __init__(self, secret_key_hex: str, compiled_model_path: str):
+    def __init__(
+        self,
+        secret_key_hex: str,
+        compiled_model_path: str,
+        api_base: str = "http://localhost:11434",
+        api_key: str = "local-dev",
+        model_name: str = "ollama/llama3.1:8b",
+    ):
         self.logger = get_logger(__name__).bind(adapter=self.__class__.__name__)
         if not secret_key_hex:
             raise ValueError("LLM_GUARDRAIL_SECRET_KEY is required for VaultlessPIIGuardrail")
@@ -33,6 +40,13 @@ class VaultlessPIIGuardrail(PIIGuardrailAdapter):
             raise ValueError(f"Invalid LLM_GUARDRAIL_SECRET_KEY: {e}") from e
 
         self._aesgcm = AESGCM(key)
+
+        # TODO: DEFERRED [015] Remove local DSPy configuration in VaultlessPIIGuardrail
+        # once global threadpool issue in Streamlit is fixed
+        # Explicitly configure DSPy locally inside this instance to survive ThreadPoolExecutor boundaries
+        # that commonly bite Frameworks like Streamlit and LangGraph.
+        lm = dspy.LM(model_name, api_base=api_base, api_key=api_key)
+        dspy.settings.configure(lm=lm)
 
         # Load DSPy Extractor
         self._extractor = dspy.Predict(ExtractPII)

@@ -1,6 +1,5 @@
 import os
 
-import dspy
 import streamlit as st
 from langgraph.graph.state import CompiledStateGraph
 
@@ -20,6 +19,8 @@ from app.interface_adapters.orchestrators.triage_graph_factory import (
 from drivers.ui.config import UIConfig
 
 logger = get_logger(__name__).bind(driver="StreamlitDependencies", surface="streamlit")
+
+# Bumping to clear cache
 
 
 # Bumping to clear cache
@@ -49,17 +50,12 @@ def get_triage_graph(config: UIConfig) -> CompiledStateGraph:
             base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
             model_path = os.path.join(base_dir, "app", "adapters", "safety", "compiled_pii_extractor.json")
 
-            # Configure global DSPy LM if provided.
-            if config.llm_guardrail_model:
-                lm = dspy.LM(
-                    config.llm_guardrail_model,
-                    api_base=config.llm_guardrail_api_base or "http://localhost:11434",
-                    api_key=config.llm_guardrail_api_key,
-                )
-                dspy.settings.configure(lm=lm)
-
             pii_guardrail = VaultlessPIIGuardrail(
-                secret_key_hex=config.llm_guardrail_secret_key, compiled_model_path=model_path
+                secret_key_hex=config.llm_guardrail_secret_key,
+                compiled_model_path=model_path,
+                api_base=config.llm_guardrail_api_base or "http://localhost:11434",
+                api_key=config.llm_guardrail_api_key or "local-dev",
+                model_name=config.llm_guardrail_model or "ollama/llama3.1:8b",
             )
             pii_mode = "vaultless"
         else:
