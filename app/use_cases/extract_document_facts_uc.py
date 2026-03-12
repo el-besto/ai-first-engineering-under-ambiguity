@@ -1,10 +1,15 @@
 from typing import Any
 
 from app.entities.claim_intake_bundle import ClaimIntakeBundle
+from app.use_cases.protocols import LoggerProtocol
 
 
 class ExtractDocumentFactsUseCase:
+    def __init__(self, logger: LoggerProtocol):
+        self.logger = logger.bind(use_case=self.__class__.__name__)
+
     def execute(self, bundle: ClaimIntakeBundle) -> dict[str, Any]:
+        self.logger.info("started", document_count=len(bundle.documents))
         facts: dict[str, Any] = {"documents_present": list(bundle.documents.keys())}
         missing_fields = []
 
@@ -26,4 +31,5 @@ class ExtractDocumentFactsUseCase:
                 facts["deceased_name"] = deceased_match.group(1).strip()
 
         facts["missing_fields"] = missing_fields
+        self.logger.info("completed", extracted_fields=list(facts.keys()))
         return facts

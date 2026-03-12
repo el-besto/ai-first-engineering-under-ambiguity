@@ -60,6 +60,7 @@ Implement in this order:
 Verify the completion of this phase with evidence that:
 
 - Review `docs/patterns.md` against the implemented changes. If any rule or architectural pattern is violated, halt and prompt the user to decide on resolution versus explicit waiver.
+- Verify the observability posture: Ensure all new components bind `structlog` context correctly (component and operation-level), error paths use `log_exception`, and no raw PII, full claim documents, or raw prompts are exposed in logs.
 - `<verification_step>`
 - *(Add as many verification steps as needed)*
 

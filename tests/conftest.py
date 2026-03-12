@@ -1,4 +1,5 @@
 import os
+from unittest.mock import MagicMock
 
 import pytest
 import structlog
@@ -49,3 +50,14 @@ def log_capture():
 
     # Restore standard configuration
     structlog.configure(processors=original_processors)
+
+
+@pytest.fixture
+def dummy_logger():
+    """
+    Provides a mock logger that satisfies LoggerProtocol for use case testing.
+    Allows chained calls like logger.bind(...).info(...) without errors.
+    """
+    logger = MagicMock()
+    logger.bind.return_value = logger
+    return logger

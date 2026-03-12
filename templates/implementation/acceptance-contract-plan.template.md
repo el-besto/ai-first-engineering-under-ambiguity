@@ -124,6 +124,7 @@ Acceptance scenarios that must pass:
 
 Verify the acceptance pass with evidence that:
 
+- Verify the observability posture: Ensure all new components bind `structlog` context correctly (component and operation-level), error paths use `log_exception`, and no raw PII, full claim documents, or raw prompts are exposed in logs.
 - all representative cases pass through `<workflow_entrypoint>`
 - the expected dispositions and bounded outputs are asserted for each case
 - fake collaborators remain deterministic and stable across repeated runs

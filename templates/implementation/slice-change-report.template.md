@@ -92,6 +92,7 @@
 
 ## Reviewer Focus Areas
 
+- Observability posture: `structlog` context binding, `log_exception` usage, and privacy boundary enforcement
 - `<focus_area_1>`
 - `<focus_area_2>`
 - `<focus_area_3>`

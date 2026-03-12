@@ -21,7 +21,7 @@ def extract_facts_node(state: TriageGraphState) -> dict[str, Any]:
     log.info("started", document_count=len(bundle.documents))
     try:
         # Delegate extraction to the deterministic use case.
-        use_case = ExtractDocumentFactsUseCase()
+        use_case = ExtractDocumentFactsUseCase(log)
         facts = use_case.execute(bundle)
         log.info("completed", fact_count=len(facts))
         return {"document_facts": facts}

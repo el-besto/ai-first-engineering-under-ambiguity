@@ -28,7 +28,7 @@ def build_tokenize_pii_node(pii_guardrail: PIIGuardrailAdapter):
         log.info("started", fact_count=len(facts))
         try:
             # Recursively tokenize strings because the use case operates on raw text.
-            uc = TokenizePIIForModelUseCase(pii_guardrail)
+            uc = TokenizePIIForModelUseCase(pii_guardrail, log)
 
             def recursive_tokenize(obj: Any) -> Any:
                 if isinstance(obj, str):

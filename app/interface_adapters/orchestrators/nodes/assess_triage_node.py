@@ -24,13 +24,13 @@ def assess_triage_node(state: TriageGraphState) -> dict[str, Any]:
     log.info("started", fact_count=len(document_facts))
     try:
         # 1. Assess completeness.
-        is_complete = AssessCompletenessUseCase().execute(document_facts)
+        is_complete = AssessCompletenessUseCase(log).execute(document_facts)
 
         # 2. Detect ambiguity.
-        is_ambiguous = DetectAmbiguityUseCase().execute(document_facts)
+        is_ambiguous = DetectAmbiguityUseCase(log).execute(document_facts)
 
         # 3. Decide disposition.
-        disposition, confidence_band = DecideTriageDispositionUseCase().execute(
+        disposition, confidence_band = DecideTriageDispositionUseCase(log).execute(
             is_complete=is_complete, is_ambiguous=is_ambiguous
         )
 

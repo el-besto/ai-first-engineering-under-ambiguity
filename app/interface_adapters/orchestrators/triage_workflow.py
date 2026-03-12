@@ -42,14 +42,14 @@ class TriageOrchestrator:
 
         try:
             # Triage boundary fully removed for the acceptance slices.
-            normalized = NormalizeClaimBundleUseCase().execute(bundle)
-            facts = ExtractDocumentFactsUseCase().execute(normalized)
+            normalized = NormalizeClaimBundleUseCase(log).execute(bundle)
+            facts = ExtractDocumentFactsUseCase(log).execute(normalized)
 
-            TokenizePIIForModelUseCase(self.pii_guardrail).execute("dummy_model_context")
+            TokenizePIIForModelUseCase(self.pii_guardrail, log).execute("dummy_model_context")
 
-            is_complete = AssessCompletenessUseCase().execute(facts)
-            is_ambiguous = DetectAmbiguityUseCase().execute(facts)
-            disposition, confidence = DecideTriageDispositionUseCase().execute(is_complete, is_ambiguous)
+            is_complete = AssessCompletenessUseCase(log).execute(facts)
+            is_ambiguous = DetectAmbiguityUseCase(log).execute(facts)
+            disposition, confidence = DecideTriageDispositionUseCase(log).execute(is_complete, is_ambiguous)
 
             checklist = None
             follow_up = None
@@ -61,12 +61,12 @@ class TriageOrchestrator:
             hitl_review_task = None
 
             if disposition == "request_more_information":
-                checklist = GenerateRequirementsChecklistUseCase().execute(facts)
-                follow_up, quality_markers = GenerateFollowUpMessageUseCase().execute(checklist)
+                checklist = GenerateRequirementsChecklistUseCase(log).execute(facts)
+                follow_up, quality_markers = GenerateFollowUpMessageUseCase(log).execute(checklist)
                 reviewability_flags = ["Missing required documents"]
             elif disposition == "escalate_to_human_review":
-                escalation_reasons, escalation_rationale = GenerateEscalationRationaleUseCase().execute(facts)
-                hitl_review_task = GenerateHITLReviewTaskUseCase().execute(facts)
+                escalation_reasons, escalation_rationale = GenerateEscalationRationaleUseCase(log).execute(facts)
+                hitl_review_task = GenerateHITLReviewTaskUseCase(log).execute(facts)
 
             if is_ambiguous:
                 case_type = "ambiguous"

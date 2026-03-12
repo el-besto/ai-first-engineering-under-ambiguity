@@ -17,6 +17,7 @@ from app.adapters.model.prompts.requirements_checklist_prompt_template import (
 from app.adapters.model.prompts.routing_rationale_prompt_template import routing_rationale_prompt
 from app.adapters.model.protocol import ModelAdapter
 from app.entities.case_summary import CaseSummary
+from app.infrastructure.telemetry.logger import get_logger
 from app.use_cases.generate_escalation_rationale_uc import GenerateEscalationRationaleUseCase
 from app.use_cases.generate_hitl_review_task_uc import GenerateHITLReviewTaskUseCase
 from app.use_cases.generate_requirements_checklist_uc import GenerateRequirementsChecklistUseCase
@@ -39,10 +40,11 @@ def generate_summary_artifact(model: ModelAdapter, facts: dict) -> CaseSummary |
 def generate_missing_info_artifacts(
     model: ModelAdapter, facts: dict, requirements_checklist: str = ""
 ) -> dict[str, Any]:
+    logger = get_logger(__name__).bind(operation="generate_missing_info_artifacts")
     updates: dict[str, Any] = {}
 
     # 1. Checklist.
-    checklist_facts = GenerateRequirementsChecklistUseCase().execute(facts)
+    checklist_facts = GenerateRequirementsChecklistUseCase(logger).execute(facts)
     checklist_prompt_str = requirements_checklist_prompt.format(
         checklist_facts=str(checklist_facts),
         format_instructions=checklist_parser.get_format_instructions(),
@@ -71,10 +73,11 @@ def generate_missing_info_artifacts(
 
 
 def generate_hitl_artifacts(model: ModelAdapter, facts: dict) -> dict[str, Any]:
+    logger = get_logger(__name__).bind(operation="generate_hitl_artifacts")
     updates: dict[str, Any] = {}
 
     # 1. HITL Task.
-    task_facts = GenerateHITLReviewTaskUseCase().execute(facts)
+    task_facts = GenerateHITLReviewTaskUseCase(logger).execute(facts)
     task_prompt_str = hitl_review_task_prompt.format(
         task_facts=str(task_facts),
         format_instructions=hitl_review_task_parser.get_format_instructions(),
@@ -86,7 +89,7 @@ def generate_hitl_artifacts(model: ModelAdapter, facts: dict) -> dict[str, Any]:
         updates["hitl_review_task"] = task_parsed.task_description
 
     # 2. Rationale.
-    rationale_uc = GenerateEscalationRationaleUseCase()
+    rationale_uc = GenerateEscalationRationaleUseCase(logger)
     reasons_facts, rationale_facts = rationale_uc.execute(facts)
     rationale_prompt_str = routing_rationale_prompt.format(
         rationale_facts=str(rationale_facts),

@@ -179,7 +179,7 @@ A change is not complete until:
 - Primary domain model type: immutable Python dataclasses in planned `app/entities/`
 - Mutability rule: immutable by default with `@dataclass(slots=True, frozen=True)`
 - Validation rule: transport and payload shape validation happens at the driver edge; business invariants live in entity constructors/helpers and use-case policy
-- Boundary rule: domain models must not import framework code, vendor SDKs, storage clients, prompt templates, or tracing libraries
+- Boundary rule: domain models must not import framework code, vendor SDKs, storage clients, or prompt templates. (Note: A lightweight `LoggerProtocol` is permitted for business-rule observability).
 
 Canonical planned v1 domain and result types:
 
@@ -202,6 +202,7 @@ Rules for use-cases:
 - Keep routing, completeness, ambiguity, reviewability, and no-adjudication policy out of the graph runtime
 - Depend on adapter protocols only, never on concrete `fake.py` or provider implementations
 - Return typed results that make ambiguity and escalation explicit instead of hiding those outcomes in exceptions
+- Instrument business-level checkpoints: accept a `LoggerProtocol` in the constructor and log business decisions or step completions using it. Do not couple to a concrete observability framework like `structlog` directly.
 
 ### 4.3 Repository Patterns
 
@@ -428,7 +429,7 @@ Business ambiguity is not an exception path. It must be represented by typed tri
 
 - Tracing approach: local-first graph inspection and replay, with initial posture `LANGSMITH_TRACING=false`
 - Metrics approach: lightweight run visibility is sufficient for v1; a full metrics stack is deferred
-- Instrumentation boundary: presenters, drivers, and thin graph wrappers add traces or run metadata; entities and use-cases remain free of tracing imports
+- Instrumentation boundary: presenters, drivers, and adapters use `structlog` directly. Entities and use-cases may accept an abstract `LoggerProtocol` to emit business-level logs, but must remain free of concrete tracing/logging imports.
 - Request-scoped context rule: bind and clear request or session context at the driver entrypoints so all downstream logs carry the same correlation fields
 - Trace correlation rule: when OpenTelemetry spans are present, include `trace_id` and `span_id` automatically; absence of OpenTelemetry must not break logging
 - Do-not-log or do-not-trace rule: raw PII, full raw claim documents, reversible token maps, raw prompts, secrets, and provider credentials

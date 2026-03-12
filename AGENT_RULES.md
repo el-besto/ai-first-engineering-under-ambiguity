@@ -44,3 +44,10 @@ This file is the single source of truth for repository-specific agent instructio
 - When similar code, helpers, or modules already exist, prefer reuse, extension, or composition over rewriting from scratch.
 - Keep the repo DRY: avoid near-duplicate helpers, parallel code paths, or one-off abstractions that bypass existing logic.
 - If you diverge from an established pattern or choose not to reuse an existing function, make the reason explicit in the change or explanation.
+
+### 1.5 Observability and Logging Posture
+
+- Treat observability as a core requirement, not an afterthought. Any new driver, presenter, orchestrator, or adapter touching I/O MUST be instrumented with `structlog`.
+- Always bind component-level context (e.g., `adapter=...`, `driver=...`) once in `__init__` or module setup, and bind `operation=...` at the start of each method or request handler.
+- Use `log_exception(log, "failed", exc, **context)` for all error paths to ensure consistent error fields instead of ad hoc `logger.error` or `logger.exception`.
+- Strictly enforce the privacy boundary in logs: Never log raw PII, full claim documents, reversible token maps, raw prompts, or provider credentials. Log safe derived metrics (e.g., `prompt_chars`, `token_count`) instead.
