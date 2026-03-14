@@ -2,6 +2,17 @@
 
 Death claim triage Proof of Concept application.
 
+## Reviewer Guide
+
+If you are reviewing this repository for the prototype exercise, these are the best entry points:
+
+- [Workshop spec](plan/death-claim/workshop-spec.md): initial framing of the insurer workflow, stakeholders, and problem boundary
+- [Steel thread](plan/death-claim/steel-thread.md): the narrow end-to-end slice chosen for the prototype
+- [Acceptance contract plan](plan/implementation/completed/acceptance-contract-plan.md): how the steel thread is translated into an explicit implementation boundary
+- [Tooling validation plan](plan/implementation/completed/tooling-validation-plan.md): the validation posture used to keep delivery reviewable and handoff-ready
+
+The repo is intended to show not just the prototype itself, but the AI-first workflow used to move from ambiguous problem framing into a constrained, testable delivery path.
+
 ## Quickstart & Local Dev Guide
 
 This guide covers how to set up the repository for local development, focusing on the optimal path for MacOS engineers using Apple Silicon Metal acceleration.
@@ -9,15 +20,15 @@ This guide covers how to set up the repository for local development, focusing o
 ### Prerequisites
 
 1. **Python Development Environment:**
-    * Install `uv` (the fast Python package installer and resolver).
+    - Install `uv` (the fast Python package installer and resolver).
 2. **Container Runtimes:**
-    * **Rancher Desktop** (Highly recommended as it provides an embedded `k3s` Kubernetes cluster out of the box) or **OrbStack**.
-    * **Tilt** (for local Kubernetes development loop): `brew install tilt`
+    - **Rancher Desktop** (Highly recommended as it provides an embedded `k3s` Kubernetes cluster out of the box) or **OrbStack**.
+    - **Tilt** (for local Kubernetes development loop): `brew install tilt`
 3. **Local LLM Guardrail (Ollama):**
-    * The PII Tokenizer Guardrail uses a local Small Language Model (SLM) for deterministic tokenization.
-    * To leverage Apple's Metal GPU and avoid sluggish behavior in K8s CPU containers, **you must run Ollama natively on your Mac.**
-    * Install the Ollama Desktop App or run: `brew install --cask ollama`
-    * Once installed, **pull the designated guardrail model:**
+    - The PII Tokenizer Guardrail uses a local Small Language Model (SLM) for deterministic tokenization.
+    - To leverage Apple's Metal GPU and avoid sluggish behavior in K8s CPU containers, **you must run Ollama natively on your Mac.**
+    - Install the Ollama Desktop App or run: `brew install --cask ollama`
+    - Once installed, **pull the designated guardrail model:**
 
         ```bash
         ollama pull llama3.1:8b
@@ -44,9 +55,9 @@ cp .env.example .env
 
 Review your `.env` file to ensure the configuration maps correctly to your setup.
 
-* The `LLM_GUARDRAIL_API_BASE` should be set to `http://host.docker.internal:11434` for local Mac development so the containers can route out to your natively running Ollama instance. (Tip: You can use `make config-tilt` and `make config-local` to quickly toggle these local networking targets.)
-* Set your `LLM_MAIN_API_KEY` to an active OpenAI key.
-* Generate a secure hex key for the `LLM_GUARDRAIL_SECRET_KEY`:
+- The `LLM_GUARDRAIL_API_BASE` should be set to `http://host.docker.internal:11434` for local Mac development so the containers can route out to your natively running Ollama instance. (Tip: You can use `make config-tilt` and `make config-local` to quickly toggle these local networking targets.)
+- Set your `LLM_MAIN_API_KEY` to an active OpenAI key.
+- Generate a secure hex key for the `LLM_GUARDRAIL_SECRET_KEY`:
 
     ```bash
     make generate-guardrail-key
@@ -78,18 +89,18 @@ make up
 
 ### 3. Local Development Workflows
 
-* **View the UI:** Open [http://localhost:8501](http://localhost:8501)
-* **Run the Test Suite:** `uv run pytest`
-* **Linting and Formatting:** `make format-py-all` and `make format-md-all`
-  * `make validate` runs formatters, typecheck and non-live tests
+- **View the UI:** Open [http://localhost:8501](http://localhost:8501)
+- **Run the Test Suite:** `uv run pytest`
+- **Linting and Formatting:** `make format-py-all` and `make format-md-all`
+  - `make validate` runs formatters, typecheck and non-live tests
 
 ### 4. Environment Cleanup
 
 When you need to completely teardown the project's infrastructure or reset your environment, use the provided cleanup targets:
 
-* **`make down`**: Stops the minimal Docker Compose services and removes volumes.
-* **`make clean`**: Removes all temporary python cache directories (`__pycache__`, `.pytest_cache`, `.ruff_cache`, `.uv_cache`) and build outputs (`out/`).
-* **`make eject`**: Completely removes all local resources. It runs `clean`, removes your local virtual environment (`.venv`) and `.env` file, and gracefully shuts down running Docker or Tilt infrastructure.
+- **`make down`**: Stops the minimal Docker Compose services and removes volumes.
+- **`make clean`**: Removes all temporary python cache directories (`__pycache__`, `.pytest_cache`, `.ruff_cache`, `.uv_cache`) and build outputs (`out/`).
+- **`make eject`**: Completely removes all local resources. It runs `clean`, removes your local virtual environment (`.venv`) and `.env` file, and gracefully shuts down running Docker or Tilt infrastructure.
 
 ## Configuration
 
